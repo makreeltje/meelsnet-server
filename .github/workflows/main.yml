@@ -1,0 +1,36 @@
+name: Deploy media-server
+
+on:
+  push:
+    paths:
+      - 'test/test.txt'
+
+env:
+  TARGET_DIRECTORY: /opt/docker
+
+jobs:
+  steps:
+    - name: just echo a message
+      run: |
+        echo Test directory changed
+#  deploy:
+#    runs-on: ubuntu-latest
+#    steps:
+#    - uses: actions/checkout@v2
+#    - name: SSH SCP | Copy docker-compose.yml
+#      uses: appleboy/scp-action@master
+#      with:
+#        host: ${{ secrets.SSH_HOST }}
+#        key: ${{ secrets.SSH_KEY }}
+#        port: ${{ secrets.SSH_PORT }}
+#        source: "docker-compose.yml"
+#        target: ${{ env.TARGET_DIRECTORY }}
+#    - name: SSH | Start container
+#      uses: appleboy/ssh-action@master
+#      with:
+#        host: ${{ secrets.SSH_HOST }}
+#        key: ${{ secrets.SSH_KEY }}
+#        port: ${{ secrets.SSH_PORT }}
+#        script: |
+#          cd ${{ env.TARGET_DIRECTORY }}
+#          docker-compose up -d
