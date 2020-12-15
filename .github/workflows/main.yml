@@ -9,10 +9,11 @@ env:
   TARGET_DIRECTORY: /opt/docker
 
 jobs:
-  steps:
-    - name: just echo a message
-      run: |
-        echo Test directory changed
+  test:
+    steps:
+      - name: just echo a message
+        run: |
+          echo Test directory changed
 #  deploy:
 #    runs-on: ubuntu-latest
 #    steps:
