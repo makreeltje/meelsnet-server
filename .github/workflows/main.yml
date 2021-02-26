@@ -40,5 +40,6 @@ jobs:
           echo 'TZ=${{ secrets.TZ }}' >> .env
           echo 'CONF_DIR=${{ secrets.CONF_DIR }}' >> .env
           echo 'MEDIA_DIR=${{ secrets.MEDIA_DIR }}' >> .env
-
+          echo 'PLEX_CLAIM_TOKEN=${{ secrets.PLEX_CLAIM_TOKEN }}' >> .env
+          
           docker-compose $(find docker-compose.*.yml | sed -e 's/^/-f /') up -d

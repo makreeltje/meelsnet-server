@@ -10,13 +10,13 @@ services:
       - PGID=${PGID}
       - PUID=${PUID}
       - TZ=${TZ}
-#      - PLEX_CLAIM=${PLEX_CLAIM_TOKEN}
+      - PLEX_CLAIM=${PLEX_CLAIM_TOKEN}
     volumes:
-      - ${BASE_DIR}/plex/config:/config
-      - ${BASE_DIR}/plex/data:/data
-      - ${BASE_DIR}/plex/deb:/debi
-      - ${BASE_DIR}/plex/dvr:/dvr
-      - ${BASE_DIR}/plex/transcode:/transcode
+      - ${CONF_DIR}/plex/config:/config
+      - ${CONF_DIR}/plex/data:/data
+      - ${CONF_DIR}/plex/deb:/debi
+      - ${CONF_DIR}/plex/dvr:/dvr
+      - ${CONF_DIR}/plex/transcode:/transcode
       - ${MEDIA_DIR}/TV:/data/tv
       - ${MEDIA_DIR}/Movies:/data/movies
       - ${MEDIA_DIR}/Series:/data/series
