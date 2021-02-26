@@ -1,0 +1,60 @@
+version: "3.7"
+services:
+  transmission:
+    image: haugene/transmission-openvpn:latest
+    container_name: transmission
+    restart: unless-stopped
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+      - CREATE_TUN_DEVICE=true
+      - DROP_DEFAULT_ROUTE=true
+      - HEALTH_CHECK_HOST=google.com
+      - LOCAL_NETWORK=192.168.0.0/24
+      - OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60
+      - OPENVPN_PROVIDER=${VPN_PROVIDER}
+      - OPENVPN_USERNAME=${VPN_USERNAME}
+      - OPENVPN_PASSWORD=${VPN_PASSWORD}
+      - TRANSMISSION_ENCRYPTION=2
+      - TRANSMISSION_RPC_AUTHENTICATION_REQUIRED=true
+      - TRANSMISSION_RPC_HOST_WHITELIST=127.0.0.1,192.168.*.*
+      - TRANSMISSION_RPC_HOST_WHITELIST_ENABLED=true
+      - TRANSMISSION_RPC_USERNAME=${TORRENT_USERNAME}
+      - TRANSMISSION_RPC_PASSWORD=${TORRENT_PASSWORD}
+      - TRANSMISSION_PORT_FORWARDING_ENABLED=true
+      - TRANSMISSION_RATIO_LIMIT=0.01
+      - TRANSMISSION_RATIO_LIMIT_ENABLED=true
+      - TRANSMISSION_IDLE_SEEDING_LIMIT=30
+      - TRANSMISSION_IDLE_SEEDING_LIMIT_ENABLED=true
+      - TRANSMISSION_UTP_ENABLED=false
+      - TRANSMISSION_BLOCKLIST_ENABLED=true
+      - TRANSMISSION_BLOCKLIST_URL=http://john.bitsurge.net/public/biglist.p2p.gz
+      - TRANSMISSION_WEB_UI=flood
+      - WEBPROXY_ENABLED=false
+    volumes:
+      - ${CONF_DIR}/transmission/data:/data
+      - ${CONF_DIR}/transmission/config:/config
+      - ${DOWNLOAD_DIR}/completed:/data/completed
+      - ${DOWNLOAD_DIR}/incomplete:/data/incomplete
+      - /etc/localtime:/etc/localtime:ro
+    expose:
+      - 9091
+    ports:
+      - 51413:51413
+      - 51413:51413/udp
+    dns:
+      - 1.1.1.1
+      - 1.0.0.1
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+    # labels:
+    #   - com.centurylinklabs.watchtower.enable=true
+    #   - diun.enable=true
+    #   - diun.watch_repo=true

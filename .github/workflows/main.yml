@@ -40,6 +40,13 @@ jobs:
           echo 'TZ=${{ secrets.TZ }}' >> .env
           echo 'CONF_DIR=${{ secrets.CONF_DIR }}' >> .env
           echo 'MEDIA_DIR=${{ secrets.MEDIA_DIR }}' >> .env
+          echo 'DOWNLOAD_DIR=${{ secrets.DOWNLOAD_DIR }}' >> .env
           echo 'PLEX_CLAIM_TOKEN=${{ secrets.PLEX_CLAIM_TOKEN }}' >> .env
+          echo 'VPN_PROVIDER=${{ secrets.VPN_PROVIDER }}' >> .env
+          echo 'VPN_USERNAME=${{ secrets.VPN_USERNAME }}' >> .env
+          echo 'VPN_PASSWORD=${{ secrets.VPN_PASSWORD }}' >> .env
+          echo 'TORRENT_USERNAME=${{ secrets.TORRENT_USERNAME }}' >> .env
+          echo 'TORRENT_PASSWORD=${{ secrets.TORRENT_PASSWORD }}' >> .env
+          echo 'TORRENT_BLOCKLIST=${{ secrets.TORRENT_BLOCKLIST }}' >> .env
           
           docker-compose $(find docker-compose.*.yml | sed -e 's/^/-f /') up -d

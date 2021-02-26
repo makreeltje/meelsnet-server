@@ -1,0 +1,22 @@
+version: "3.7"
+services:
+  radarr:
+    image: linuxserver/radarr:nightly
+    container_name: radarr
+    restart: unless-stopped
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+    volumes:
+      - ${CONF_DIR}/radarr/config:/config
+      - ${MEDIA_DIR}/Movies:/movie
+      - ${MEDIA_DIR}/Animation:/animation
+      - ${DOWNLOAD_DIR}:/downloads
+      - ${DOWNLOAD_DIR}:/data
+    expose:
+      - 7878
+    # labels:
+    #   - com.centurylinklabs.watchtower.enable=true
+    #   - diun.enable=true
+    #   - diun.watch_repo=true
