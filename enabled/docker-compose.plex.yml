@@ -1,0 +1,40 @@
+version: "3.7"
+services:
+  # Media stream service
+  plex:
+    image: plexinc/pms-docker:plexpass
+    container_name: plex
+    restart: unless-stopped
+    hostname: plex
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+      - PLEX_CLAIM=${PLEX_CLAIM_TOKEN}
+    volumes:
+      - ${BASE_DIR}/plex/config:/config
+      - ${BASE_DIR}/plex/data:/data
+      - ${BASE_DIR}/plex/deb:/debi
+      - ${BASE_DIR}/plex/dvr:/dvr
+      - ${BASE_DIR}/plex/transcode:/transcode
+      - ${MEDIA_DIR}/TV:/data/tv
+      - ${MEDIA_DIR}/Movies:/data/movies
+      - ${MEDIA_DIR}/Series:/data/series
+      - ${MEDIA_DIR}/Animation:/data/animation
+    ports:
+      - 32400:32400
+      - 1900:1900/udp
+      - 32469:32469
+      - 3005:3005
+      - 8324:8324
+      - 32469:32469/udp
+      - 32410:32410/udp
+      - 32412:32412/udp
+      - 32413:32413/udp
+      - 32414:32414/udp
+    devices:
+      - /dev/dri:/dev/dri
+    # labels:
+    #   - com.centurylinklabs.watchtower.enable=true
+    #   - diun.enable=true
+    #   - diun.watch_repo=true
