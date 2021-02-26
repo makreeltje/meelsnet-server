@@ -10,7 +10,7 @@ services:
       - PGID=${PGID}
       - PUID=${PUID}
       - TZ=${TZ}
-      - PLEX_CLAIM=${PLEX_CLAIM_TOKEN}
+#      - PLEX_CLAIM=${PLEX_CLAIM_TOKEN}
     volumes:
       - ${BASE_DIR}/plex/config:/config
       - ${BASE_DIR}/plex/data:/data
