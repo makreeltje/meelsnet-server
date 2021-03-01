@@ -2,7 +2,7 @@ version: "3.7"
 services:
   # Plex monitor
   tautulli:
-    image: linuxserver/tautulli:develop
+    image: linuxserver/tautulli:latest
     container_name: tautulli
     restart: unless-stopped
     environment:
@@ -11,8 +11,7 @@ services:
       - TZ=${TZ}
     volumes:
       - ${CONF_DIR}/tautulli/config:/config
-      - ${CONF_DIR}/tautulli/logs:/logs
-      - ${CONF_DIR}/plex/config:/plex/config:ro
+      - ${CONF_DIR}/plex/config/Library/Application\ Support/Plex\ Media\ Server/Logs:/logs:ro
     expose:
     - 8181
     # labels:
