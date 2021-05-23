@@ -29,7 +29,7 @@ services:
       # - TRANSMISSION_RATIO_LIMIT_ENABLED=true
       - TRANSMISSION_IDLE_SEEDING_LIMIT=30
       - TRANSMISSION_IDLE_SEEDING_LIMIT_ENABLED=true
-      # - TRANSMISSION_UTP_ENABLED=false
+      - TRANSMISSION_UTP_ENABLED=false
       # - TRANSMISSION_BLOCKLIST_ENABLED=true
       # - TRANSMISSION_BLOCKLIST_URL=http://john.bitsurge.net/public/biglist.p2p.gz
       - TRANSMISSION_WEB_UI=flood-for-transmission
