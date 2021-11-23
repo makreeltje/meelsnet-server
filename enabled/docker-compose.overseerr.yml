@@ -1,14 +1,14 @@
 version: "3.7"
 services:
-  ombi:
-    image: linuxserver/ombi:latest
-    container_name: ombi
+  overseerr:
+    image: linuxserver/overseerr:latest
+    container_name: overseerr
     restart: unless-stopped
     environment:
       - PGID=${PGID}
       - PUID=${PUID}
       - TZ=${TZ}
     volumes:
-      - ${CONF_DIR}/ombi/config:/config
+      - ${CONF_DIR}/overseerr/config:/config
     expose:
-      - 3579
+      - 5055

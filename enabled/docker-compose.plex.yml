@@ -36,7 +36,3 @@ services:
       - 32400
     devices:
       - /dev/dri:/dev/dri
-    # labels:
-    #   - com.centurylinklabs.watchtower.enable=true
-    #   - diun.enable=true
-    #   - diun.watch_repo=true
