@@ -6,7 +6,7 @@ on:
     - main
 
 env:
-  TARGET_DIRECTORY: /opt/docker/compose/media-server
+  TARGET_DIRECTORY: /opt/compose/media-server
 
 jobs:
   deploy:
