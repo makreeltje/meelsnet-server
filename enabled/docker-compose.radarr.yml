@@ -28,9 +28,8 @@ services:
       - 7878
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.radarr-rtr.entrypoints=https"
-      - "traefik.http.routers.radarr-rtr.rule=Host(`radarr.$MEELSNET_DOMAIN`) || Host(`movies.$MEELSNET_DOMAIN`)"
-      - "traefik.http.routers.radarr-rtr.priority=99"
-      - "traefik.http.routers.radarr-rtr.middlewares=chain-no-auth@file"
-      - "traefik.http.routers.radarr-rtr.service=radarr-svc"
-      - "traefik.http.services.radarr-svc.loadbalancer.server.port=7878"
+      - "traefik.http.routers.sonarr-rtr.entrypoints=https"
+      - "traefik.http.routers.sonarr-rtr.rule=Host(`radarr.$MEELSNET_DOMAIN`) || Host(`movies.$MEELSNET_DOMAIN`)"
+      - "traefik.http.routers.sonarr-rtr.middlewares=chain-no-auth@file"
+      - "traefik.http.routers.sonarr-rtr.service=sonarr-svc"
+      - "traefik.http.services.sonarr-svc.loadbalancer.server.port=7878"
