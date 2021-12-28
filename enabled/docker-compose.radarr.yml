@@ -1,4 +1,12 @@
 version: "3.7"
+
+networks:
+  traefik_proxy:
+    external:
+      name: traefik_proxy
+  default:
+    driver: bridge
+
 services:
   radarr:
     image: linuxserver/radarr:latest
@@ -14,5 +22,14 @@ services:
       - ${MEDIA_DIR}/Animation:/animation
       - ${DOWNLOAD_DIR}:/downloads
       - ${DOWNLOAD_DIR}:/data
+    networks:
+      - traefik_proxy
     expose:
       - 7878
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.radarr-rtr.entrypoints=https"
+      - "traefik.http.routers.radarr-rtr.rule=Host(`radarr.$MEELSNET_DOMAIN`) || Host(`movies.$MEELSNET_DOMAIN`)"
+      - "traefik.http.routers.radarr.middlewares=chain-no-auth@file"
+      - "traefik.http.routers.radarr-rtr.service=radarr-svc"
+      - "traefik.http.services.radarr-svc.loadbalancer.server.port=7878"

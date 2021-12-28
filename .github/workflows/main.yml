@@ -48,5 +48,7 @@ jobs:
           echo 'TORRENT_USERNAME=${{ secrets.TORRENT_USERNAME }}' >> .env
           echo 'TORRENT_PASSWORD=${{ secrets.TORRENT_PASSWORD }}' >> .env
           echo 'TORRENT_BLOCKLIST=${{ secrets.TORRENT_BLOCKLIST }}' >> .env
+          echo 'MEELSNET_DOMAIN=${{ secrets.MEELSNET_DOMAIN }}' >> .env
+          echo 'CINEMON_DOMAIN=${{ secrets.CINEMON_DOMAIN }}' >> .env
           
           docker-compose $(find docker-compose.*.yml | sed -e 's/^/-f /') up -d

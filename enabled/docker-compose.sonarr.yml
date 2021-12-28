@@ -1,4 +1,12 @@
 version: "3.7"
+
+networks:
+  traefik_proxy:
+    external:
+      name: traefik_proxy
+  default:
+    driver: bridge
+
 services:
   sonarr:
     image: linuxserver/sonarr:latest
@@ -14,5 +22,14 @@ services:
       - ${MEDIA_DIR}/Series:/series
       - ${DOWNLOAD_DIR}:/downloads
       - ${DOWNLOAD_DIR}:/data
+    networks:
+      - traefik_proxy
     expose:
       - 8989
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.sonarr-rtr.entrypoints=https"
+      - "traefik.http.routers.sonarr-rtr.rule=Host(`sonarr.$MEELSNET_DOMAIN`) || Host(`series.$MEELSNET_DOMAIN`)"
+      - "traefik.http.routers.sonarr.middlewares=chain-no-auth@file"
+      - "traefik.http.routers.sonarr-rtr.service=sonarr-svc"
+      - "traefik.http.services.sonarr-svc.loadbalancer.server.port=8989"

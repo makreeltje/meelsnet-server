@@ -1,4 +1,12 @@
 version: "3.7"
+
+networks:
+  traefik_proxy:
+    external:
+      name: traefik_proxy
+  default:
+    driver: bridge
+
 services:
   # Media stream service
   plex:
@@ -21,6 +29,8 @@ services:
       - ${MEDIA_DIR}/Movies:/data/movies
       - ${MEDIA_DIR}/Series:/data/series
       - ${MEDIA_DIR}/Animation:/data/animation
+    networks:
+      - traefik_proxy
     ports:
       - 32400:32400
       - 1900:1900/udp
@@ -34,5 +44,12 @@ services:
       - 32414:32414/udp
     expose:
       - 32400
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.plex-rtr.entrypoints=https"
+      - "traefik.http.routers.plex-rtr.rule=Host(`plex.$MEELSNET_DOMAIN`)"
+      - "traefik.http.routers.plex.middlewares=chain-no-auth@file"
+      - "traefik.http.routers.plex-rtr.service=plex-svc"
+      - "traefik.http.services.plex-svc.loadbalancer.server.port=32400"
     devices:
       - /dev/dri:/dev/dri
