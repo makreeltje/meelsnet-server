@@ -62,6 +62,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.transmission-rtr.entrypoints=https"
       - "traefik.http.routers.transmission-rtr.rule=Host(`transmission.$MEELSNET_DOMAIN`) || Host(`torrents.$MEELSNET_DOMAIN`)"
+      - "traefik.http.routers.xteve-rtr.tls=true"
       - "traefik.http.routers.transmission-rtr.middlewares=chain-no-auth@file"
       - "traefik.http.routers.transmission-rtr.service=transmission-svc"
       - "traefik.http.services.transmission-svc.loadbalancer.server.port=9091"

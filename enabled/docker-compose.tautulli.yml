@@ -27,6 +27,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.tautulli-rtr.entrypoints=https"
       - "traefik.http.routers.tautulli-rtr.rule=Host(`tautulli.$MEELSNET_DOMAIN`)"
+      - "traefik.http.routers.xteve-rtr.tls=true"
       - "traefik.http.routers.tautulli-rtr.middlewares=chain-no-auth@file"
       - "traefik.http.routers.tautulli-rtr.service=tautulli-svc"
       - "traefik.http.services.tautulli-svc.loadbalancer.server.port=8181"
