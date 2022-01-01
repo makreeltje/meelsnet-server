@@ -12,6 +12,8 @@ services:
     image: jlesage/handbrake:latest
     container_name: handbrake
     restart: unless-stopped
+    cpus: 1
+    mem_limit: 1G
     environment:
       - PGID=${PGID}
       - PUID=${PUID}
@@ -19,7 +21,10 @@ services:
       - UMASK=002
       - KEEP_APP_RUNNING=1
       - CLEAN_TEMP_DIR=1
-      - AUTOMATED_CONVERSION_KEEP_SOURCE=1
+      - AUTOMATED_CONVERSION_KEEP_SOURCE=0
+      - AUTOMATED_CONVERSION_PRESET=myh265
+      - AUTOMATED_CONVERSION_FORMAT=mkv
+      - AUTOMATED_CONVERSION_OUTPUT_SUBDIR=SAME_AS_SRC
       - VNC_PASSWORD=${TORRENT_PASSWORD}
     volumes:
       - ${CONF_DIR}/handbrake/config:/config
