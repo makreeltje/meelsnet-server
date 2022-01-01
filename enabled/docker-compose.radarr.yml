@@ -22,6 +22,8 @@ services:
       - ${CONF_DIR}/radarr/config:/config
       - ${MEDIA_DIR}/Movies:/movie
       - ${MEDIA_DIR}/Animation:/animation
+      - ${DOWNLOAD_DIR}:/data
+      - ${DOWNLOAD_DIR}/handbrake_output:/data/completed
       - ${DOWNLOAD_DIR}:/downloads
       - ${DOWNLOAD_DIR}/handbrake_output:/downloads/completed
     networks:
