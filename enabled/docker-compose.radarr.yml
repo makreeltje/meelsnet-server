@@ -21,7 +21,7 @@ services:
       - ${MEDIA_DIR}/Movies:/movie
       - ${MEDIA_DIR}/Animation:/animation
       - ${DOWNLOAD_DIR}:/downloads
-      - ${DOWNLOAD_DIR}:/data
+      - ${DOWNLOAD_DIR}/handbrake_output:/downloads/completed
     networks:
       - traefik_proxy
     expose:
