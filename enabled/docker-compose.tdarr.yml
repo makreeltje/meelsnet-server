@@ -44,6 +44,8 @@ services:
       - "traefik.http.routers.tdarr-rtr.middlewares=chain-basic-auth@file"
       - "traefik.http.routers.tdarr-rtr.service=tdarr-svc"
       - "traefik.http.services.tdarr-svc.loadbalancer.server.port=8265"
+    devices:
+      - /dev/dri:/dev/dri
 
   tdarr-node:
     image: haveagitgat/tdarr_node:latest
@@ -68,3 +70,5 @@ services:
       - ${MEDIA_DIR}:/media
     networks:
       - traefik_proxy
+    devices:
+      - /dev/dri:/dev/dri
