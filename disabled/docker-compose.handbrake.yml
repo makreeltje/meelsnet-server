@@ -36,8 +36,9 @@ services:
       - 5800
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.handbrake-rtr.entrypoints=https"
-      - "traefik.http.routers.handbrake-rtr.rule=Host(`handbrake.$MEELSNET_DOMAIN`)"
-      - "traefik.http.routers.handbrake-rtr.tls=true"
-      - "traefik.http.routers.handbrake-rtr.middlewares=chain-no-auth@file"
-      - "traefik.http.services.handbrake-svc.loadbalancer.server.port=5800"
+      - "traefik.http.routers.handbrake.entrypoints=https"
+      - "traefik.http.routers.handbrake.rule=Host(`handbrake.$MEELSNET_DOMAIN`)"
+      - "traefik.http.routers.handbrake.tls=true"
+      - "traefik.http.routers.handbrake.middlewares=chain-no-auth@file"
+      - "traefik.http.routers.handbrake.service=handbrake"
+      - "traefik.http.services.handbrake.loadbalancer.server.port=5800"

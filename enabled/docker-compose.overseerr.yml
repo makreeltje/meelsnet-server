@@ -26,8 +26,9 @@ services:
       - 5055
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.overseerr-rtr.entrypoints=https"
-      - "traefik.http.routers.overseerr-rtr.rule=Host(`overseerr.$MEELSNET_DOMAIN`) || Host(`request.$MEELSNET_DOMAIN`) || Host(`ombi.$MEELSNET_DOMAIN`)"
-      - "traefik.http.routers.overseerr-rtr.tls=true"
-      - "traefik.http.routers.overseerr-rtr.middlewares=chain-no-auth@file"
-      - "traefik.http.services.overseerr-svc.loadbalancer.server.port=5055"
+      - "traefik.http.routers.overseerr.entrypoints=https"
+      - "traefik.http.routers.overseerr.rule=Host(`overseerr.$MEELSNET_DOMAIN`) || Host(`request.$MEELSNET_DOMAIN`) || Host(`ombi.$MEELSNET_DOMAIN`)"
+      - "traefik.http.routers.overseerr.tls=true"
+      - "traefik.http.routers.overseerr.middlewares=chain-no-auth@file"
+      - "traefik.http.routers.overseerr.service=overseerr"
+      - "traefik.http.services.overseerr.loadbalancer.server.port=5055"

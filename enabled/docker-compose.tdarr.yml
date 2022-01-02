@@ -36,11 +36,12 @@ services:
       - 8265
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.tdarr-rtr.entrypoints=https"
-      - "traefik.http.routers.tdarr-rtr.rule=Host(`tdarr.$MEELSNET_DOMAIN`)"
-      - "traefik.http.routers.tdarr-rtr.tls=true"
-      - "traefik.http.routers.tdarr-rtr.middlewares=chain-basic-auth@file"
-      - "traefik.http.services.tdarr-svc.loadbalancer.server.port=8265"
+      - "traefik.http.routers.tdarr.entrypoints=https"
+      - "traefik.http.routers.tdarr.rule=Host(`tdarr.$MEELSNET_DOMAIN`)"
+      - "traefik.http.routers.tdarr.tls=true"
+      - "traefik.http.routers.tdarr.middlewares=chain-basic-auth@file"
+      - "traefik.http.routers.tdarr.service=tdarr"
+      - "traefik.http.services.tdarr.loadbalancer.server.port=8265"
 
   tdarr-node:
     image: haveagitgat/tdarr_node:latest

@@ -1,4 +1,12 @@
 version: "3.7"
+
+networks:
+  traefik_proxy:
+    external:
+      name: traefik_proxy
+  default:
+    driver: bridge
+
 services:
   ombi:
     image: linuxserver/ombi:latest
@@ -10,5 +18,16 @@ services:
       - TZ=${TZ}
     volumes:
       - ${CONF_DIR}/ombi/config:/config
+    networks:
+      - traefik_proxy
     expose:
       - 3579
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ombi.entrypoints=https"
+      - "traefik.http.routers.ombi.rule=Host(`ombi.$MEELSNET_DOMAIN`)"
+      - "traefik.http.routers.ombi.tls=true"
+      - "traefik.http.routers.ombi.middlewares=chain-no-auth@file"
+      - "traefik.http.routers.ombi.service=ombi"
+      - "traefik.http.services.ombi.loadbalancer.server.port=3579"
+    
