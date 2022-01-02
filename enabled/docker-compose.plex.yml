@@ -50,7 +50,6 @@ services:
       - "traefik.http.routers.plex-rtr.rule=Host(`plex.$MEELSNET_DOMAIN`)"
       - "traefik.http.routers.plex-rtr.tls=true"
       - "traefik.http.routers.plex-rtr.middlewares=chain-no-auth@file"
-      - "traefik.http.routers.plex-rtr.service=plex-svc"
       - "traefik.http.services.plex-svc.loadbalancer.server.port=32400"
     devices:
       - /dev/dri:/dev/dri

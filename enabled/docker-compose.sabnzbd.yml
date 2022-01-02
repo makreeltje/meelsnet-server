@@ -31,5 +31,4 @@ services:
       - "traefik.http.routers.sabnzbd-rtr.rule=Host(`sabnzbd.$MEELSNET_DOMAIN`) || Host(`sab.$MEELSNET_DOMAIN`)"
       - "traefik.http.routers.sabnzbd-rtr.tls=true"
       - "traefik.http.routers.sabnzbd-rtr.middlewares=chain-no-auth@file"
-      - "traefik.http.routers.sabnzbd-rtr.service=sabnzbd-svc"
       - "traefik.http.services.sabnzbd-svc.loadbalancer.server.port=8080"

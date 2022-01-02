@@ -42,7 +42,6 @@ services:
       - "traefik.http.routers.tdarr-rtr.rule=Host(`tdarr.$MEELSNET_DOMAIN`)"
       - "traefik.http.routers.tdarr-rtr.tls=true"
       - "traefik.http.routers.tdarr-rtr.middlewares=chain-basic-auth@file"
-      - "traefik.http.routers.tdarr-rtr.service=tdarr-svc"
       - "traefik.http.services.tdarr-svc.loadbalancer.server.port=8265"
     devices:
       - /dev/dri:/dev/dri
