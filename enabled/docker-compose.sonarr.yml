@@ -23,9 +23,7 @@ services:
       - ${MEDIA_DIR}/TV:/tv
       - ${MEDIA_DIR}/Series:/series
       - ${DOWNLOAD_DIR}:/data
-      - ${DOWNLOAD_DIR}/handbrake_output:/data/completed
       - ${DOWNLOAD_DIR}:/downloads
-      - ${DOWNLOAD_DIR}/handbrake_output:/downloads/completed
     networks:
       - traefik_proxy
     expose:
