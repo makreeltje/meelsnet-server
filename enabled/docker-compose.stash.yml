@@ -1,0 +1,47 @@
+version: "3.7"
+
+networks:
+  traefik_proxy:
+    external:
+      name: traefik_proxy
+  default:
+    driver: bridge
+
+services:
+  stash:
+    image: stashapp/stash:latest
+    container_name: stash
+    restart: unless-stopped
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+      - STASH_STASH=/data/
+      - STASH_GENERATED=/generated/
+      - STASH_METADATA=/metadata/
+      - STASH_CACHE=/cache/
+      ## Adjust below to change default port (9999)
+      - STASH_PORT=9999
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${CONF_DIR}/stash/config:/root/.stash
+      - ${MEDIA_DIR}:/data
+      - ${CONF_DIR}/stash/metadata:/metadata
+      - ${CONF_DIR}/stash/cache:/cache
+    networks:
+      - traefik_proxy
+    expose:
+      - 9999
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "10"
+        max-size: "2m"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.stash.entrypoints=https"
+      - "traefik.http.routers.stash.rule=Host(`stash.$MEELSNET_DOMAIN`)"
+      - "traefik.http.routers.stash.tls=true"
+      - "traefik.http.routers.stash.middlewares=chain-no-auth@file"
+      - "traefik.http.routers.stash.service=stash"
+      - "traefik.http.services.stash.loadbalancer.server.port=9999"
