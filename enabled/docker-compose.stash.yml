@@ -25,7 +25,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${CONF_DIR}/stash/config:/root/.stash
-      - ${MEDIA_DIR}:/data
+      - ${MEDIA_DIR}/xxx:/data
       - ${CONF_DIR}/stash/metadata:/metadata
       - ${CONF_DIR}/stash/cache:/cache
     networks:
