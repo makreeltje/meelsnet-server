@@ -1,0 +1,38 @@
+version: "3.7"
+
+networks:
+  traefik_proxy:
+    external:
+      name: traefik_proxy
+  default:
+    driver: bridge
+
+services:
+  unmanic:
+    image: josh5/unmanic:latest
+    container_name: unmanic
+    restart: unless-stopped
+    cpus: 1
+    mem_limit: 1G
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+    volumes:
+      - ${CONF_DIR}/unmanic/config:/config
+      - ${MEDIA_DIR}:/data
+      - ${CONF_DIR}/unmanic/cache:/tmp/unmanic
+    networks:
+      - traefik_proxy
+    expose:
+      - 8888
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.unmatic.entrypoints=https"
+      - "traefik.http.routers.unmatic.rule=Host(`unmatic.$MEELSNET_DOMAIN`)"
+      - "traefik.http.routers.unmatic.tls=true"
+      - "traefik.http.routers.unmatic.middlewares=chain-basic-auth@file"
+      - "traefik.http.routers.unmatic.service=unmatic"
+      - "traefik.http.services.unmatic.loadbalancer.server.port=8888"
+    devices:
+      - /dev/dri:/dev/dri
