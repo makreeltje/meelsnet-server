@@ -28,11 +28,11 @@ services:
       - 8888
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.unmatic.entrypoints=https"
-      - "traefik.http.routers.unmatic.rule=Host(`unmatic.$MEELSNET_DOMAIN`)"
-      - "traefik.http.routers.unmatic.tls=true"
-      - "traefik.http.routers.unmatic.middlewares=chain-basic-auth@file"
-      - "traefik.http.routers.unmatic.service=unmatic"
-      - "traefik.http.services.unmatic.loadbalancer.server.port=8888"
+      - "traefik.http.routers.unmanic.entrypoints=https"
+      - "traefik.http.routers.unmanic.rule=Host(`unmanic.$MEELSNET_DOMAIN`)"
+      - "traefik.http.routers.unmanic.tls=true"
+      - "traefik.http.routers.unmanic.middlewares=chain-oauth@file"
+      - "traefik.http.routers.unmanic.service=unmanic"
+      - "traefik.http.services.unmanic.loadbalancer.server.port=8888"
     devices:
       - /dev/dri:/dev/dri
