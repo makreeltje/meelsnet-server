@@ -9,7 +9,7 @@ networks:
 
 services:
   radarr:
-    image: linuxserver/radarr:nightly
+    image: linuxserver/radarr:amd64-4.4.4
     container_name: radarr
     restart: unless-stopped
     cpus: 1

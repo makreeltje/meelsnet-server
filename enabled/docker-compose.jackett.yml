@@ -9,7 +9,7 @@ networks:
 
 services:
   jackett:
-    image: linuxserver/jackett:development
+    image: linuxserver/jackett:amd64-0.21.207
     container_name: jackett
     restart: unless-stopped
     cpus: 1
