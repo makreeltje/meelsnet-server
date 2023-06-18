@@ -9,7 +9,7 @@ networks:
 
 services:
   tautulli:
-    image: tautulli/tautulli:nightly
+    image: tautulli/tautulli:v2.12.1
     container_name: tautulli
     restart: unless-stopped
     cpus: 1
