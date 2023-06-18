@@ -9,7 +9,7 @@ networks:
 
 services:
   sonarr:
-    image: linuxserver/sonarr:latest
+    image: linuxserver/sonarr:3.0.9
     container_name: sonarr
     restart: unless-stopped
     cpus: 1
