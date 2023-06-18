@@ -52,3 +52,4 @@ jobs:
           echo 'CINEMON_DOMAIN=${{ secrets.CINEMON_DOMAIN }}' >> .env
           
           docker-compose $(find docker-compose.*.yml | sed -e 's/^/-f /') up -d
+          docker image prune -a -f
