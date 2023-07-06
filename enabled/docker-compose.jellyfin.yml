@@ -9,7 +9,7 @@ networks:
 
 services:
   jellyfin:
-    image: jellyfin/jellyfin:20230706.5-unstable
+    image: jellyfin/jellyfin:20230706.6-unstable
     container_name: jellyfin
     restart: unless-stopped
     hostname: jellyfin
