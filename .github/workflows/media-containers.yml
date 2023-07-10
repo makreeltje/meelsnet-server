@@ -1,4 +1,4 @@
-name: Deploy media-server
+name: Media containers
 
 on:
   push:
@@ -6,6 +6,7 @@ on:
     paths: ['media-containers/**']
 
 env:
+  SOURCE_DIRECTORY: media-containers/enabled/docker-compose.*.yml
   TARGET_DIRECTORY: /opt/compose/media-server
 
 jobs:
@@ -20,7 +21,7 @@ jobs:
         port: ${{ secrets.SSH_PORT }}
         username: ${{ secrets.SSH_USERNAME }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
-        source: media-containers/enabled/docker-compose.*.yml
+        source: ${{ env.SOURCE_DIRECTORY }}
         target: ${{ env.TARGET_DIRECTORY }}
         strip_components: 1
         rm: true

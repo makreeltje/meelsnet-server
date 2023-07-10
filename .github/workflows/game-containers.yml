@@ -1,4 +1,4 @@
-name: Deploy game servers
+name: Game servers
 
 on:
   push:
