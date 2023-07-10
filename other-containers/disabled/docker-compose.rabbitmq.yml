@@ -1,0 +1,32 @@
+version: "3.7"
+
+networks:
+  traefik_proxy:
+    external:
+      name: traefik_proxy
+  default:
+    driver: bridge
+
+services:
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3.9-management
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    networks:
+      - traefik_proxy
+    expose:
+      - 15672
+    ports:
+      - 5672:5672
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.rabbitmq.entrypoints=https"
+      - "traefik.http.routers.rabbitmq.rule=Host(`queue.$MEELSNET_DOMAIN`)"
+      - "traefik.http.routers.rabbitmq.tls=true"
+      - "traefik.http.routers.rabbitmq.middlewares=chain-no-auth@file"
+      - "traefik.http.routers.rabbitmq.service=rabbitmq"
+      - "traefik.http.services.rabbitmq.loadbalancer.server.port=15672"

@@ -1,0 +1,30 @@
+version: "3.7"
+
+networks:
+  traefik_proxy:
+    external:
+      name: traefik_proxy
+  default:
+    driver: bridge
+
+services:
+  fhict:
+    container_name: fhict
+    image: jochiej/api-poc
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    networks:
+      - traefik_proxy
+    expose:
+      - 8080
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.fhict.entrypoints=https"
+      - "traefik.http.routers.fhict.rule=Host(`s6-fhict.$MEELSNET_DOMAIN`)"
+      - "traefik.http.routers.fhict.tls=true"
+      - "traefik.http.routers.fhict.middlewares=chain-no-auth@file"
+      - "traefik.http.routers.fhict.service=fhict"
+      - "traefik.http.services.fhict.loadbalancer.server.port=8080"

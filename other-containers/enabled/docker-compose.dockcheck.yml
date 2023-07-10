@@ -1,0 +1,35 @@
+version: "3.7"
+
+networks:
+  traefik_proxy:
+    external:
+      name: traefik_proxy
+  default:
+    driver: bridge
+
+services:
+  dockcheck:
+    container_name: dockcheck
+    image: palleri/dockcheck-web:latest
+    restart: unless-stopped
+    privileged: true
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${CONF_DIR}/dockcheck/data:/var/www/html
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - traefik_proxy
+    expose:
+      - 80
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dockcheck.entrypoints=https"
+      - "traefik.http.routers.dockcheck.rule=Host(`update.$MEELSNET_DOMAIN`)"
+      - "traefik.http.routers.dockcheck.tls=true"
+      - "traefik.http.routers.dockcheck.middlewares=chain-oauth@file"
+      - "traefik.http.routers.dockcheck.service=dockcheck"
+      - "traefik.http.services.dockcheck.loadbalancer.server.port=80"

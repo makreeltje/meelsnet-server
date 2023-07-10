@@ -1,0 +1,34 @@
+version: "3.7"
+
+networks:
+  traefik_proxy:
+    external:
+      name: traefik_proxy
+  default:
+    driver: bridge
+
+services:
+  archi:
+    image: justarchi/archisteamfarm:latest
+    container_name: archi
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - ASF_CRYPTKEY=${ASF_CRYPTKEY}
+      - ASF_ARGS=--no-config-migrate
+    volumes:
+      - ${CONF_DIR}/archi/config:/app/config
+    networks:
+      - traefik_proxy
+    expose:
+      - 1242
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.archi.entrypoints=https"
+      - "traefik.http.routers.archi.rule=Host(`archi.$MEELSNET_DOMAIN`)"
+      - "traefik.http.routers.archi.tls=true"
+      - "traefik.http.routers.archi.middlewares=chain-oauth@file"
+      - "traefik.http.routers.archi.service=archi"
+      - "traefik.http.services.archi.loadbalancer.server.port=1242"

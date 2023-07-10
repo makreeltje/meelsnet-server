@@ -1,0 +1,26 @@
+version: "3.7"
+services:
+  diun:
+    container_name: diun
+    image: crazymax/diun:latest
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - LOG_LEVEL=warning
+      - LOG_JSON=false
+      - DIUN_DB_PATH=diun.db
+      - DIUN_WATCH_FIRSTCHECKNOTIF=false
+      - DIUN_WATCH_WORKERS=10
+      - DIUN_WATCH_SCHEDULE=0 0 3 * * *
+      - DIUN_PROVIDERS_DOCKER=true
+      - DIUN_PROVIDERS_DOCKER_WATCHSTOPPED=true
+      - DIUN_NOTIF_SLACK_WEBHOOKURL=${DIUN_WEBHOOK_URL}
+    volumes:
+      - ${CONF_DIR}/diun/data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+      - diun.enable=true
+      - diun.watch_repo=true

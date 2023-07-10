@@ -1,0 +1,51 @@
+name: Deploy game servers
+
+on:
+  push:
+    branches: ["main"]
+    paths: ['game-containers/**']
+
+env:
+  TARGET_DIRECTORY: /opt/compose/game-servers
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: SSH SCP | Copy container configurations
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        port: ${{ secrets.SSH_PORT }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        source: game-containers/enabled/docker-compose.*.yml
+        target: ${{ env.TARGET_DIRECTORY }}
+        strip_components: 1
+        rm: true
+    - name: SSH | Start containers
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        port: ${{ secrets.SSH_PORT }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        passphrase: ${{ secrets.SSH_PASSPHRASE }}
+        script: |
+          cd ${{ env.TARGET_DIRECTORY }}
+          
+          echo 'PGID=${{ secrets.PGID }}' >> .env
+          echo 'PUID=${{ secrets.PUID }}' >> .env
+          echo 'TZ=${{ secrets.TZ }}' >> .env
+          echo 'CONF_DIR=${{ secrets.CONF_DIR }}' >> .env
+          echo 'VALHEIM_SERVER_NAME=${{ secrets.VALHEIM_SERVER_NAME }}' >> .env
+          echo 'VALHEIM_WORLD_NAME=${{ secrets.VALHEIM_WORLD_NAME }}' >> .env
+          echo 'VALHEIM_SERVER_PASS=${{ secrets.VALHEIM_SERVER_PASS }}' >> .env
+          echo 'USERNAME=${{ secrets.USERNAME }}' >> .env
+          echo 'PASSWORD=${{ secrets.PASSWORD }}' >> .env
+          echo 'MC_HOSTNAME=${{ secrets.MC_HOSTNAME }}' >> .env
+          echo 'MC_RCON_PASSWORD=${{ secrets.MC_RCON_PASSWORD }}' >> .env
+          echo 'MEELSNET_DOMAIN=${{ secrets.MEELSNET_DOMAIN }}' >> .env
+          
+          docker-compose $(find docker-compose.*.yml | sed -e 's/^/-f /') up -d

@@ -1,0 +1,36 @@
+version: "3.7"
+
+networks:
+  traefik_proxy:
+    external:
+      name: traefik_proxy
+  default:
+    driver: bridge
+
+services:
+  influxdb:
+    container_name: influxdb
+    image: influxdb:latest
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - DOCKER_INFLUXDB_INIT_USERNAME=${MYSQL_USER}
+      - DOCKER_INFLUXDB_INIT_PASSWORD=${MYSQL_PASSWORD}
+      - DOCKER_INFLUXDB_INIT_ORG=meelsnet
+      - DOCKER_INFLUXDB_INIT_BUCKET=meelsnet
+    volumes:
+      - ${CONF_DIR}/influxdb:/var/lib/influxdb2
+    networks:
+      - traefik_proxy
+    expose:
+      - 8086
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.influxdb.entrypoints=https"
+      - "traefik.http.routers.influxdb.rule=Host(`influxdb.$MEELSNET_DOMAIN`)"
+      - "traefik.http.routers.influxdb.tls=true"
+      - "traefik.http.routers.influxdb.middlewares=chain-no-auth@file"
+      - "traefik.http.routers.influxdb.service=influxdb"
+      - "traefik.http.services.influxdb.loadbalancer.server.port=8086"

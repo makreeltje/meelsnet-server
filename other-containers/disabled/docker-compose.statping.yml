@@ -1,0 +1,38 @@
+version: "3.7"
+
+networks:
+  traefik_proxy:
+    external:
+      name: traefik_proxy
+  default:
+    driver: bridge
+
+services:
+  statping:
+    container_name: statping
+    image: statping/statping:latest
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - DB_CONN=${DB_CONN}
+      - DB_HOST=192.168.1.254
+      - DB_PORT=${DB_PORT}
+      - DB_DATABASE=${DB_STATPING_DATABASE}
+      - DB_USER=${DB_STATPING_USER}
+      - DB_PASS=${DB_STATPING_PASS}
+    volumes:
+      - ${CONF_DIR}/statping/app:/app
+    expose:
+      - 8080
+    ports:
+      - "9081:8080"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.statping.entrypoints=https"
+      - "traefik.http.routers.statping.rule=Host(`status.$MEELSNET_DOMAIN`)"
+      - "traefik.http.routers.statping.tls=true"
+      - "traefik.http.routers.statping.middlewares=chain-no-auth@file"
+      - "traefik.http.routers.statping.service=statping"
+      - "traefik.http.services.statping.loadbalancer.server.port=8080"

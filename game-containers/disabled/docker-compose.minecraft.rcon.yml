@@ -1,0 +1,36 @@
+version: "3.7"
+
+networks:
+  traefik_proxy:
+    external:
+      name: traefik_proxy
+  default:
+    driver: bridge
+
+services:
+  mc-rcon:
+    image: itzg/rcon
+    container_name: mc-rcon
+    restart: unless-stopped
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+      RWA_USERNAME: ${USERNAME}
+      RWA_PASSWORD: ${PASSWORD}
+      RWA_ADMIN: "TRUE"
+      # is referring to the hostname of 'mc' compose service below
+      RWA_RCON_HOST: ${MC_HOSTNAME}
+      # needs to match the password configured for the container, which is 'minecraft' by default
+      RWA_RCON_PASSWORD: ${MC_RCON_PASSWORD}
+    ports:
+      - 4326:4326
+      - 4327:4327
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mc-rcon.entrypoints=https"
+      - "traefik.http.routers.mc-rcon.rule=Host(`rcon.$MEELSNET_DOMAIN`)"
+      - "traefik.http.routers.mc-rcon.tls=true"
+      - "traefik.http.routers.mc-rcon.middlewares=chain-oauth@file"
+      - "traefik.http.routers.mc-rcon.service=mc-rcon"
+      - "traefik.http.services.mc-rcon.loadbalancer.server.port=4326"

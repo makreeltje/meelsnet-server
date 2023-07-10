@@ -1,0 +1,57 @@
+version: "3.7"
+
+networks:
+  traefik_proxy:
+    external:
+      name: traefik_proxy
+  default:
+    driver: bridge
+
+services:
+  eggcontractor:
+    container_name: eggcontractor
+    image: fanaticscripter/eggcontractor:latest
+    restart: unless-stopped
+    privileged: true
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${CONF_DIR}/eggcontractor/config.toml:/config.toml
+      - ${CONF_DIR}/eggcontractor/data:/data
+    networks:
+      - traefik_proxy
+    expose:
+      - 8080
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.eggcontractor.entrypoints=https"
+      - "traefik.http.routers.eggcontractor.rule=Host(`egg.$MEELSNET_DOMAIN`)"
+      - "traefik.http.routers.eggcontractor.tls=true"
+      - "traefik.http.routers.eggcontractor.middlewares=chain-oauth@file"
+      - "traefik.http.routers.eggcontractor.service=eggcontractor"
+      - "traefik.http.services.eggcontractor.loadbalancer.server.port=8080"
+      - "ofelia.enabled=true"
+      - "ofelia.job-exec.refresh.schedule=@every 2m"
+      - "ofelia.job-exec.refresh.user=0"
+      - "ofelia.job-exec.refresh.command=/EggContractor refresh --no-display"
+      - "ofelia.job-exec.refresh.save-folder=/logs"
+      - "ofelia.job-exec.refresh.save-only-on-error=true"
+      # Scheduling daily database backups.
+      - "ofelia.job-exec.db-backup.schedule=0 0 0 * * *"
+      - "ofelia.job-exec.db-backup.user=0"
+      - "ofelia.job-exec.db-backup.command=/EggContractor backup"
+      - "ofelia.job-exec.db-backup.save-folder=/logs"
+      - "ofelia.job-exec.db-backup.save-only-on-error=true"
+  
+  ofelia:
+    image: mcuadros/ofelia:latest
+    container_name: eggcontractor-scheduler
+    restart: always
+    depends_on:
+      - eggcontractor
+    command: daemon --docker
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ${CONF_DIR}/eggcontractor/logs:/logs

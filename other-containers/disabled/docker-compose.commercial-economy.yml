@@ -1,0 +1,30 @@
+version: "3.7"
+
+networks:
+  traefik_proxy:
+    external:
+      name: traefik_proxy
+  default:
+    driver: bridge
+
+services:
+  commercial-economy:
+    container_name: commercial-economy
+    image: rick043/s6-commercialeconomy
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    networks:
+      - traefik_proxy
+    expose:
+      - 8080
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.commercial-economy.entrypoints=https"
+      - "traefik.http.routers.commercial-economy.rule=Host(`s6-commercialeconomy.$MEELSNET_DOMAIN`)"
+      - "traefik.http.routers.commercial-economy.tls=true"
+      - "traefik.http.routers.commercial-economy.middlewares=chain-no-auth@file"
+      - "traefik.http.routers.commercial-economy.service=commercial-economy"
+      - "traefik.http.services.commercial-economy.loadbalancer.server.port=8080"

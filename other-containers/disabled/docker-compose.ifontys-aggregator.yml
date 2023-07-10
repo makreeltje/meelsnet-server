@@ -1,0 +1,30 @@
+version: "3.7"
+
+networks:
+  traefik_proxy:
+    external:
+      name: traefik_proxy
+  default:
+    driver: bridge
+
+services:
+  ifontys-user-endpoint:
+    container_name: ifontys-user-endpoint
+    image: rick043/ifontys-user-endpoint:latest
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    networks:
+      - traefik_proxy
+    expose:
+      - 8080
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ifontys-aggregator-endpoint.entrypoints=https"
+      - "traefik.http.routers.ifontys-aggregator-endpoint.rule=Host(`aggregator.$MEELSNET_DOMAIN`)"
+      - "traefik.http.routers.ifontys-aggregator-endpoint.tls=true"
+      - "traefik.http.routers.ifontys-aggregator-endpoint.middlewares=chain-no-auth@file"
+      - "traefik.http.routers.ifontys-aggregator-endpoint.service=ifontys-aggregator-endpoint"
+      - "traefik.http.services.ifontys-aggregator-endpoint.loadbalancer.server.port=8080"

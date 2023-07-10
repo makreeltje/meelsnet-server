@@ -1,0 +1,39 @@
+version: "3.7"
+
+networks:
+  traefik_proxy:
+    external:
+      name: traefik_proxy
+  default:
+    driver: bridge
+
+services:
+  unifi:
+    container_name: unifi
+    image: ghcr.io/linuxserver/unifi-controller
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - MEM_LIMIT=1024M
+      - MEM_STARTUP=1024M
+      - RUNAS_UID0="false"
+      - BIND_PRIV="false"
+    volumes:
+      - ${CONF_DIR}/unifi/config:/config
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - traefik_proxy
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+      - "3478:3478/udp"
+      - "10001:10001/udp"
+      - "6789:6789"
+      #- "8081:8081"
+      #- "8843:8843"
+      #- "8880:8880"

@@ -1,0 +1,36 @@
+version: "3.7"
+
+networks:
+  traefik_proxy:
+    external:
+      name: traefik_proxy
+  default:
+    driver: bridge
+
+services:
+  adguard:
+    image: adguard/adguardhome
+    container_name: adguard
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${CONF_DIR}/adguard/work:/opt/adguardhome/work
+      - ${CONF_DIR}/adguard/conf:/opt/adguardhome/conf
+    networks:
+      - traefik_proxy
+    expose:
+      - 3000
+    ports:
+      - 53:53/udp
+      - 53:53/tcp
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.adguard.entrypoints=https"
+      - "traefik.http.routers.adguard.rule=Host(`adguard.$MEELSNET_DOMAIN`)"
+      - "traefik.http.routers.adguard.tls=true"
+      - "traefik.http.routers.adguard.middlewares=chain-oauth@file"
+      - "traefik.http.routers.adguard.service=adguard"
+      - "traefik.http.services.adguard.loadbalancer.server.port=3000"

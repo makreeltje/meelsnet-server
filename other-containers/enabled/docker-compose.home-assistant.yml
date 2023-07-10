@@ -1,0 +1,34 @@
+version: "3.7"
+
+networks:
+  traefik_proxy:
+    external:
+      name: traefik_proxy
+  default:
+    driver: bridge
+
+services:
+  homeassistant:
+    container_name: homeassistant
+    image: "ghcr.io/home-assistant/home-assistant:stable"
+    restart: unless-stopped
+    privileged: true
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${CONF_DIR}/homeassistant/config:/config
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - traefik_proxy
+    expose:
+      - 8123
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.homeassistant.entrypoints=https"
+      - "traefik.http.routers.homeassistant.rule=Host(`home.$MEELSNET_DOMAIN`)"
+      - "traefik.http.routers.homeassistant.tls=true"
+      - "traefik.http.routers.homeassistant.middlewares=chain-no-auth@file"
+      - "traefik.http.routers.homeassistant.service=homeassistant"
+      - "traefik.http.services.homeassistant.loadbalancer.server.port=8123"

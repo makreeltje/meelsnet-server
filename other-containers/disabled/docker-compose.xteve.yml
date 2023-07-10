@@ -1,0 +1,33 @@
+version: "3.7"
+
+networks:
+  traefik_proxy:
+    external:
+      name: traefik_proxy
+  default:
+    driver: bridge
+
+services:
+  xteve:
+    container_name: xteve
+    image: alturismo/xteve
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${CONF_DIR}/xteve/config:/config:rw
+    networks:
+      - traefik_proxy
+    ports:
+      - "34400:34400"
+      - "1901:1900"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.xteve.entrypoints=https"
+      - "traefik.http.routers.xteve.rule=Host(`xteve.$MEELSNET_DOMAIN`)"
+      - "traefik.http.routers.xteve.tls=true"
+      - "traefik.http.routers.xteve.middlewares=chain-basic-auth@file"
+      - "traefik.http.routers.xteve.service=xteve"
+      - "traefik.http.services.xteve.loadbalancer.server.port=34400"

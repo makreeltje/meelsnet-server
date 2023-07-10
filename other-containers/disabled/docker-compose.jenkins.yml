@@ -1,0 +1,25 @@
+version: "3.7"
+services:
+  jenkins:
+    image: jenkins/jenkins:jdk11
+    container_name: jenkins
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - DOCKER_HOST=tcp://172.17.0.1:2376
+      - DOCKER_CERT_PATH=/certs/client
+      - DOCKER_TLS_VERIFY=1
+      - /usr/bin/docker:/usr/bin/docker
+    volumes:
+      - ${CONF_DIR}/jenkins/config:/var/jenkins_home
+      - ${CONF_DIR}/jenkins/certs:/certs/client:ro
+      - /usr/local/bin/docker:/usr/local/bin/docker
+    expose:
+      - 8080
+      - 50000
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+      - diun.enable=true
+      - diun.watch_repo=true

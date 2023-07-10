@@ -1,0 +1,18 @@
+version: "3.7"
+services:
+  valheim:
+    image: lloesche/valheim-server
+    container_name: valheim
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - SERVER_NAME=${VALHEIM_SERVER_NAME}
+      - WORLD_NAME=${VALHEIM_WORLD_NAME}
+      - SERVER_PASS=${VALHEIM_SERVER_PASS}
+    volumes:
+      - ${CONF_DIR}/valheim/config:/config
+      - ${CONF_DIR}/valheim/data:/opt/valheim
+    ports:
+      - 2456-2458:2456-2458/udp

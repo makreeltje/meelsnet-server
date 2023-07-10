@@ -1,0 +1,22 @@
+version: "3.7"
+
+services:
+  factorio:
+    image: factoriotools/factorio:latest
+    container_name: factorio
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - GENERATE_NEW_SAVE=true
+      - SAVE_NAME=multiplayplay
+      - UPDATE_MODS_ON_START=true
+      - INSTANCE_NAME=Bepis
+      - INSTANCE_DESC=I said Bepis
+      - USERNAME=makreeltje
+      - TOKEN=c486fb80bccc3527e2001591e9ec68
+    ports:
+        - 34197:34197/udp
+    volumes:
+        - ${CONF_DIR}/factorio:/factorio

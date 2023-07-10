@@ -1,0 +1,54 @@
+name: Deploy media-server
+
+on:
+  push:
+    branches: ["main"]
+    paths: ['other-containers/**']
+
+env:
+  TARGET_DIRECTORY: /opt/compose/server
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: SSH SCP | Copy container configurations
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        port: ${{ secrets.SSH_PORT }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        source: other-containers/enabled/docker-compose.*.yml
+        target: ${{ env.TARGET_DIRECTORY }}
+        strip_components: 1
+        rm: true
+    - name: SSH | Start containers
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        port: ${{ secrets.SSH_PORT }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        passphrase: ${{ secrets.SSH_PASSPHRASE }}
+        script: |
+          cd ${{ env.TARGET_DIRECTORY }}
+          
+          echo 'PGID=${{ secrets.PGID }}' >> .env
+          echo 'PUID=${{ secrets.PUID }}' >> .env
+          echo 'TZ=${{ secrets.TZ }}' >> .env
+          echo 'CONF_DIR=${{ secrets.CONF_DIR }}' >> .env
+          echo 'MEDIA_DIR=${{ secrets.MEDIA_DIR }}' >> .env
+          echo 'DOWNLOAD_DIR=${{ secrets.DOWNLOAD_DIR }}' >> .env
+          echo 'PLEX_CLAIM_TOKEN=${{ secrets.PLEX_CLAIM_TOKEN }}' >> .env
+          echo 'VPN_PROVIDER=${{ secrets.VPN_PROVIDER }}' >> .env
+          echo 'VPN_USERNAME=${{ secrets.VPN_USERNAME }}' >> .env
+          echo 'VPN_PASSWORD=${{ secrets.VPN_PASSWORD }}' >> .env
+          echo 'TORRENT_USERNAME=${{ secrets.TORRENT_USERNAME }}' >> .env
+          echo 'TORRENT_PASSWORD=${{ secrets.TORRENT_PASSWORD }}' >> .env
+          echo 'TORRENT_BLOCKLIST=${{ secrets.TORRENT_BLOCKLIST }}' >> .env
+          echo 'MEELSNET_DOMAIN=${{ secrets.MEELSNET_DOMAIN }}' >> .env
+          echo 'CINEMON_DOMAIN=${{ secrets.CINEMON_DOMAIN }}' >> .env
+          
+          docker-compose $(find docker-compose.*.yml | sed -e 's/^/-f /') up -d
