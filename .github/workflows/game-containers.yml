@@ -1,4 +1,4 @@
-name: Game servers
+name: Game containers
 
 on:
   push:
