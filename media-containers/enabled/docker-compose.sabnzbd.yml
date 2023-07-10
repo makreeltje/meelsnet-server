@@ -9,7 +9,7 @@ networks:
 
 services:
   sabnzbd:
-    image: linuxserver/sabnzbd:4.0.2
+    image: linuxserver/sabnzbd:4.0.3
     container_name: sabnzbd
     restart: unless-stopped
     cpus: 1
