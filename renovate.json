@@ -4,4 +4,12 @@
     "config:base"
   ],
   "ignorePaths": ["disabled/**"]
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchCurrentVersion": "!/^0/",
+      "automerge": true,
+      "rebaseWhen": "auto"
+    }
+  ]
 }
