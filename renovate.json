@@ -3,7 +3,11 @@
   "extends": [
     "config:base"
   ],
-  "ignorePaths": ["disabled/**"],
+  "ignorePaths": [
+    "game-containers/disabled/**",
+    "media-containers/disabled/**",
+    "other-containers/disabled/**"
+  ],
   "packageRules": [
     {
       "matchUpdateTypes": ["minor", "patch"],
