@@ -10,7 +10,7 @@ networks:
 services:
   rabbitmq:
     container_name: rabbitmq
-    image: rabbitmq:3.9-management
+    image: rabbitmq:3.12-management
     restart: unless-stopped
     environment:
       - PUID=${PUID}
