@@ -50,7 +50,7 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
       - PORT=9712
-      - URL=https://sabnzbd:8080
+      - URL=http://sabnzbd:8080
       - APIKEY=${SABNZBD_API_KEY}
     networks:
       - traefik_proxy
