@@ -9,7 +9,7 @@ networks:
 
 services:
   adminer:
-    image: adminer:4.8.0-standalone
+    image: adminer:4.8.1-standalone
     container_name: adminer
     restart: unless-stopped
     environment:
