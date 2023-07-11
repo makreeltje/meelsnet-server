@@ -10,7 +10,8 @@ networks:
 services:
   portainer:
     container_name: portainer
-    image: portainer/portainer-ce:2.18.4
+    command: -H unix:///var/run/docker.sock
+    image: portainer/portainer-ee:2.18.4
     restart: unless-stopped
     environment:
       - PUID=${PUID}
@@ -26,6 +27,6 @@ services:
       - "traefik.http.routers.portainer.entrypoints=https"
       - "traefik.http.routers.portainer.rule=Host(`portainer.$MEELSNET_DOMAIN`)"
       - "traefik.http.routers.portainer.tls=true"
-      - "traefik.http.routers.portainer.middlewares=chain-oauth@file"
+      - "traefik.http.routers.portainer.middlewares=chain-no-auth@file"
       - "traefik.http.routers.portainer.service=portainer"
       - "traefik.http.services.portainer.loadbalancer.server.port=9000"
