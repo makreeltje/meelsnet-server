@@ -11,7 +11,7 @@ services:
   portainer:
     container_name: portainer
     command: -H unix:///var/run/docker.sock
-    image: portainer/portainer-ce:2.19.0
+    image: portainer/portainer-ce:2.19.1
     restart: unless-stopped
     environment:
       - PUID=${PUID}
