@@ -36,3 +36,5 @@ services:
     container_name: playwright-chrome
     image: browserless/chrome
     restart: unless-stopped
+    ports:
+      - 3000:3000
