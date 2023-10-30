@@ -16,6 +16,7 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
+      - PLAYWRIGHT_DRIVER_URL=ws://playwright-chrome:3000/?stealth=1&--disable-web-security=true
     volumes:
       - ${CONF_DIR}/changedetection/datastore:/datastore
     networks:
@@ -30,3 +31,8 @@ services:
       - "traefik.http.routers.changedetection.middlewares=chain-oauth@file"
       - "traefik.http.routers.changedetection.service=changedetection"
       - "traefik.http.services.changedetection.loadbalancer.server.port=5000"
+
+  playwright-chrome:
+    hostname: playwright-chrome
+    image: browserless/chrome
+    restart: unless-stopped
