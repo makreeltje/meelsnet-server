@@ -33,6 +33,6 @@ services:
       - "traefik.http.services.changedetection.loadbalancer.server.port=5000"
 
   playwright-chrome:
-    hostname: playwright-chrome
+    container_name: playwright-chrome
     image: browserless/chrome
     restart: unless-stopped
