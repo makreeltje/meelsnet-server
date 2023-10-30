@@ -17,6 +17,7 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
       - PLAYWRIGHT_DRIVER_URL=ws://playwright-chrome:3000/?stealth=1&--disable-web-security=true
+      - WEBDRIVER_URL="http://selenium:4444/wd/hub"
     volumes:
       - ${CONF_DIR}/changedetection/datastore:/datastore
     networks:
@@ -36,5 +37,12 @@ services:
     container_name: playwright-chrome
     image: browserless/chrome
     restart: unless-stopped
-    ports:
-      - 3000:3000
+
+  selenium-chrome:
+    container_name: selenium-chrome
+    image: selenium/standalone-chrome-debug:3.141.59
+    volumes:
+            # Workaround to avoid the browser crashing inside a docker container
+            # See https://github.com/SeleniumHQ/docker-selenium#quick-start
+      - ${CONF_DIR}/selenium/dev/shm:/dev/shm
+    restart: unless-stopped
