@@ -1,0 +1,32 @@
+version: "3.7"
+
+networks:
+  traefik_proxy:
+    external:
+      name: traefik_proxy
+  default:
+    driver: bridge
+
+services:
+  changedetection:
+    container_name: changedetection
+    image: dgtlmoon/changedetection.io:0.45.5
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${CONF_DIR}/changedetection/datastore:/datastore
+    networks:
+      - traefik_proxy
+    expose:
+      - 5000
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.changedetection.entrypoints=https"
+      - "traefik.http.routers.changedetection.rule=Host(`change.$MEELSNET_DOMAIN`)"
+      - "traefik.http.routers.changedetection.tls=true"
+      - "traefik.http.routers.changedetection.middlewares=chain-oauth@file"
+      - "traefik.http.routers.changedetection.service=changedetection"
+      - "traefik.http.services.changedetection.loadbalancer.server.port=5000"
