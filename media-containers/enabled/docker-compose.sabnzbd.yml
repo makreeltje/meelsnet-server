@@ -9,11 +9,9 @@ networks:
 
 services:
   sabnzbd:
-    image: linuxserver/sabnzbd:4.1.0
+    image: linuxserver/sabnzbd:4.0.3
     container_name: sabnzbd
     restart: unless-stopped
-    cpus: 1
-    mem_limit: 1G
     environment:
       - PGID=${PGID}
       - PUID=${PUID}
