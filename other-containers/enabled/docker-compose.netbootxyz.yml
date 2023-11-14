@@ -1,0 +1,36 @@
+version: "3.7"
+
+networks:
+  traefik_proxy:
+    external:
+      name: traefik_proxy
+  default:
+    driver: bridge
+
+services:
+  netbootxyz:
+    container_name: netbootxyz
+    image: ghcr.io/netbootxyz/netbootxyz
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${CONF_DIR}/netbootxyz/config:/config
+      - ${CONF_DIR}/netbootxyz/assets:/assets
+    networks:
+      - traefik_proxy
+    expose:
+      - 3000
+    ports:
+      - 69:69/udp
+      - 8082:80
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.netbootxyz.entrypoints=https"
+      - "traefik.http.routers.netbootxyz.rule=Host(`netbootxyz.$MEELSNET_DOMAIN`)"
+      - "traefik.http.routers.netbootxyz.tls=true"
+      - "traefik.http.routers.netbootxyz.middlewares=chain-oauth@file"
+      - "traefik.http.routers.netbootxyz.service=netbootxyz"
+      - "traefik.http.services.netbootxyz.loadbalancer.server.port=3000"
