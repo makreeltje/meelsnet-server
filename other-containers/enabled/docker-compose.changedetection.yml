@@ -10,7 +10,7 @@ networks:
 services:
   changedetection:
     container_name: changedetection
-    image: dgtlmoon/changedetection.io:0.45.5
+    image: dgtlmoon/changedetection.io:0.45.7
     restart: unless-stopped
     environment:
       - PUID=${PUID}
