@@ -9,7 +9,7 @@ networks:
 
 services:
   prowlarr:
-    image: linuxserver/prowlarr:1.9.4
+    image: linuxserver/prowlarr:1.10.5
     container_name: prowlarr
     restart: unless-stopped
     cpus: 1
