@@ -1,0 +1,43 @@
+version: "3.7"
+
+networks:
+  traefik_proxy:
+    external:
+      name: traefik_proxy
+  default:
+    driver: bridge
+
+services:
+  mongo:
+    image: mongo:7.0.4
+    container_name: mongo
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - MONGO_INITDB_ROOT_USERNAME=${MYSQL_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MYSQL_PASSWORD}
+    ports:
+      - 27017:27017
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    restart: unless-stopped
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=${MYSQL_USER}
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=${MYSQL_PASSWORD}
+      - ME_CONFIG_MONGODB_URL= "mongodb://${MYSQL_USER}:${MYSQL_PASSWORD}@mongo:27017/:
+    networks:
+      - traefik_proxy
+    expose:
+      - 8081
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mongo-express.entrypoints=https"
+      - "traefik.http.routers.mongo-express.rule=Host(`mongo.$MEELSNET_DOMAIN`)"
+      - "traefik.http.routers.mongo-express.tls=true"
+      - "traefik.http.routers.mongo-express.middlewares=chain-no-auth@file"
+      - "traefik.http.routers.mongo-express.service=mongo-express"
+      - "traefik.http.services.mongo-express.loadbalancer.server.port=8081"
