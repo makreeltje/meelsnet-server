@@ -8,32 +8,61 @@ networks:
     driver: bridge
 
 services:
-  unifi:
-    container_name: unifi
-    image: ghcr.io/linuxserver/unifi-controller
-    restart: unless-stopped
+  # unifi:
+  #   container_name: unifi
+  #   image: ghcr.io/linuxserver/unifi-controller
+  #   restart: unless-stopped
+  #   environment:
+  #     - PUID=${PUID}
+  #     - PGID=${PGID}
+  #     - TZ=${TZ}
+  #     - MEM_LIMIT=1024M
+  #     - MEM_STARTUP=1024M
+  #     - RUNAS_UID0="false"
+  #     - BIND_PRIV="false"
+  #   volumes:
+  #     - ${CONF_DIR}/unifi/config:/config
+  #     - /etc/timezone:/etc/timezone:ro
+  #     - /etc/localtime:/etc/localtime:ro
+  #   networks:
+  #     - traefik_proxy
+  #   security_opt:
+  #     - no-new-privileges:true
+  #   ports:
+  #     - "8080:8080"
+  #     - "8443:8443"
+  #     - "3478:3478/udp"
+  #     - "10001:10001/udp"
+  #     - "6789:6789"
+  #     #- "8081:8081"
+  #     #- "8843:8843"
+  #     #- "8880:8880"
+
+  unifi-network-application:
+    image: lscr.io/linuxserver/unifi-network-application:latest
+    container_name: unifi-network-application
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
-      - MEM_LIMIT=1024M
-      - MEM_STARTUP=1024M
-      - RUNAS_UID0="false"
-      - BIND_PRIV="false"
+      - MONGO_USER=${MYSQL_USER}
+      - MONGO_PASS=${MYSQL_PASSWORD}
+      - MONGO_HOST=mongo
+      - MONGO_PORT=27017
+      - MONGO_DBNAME=unifi
     volumes:
-      - ${CONF_DIR}/unifi/config:/config
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
-    networks:
-      - traefik_proxy
-    security_opt:
-      - no-new-privileges:true
+      - /path/to/data:/config
     ports:
-      - "8080:8080"
-      - "8443:8443"
-      - "3478:3478/udp"
-      - "10001:10001/udp"
-      - "6789:6789"
-      #- "8081:8081"
-      #- "8843:8843"
-      #- "8880:8880"
+      - 8443:8443
+      - 3478:3478/udp
+      - 10001:10001/udp
+      - 8080:8080
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.unifi.entrypoints=https"
+      - "traefik.http.routers.unifi.rule=Host(`unifi.$MEELSNET_DOMAIN`)"
+      - "traefik.http.routers.unifi.tls=true"
+      - "traefik.http.routers.unifi.middlewares=chain-no-auth@file"
+      - "traefik.http.routers.unifi.service=unifi"
+      - "traefik.http.services.unifi.loadbalancer.server.port=8080"
