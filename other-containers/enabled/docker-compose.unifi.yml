@@ -51,7 +51,9 @@ services:
       - MONGO_PORT=27017
       - MONGO_DBNAME=unifi
     volumes:
-      - /path/to/data:/config
+      - ${CONF_DIR}/unifi/config:/config
+    networks:
+      - traefik_proxy
     ports:
       - 8443:8443
       - 3478:3478/udp
