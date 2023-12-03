@@ -12,6 +12,8 @@ services:
     image: mongo:7.0.4
     container_name: mongo
     restart: unless-stopped
+    networks:
+      - traefik_proxy
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
