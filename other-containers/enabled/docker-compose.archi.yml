@@ -9,7 +9,7 @@ networks:
 
 services:
   archi:
-    image: justarchi/archisteamfarm:5.5.0.10
+    image: justarchi/archisteamfarm:5.5.0.11
     container_name: archi
     restart: unless-stopped
     environment:
