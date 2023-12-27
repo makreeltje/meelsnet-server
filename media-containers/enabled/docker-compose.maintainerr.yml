@@ -28,6 +28,6 @@ services:
       - "traefik.http.routers.maintainerr.entrypoints=https"
       - "traefik.http.routers.maintainerr.rule=Host(`maintainerr.$MEELSNET_DOMAIN`)"
       - "traefik.http.routers.maintainerr.tls=true"
-      - "traefik.http.routers.maintainerr.middlewares=chain-no-auth@file"
+      - "traefik.http.routers.maintainerr.middlewares=chain-oauth@file"
       - "traefik.http.routers.maintainerr.service=maintainerr"
       - "traefik.http.services.maintainerr.loadbalancer.server.port=80"
