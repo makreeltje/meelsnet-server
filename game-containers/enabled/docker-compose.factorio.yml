@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   factorio:
-    image: factoriotools/factorio:1.1.101
+    image: factoriotools/factorio:1.1.102
     container_name: factorio
     restart: unless-stopped
     environment:
