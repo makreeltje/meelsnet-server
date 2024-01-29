@@ -10,7 +10,7 @@ networks:
 services:
   sonarr-exportarr:
     container_name: sonarr-exportarr
-    image: ghcr.io/onedr0p/exportarr:v1.6.0
+    image: ghcr.io/onedr0p/exportarr:v1.6.1
     command: ["sonarr"]
     restart: unless-stopped
     environment:
@@ -26,7 +26,7 @@ services:
       - 9707:9707
   radarr-exportarr:
     container_name: radarr-exportarr
-    image: ghcr.io/onedr0p/exportarr:v1.6.0
+    image: ghcr.io/onedr0p/exportarr:v1.6.1
     command: ["radarr"]
     restart: unless-stopped
     environment:
@@ -42,7 +42,7 @@ services:
       - 9708:9708
   sabnzbd-exportarr:
     container_name: sabnzbd-exportarr
-    image: ghcr.io/onedr0p/exportarr:v1.6.0
+    image: ghcr.io/onedr0p/exportarr:v1.6.1
     command: ["sabnzbd"]
     restart: unless-stopped
     environment:
