@@ -9,7 +9,7 @@ networks:
 
 services:
   sabnzbd:
-    image: linuxserver/sabnzbd:4.2.1
+    image: linuxserver/sabnzbd:4.2.2
     container_name: sabnzbd
     restart: unless-stopped
     environment:
