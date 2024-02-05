@@ -11,6 +11,7 @@ services:
   homeassistant-josien:
     container_name: homeassistant-josien
     image: "ghcr.io/home-assistant/home-assistant:2024.1.6"
+    network_mode: "host"
     privileged: true
     deploy:
       replicas: 1
@@ -30,8 +31,8 @@ services:
       - /etc/localtime:/etc/localtime:ro
     networks:
       - traefik_proxy
-    ports:
-      - 8123:8123
+    expose:
+      - 8123
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.homeassistant-josien.entrypoints=https"
