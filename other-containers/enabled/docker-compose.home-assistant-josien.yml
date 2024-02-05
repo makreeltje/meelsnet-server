@@ -29,8 +29,6 @@ services:
     volumes:
       - ${CONF_DIR}/homeassistant-josien/config:/config
       - /etc/localtime:/etc/localtime:ro
-    devices:
-      - /dev/ttyACM0:/dev/ttyACM0
     networks:
       - traefik_proxy
     expose:
