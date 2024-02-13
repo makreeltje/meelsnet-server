@@ -9,7 +9,7 @@ networks:
 
 services:
   postgres:
-    image: postgres:12.17
+    image: postgres:12.18
     container_name: postgres
     restart: unless-stopped
     environment:
