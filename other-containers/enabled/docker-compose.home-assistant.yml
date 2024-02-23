@@ -10,7 +10,7 @@ networks:
 services:
   homeassistant:
     container_name: homeassistant
-    image: "ghcr.io/home-assistant/home-assistant:2024.2.2"
+    image: "ghcr.io/home-assistant/home-assistant:2024.2.3"
     restart: unless-stopped
     environment:
       - PUID=${PUID}
