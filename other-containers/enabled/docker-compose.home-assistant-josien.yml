@@ -10,7 +10,7 @@ networks:
 services:
   homeassistant-josien:
     container_name: homeassistant-josien
-    image: "ghcr.io/home-assistant/home-assistant:2024.2.3"
+    image: "ghcr.io/home-assistant/home-assistant:2024.2.4"
     privileged: true
     deploy:
       replicas: 1
