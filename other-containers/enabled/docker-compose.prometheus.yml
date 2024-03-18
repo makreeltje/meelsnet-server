@@ -51,7 +51,7 @@ services:
       - --path.rootfs=/rootfs
       - --path.sysfs=/host/sys
       - --collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)
-      - --collector.textfile.directory=/rootfs/var/lib/node_exporter/textfile_collector
+      - --collector.textfile.directory=/var/lib/node_exporter/textfile_collector
     volumes:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
