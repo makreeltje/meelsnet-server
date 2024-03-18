@@ -11,6 +11,7 @@ services:
   prometheus:
     image: prom/prometheus:v2.50.1
     container_name: prometheus
+    user: ${PUID}:${PGID}
     restart: unless-stopped
     command:
       - --config.file=/etc/prometheus/prometheus.yml
