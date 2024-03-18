@@ -9,7 +9,7 @@ networks:
 
 services:
   prometheus:
-    image: prom/prometheus:latest
+    image: prom/prometheus:v2.50.1
     container_name: prometheus
     restart: unless-stopped
     command:
@@ -43,7 +43,7 @@ services:
       - cadvisor
   
   node-exporter:
-    image: prom/node-exporter:latest
+    image: prom/node-exporter:v1.7.0
     container_name: node-exporter
     restart: unless-stopped
     command:
@@ -62,7 +62,7 @@ services:
       - 9100
 
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:latest
+    image: gcr.io/cadvisor/cadvisor:v0.49.1
     container_name: cadvisor
     restart: unless-stopped
     volumes:
@@ -74,11 +74,9 @@ services:
       - traefik_proxy
     expose:
       - 8080
-  # The Alertmanager handles alerts sent by client applications such as the Prometheus server. 
-  # It takes care of deduplicating, grouping, and routing them to the correct receiver integration such as email, PagerDuty, or OpsGenie. 
-  # It also takes care of silencing and inhibition of alerts.
+
   alertmanager:
-    image: prom/alertmanager:latest
+    image: prom/alertmanager:v0.27.0
     container_name: alertmanager
     restart: unless-stopped
     command:
