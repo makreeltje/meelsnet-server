@@ -46,6 +46,7 @@ services:
   node-exporter:
     image: prom/node-exporter:v1.7.0
     container_name: node-exporter
+    user: ${PUID}:${PGID}
     restart: unless-stopped
     command:
       - --path.procfs=/host/proc
@@ -53,6 +54,10 @@ services:
       - --path.sysfs=/host/sys
       - --collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)
       - --collector.textfile.directory=/etc/node-exporter/
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
     volumes:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
