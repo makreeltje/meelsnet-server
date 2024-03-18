@@ -23,8 +23,8 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
     volumes:
-      - ${CONF_DIR}/prometheus:/etc/prometheus
-      - ${CONF_DIR}/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ${CONF_DIR}/prometheus:/prometheus
+      - ${CONF_DIR}/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     networks:
       - traefik_proxy
     expose:
