@@ -45,8 +45,8 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
-      - MONGO_USER=admin
-      - MONGO_PASS=pass
+      - MONGO_USER=${MYSQL_USER}
+      - MONGO_PASS=${MYSQL_PASSWORD}
       - MONGO_HOST=mongo
       - MONGO_PORT=27017
       - MONGO_DBNAME=unifi
