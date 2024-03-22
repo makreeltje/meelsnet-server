@@ -24,7 +24,7 @@ services:
       - 27017:27017
 
   mongo-express:
-    image: mongo-express:v1.0.2
+    image: mongo-express
     container_name: mongo-express
     restart: unless-stopped
     environment:
