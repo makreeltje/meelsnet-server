@@ -69,7 +69,7 @@ services:
       - "traefik.http.routers.unifi.entrypoints=https"
       - "traefik.http.routers.unifi.rule=Host(`unifi.$MEELSNET_DOMAIN`)"
       - "traefik.http.routers.unifi.tls=true"
-      - "traefik.http.routers.unifi.middlewares=chain-no-auth@file"
+      - "traefik.http.routers.unifi.middlewares=chain-unifi@file"
       - "traefik.http.routers.unifi.service=unifi"
       - "traefik.http.services.unifi.loadbalancer.server.port=8443"
       - "traefik.http.services.unifi.loadbalancer.server.scheme=https"
