@@ -65,5 +65,10 @@ jobs:
           echo 'SONARR_API_KEY=${{ secrets.SONARR_API_KEY }}' >> .env
           echo 'RADARR_API_KEY=${{ secrets.RADARR_API_KEY }}' >> .env
           echo 'SABNZBD_API_KEY=${{ secrets.SABNZBD_API_KEY }}' >> .env
+          echo 'MONGO_ROOT_USER=${{ secrets.MONGO_ROOT_USER }}' >> .env
+          echo 'MONGO_ROOT_PASSWORD=${{ secrets.MONGO_ROOT_PASSWORD }}' >> .env
+          echo 'MONGO_UNIFI_USER=${{ secrets.MONGO_UNIFI_USER }}' >> .env
+          echo 'MONGO_UNIFI_PASSWORD=${{ secrets.MONGO_UNIFI_PASSWORD }}' >> .env
+          echo 'MONGO_UNIFI_DB=${{ secrets.MONGO_UNIFI_DB }}' >> .env
           
           docker-compose $(find docker-compose.*.yml | sed -e 's/^/-f /') up -d

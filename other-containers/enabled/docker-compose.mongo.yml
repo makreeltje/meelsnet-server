@@ -18,8 +18,8 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
-      - MONGO_INITDB_ROOT_USERNAME=${MYSQL_USER}
-      - MONGO_INITDB_ROOT_PASSWORD=${MYSQL_PASSWORD}
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD}
     volumes:
       - ${CONF_DIR}/mongo/db:/data/db
     ports:
@@ -30,9 +30,9 @@ services:
     container_name: mongo-express
     restart: unless-stopped
     environment:
-      - ME_CONFIG_BASICAUTH_USERNAME=${MYSQL_USER}
-      - ME_CONFIG_BASICAUTH_PASSWORD=${MYSQL_PASSWORD}
-      - ME_CONFIG_MONGODB_URL=mongodb://${MYSQL_USER}:${MYSQL_PASSWORD}@mongo:27017/
+      - ME_CONFIG_BASICAUTH_USERNAME=${MONGO_ROOT_USER}
+      - ME_CONFIG_BASICAUTH_PASSWORD=${MONGO_ROOT_PASSWORD}
+      - ME_CONFIG_MONGODB_URL=mongodb://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@mongo:27017/
     networks:
       - traefik_proxy
     expose:
