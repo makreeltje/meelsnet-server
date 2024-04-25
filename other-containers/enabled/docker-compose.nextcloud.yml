@@ -9,7 +9,7 @@ networks:
 
 services:
   nextcloud:
-    image: nextcloud:28.0.4
+    image: nextcloud:29.0.0
     container_name: nextcloud
     hostname: nextcloud
     restart: unless-stopped
