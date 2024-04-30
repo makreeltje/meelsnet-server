@@ -9,7 +9,7 @@ networks:
 
 services:
   mongo:
-    image: mongo:7.0.8
+    image: mongo:7.0.9
     container_name: mongo
     restart: unless-stopped
     networks:
