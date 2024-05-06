@@ -10,7 +10,7 @@ networks:
 services:
   homeassistant-josien:
     container_name: homeassistant-josien
-    image: "ghcr.io/home-assistant/home-assistant:2024.5.1"
+    image: "ghcr.io/home-assistant/home-assistant:2024.5.2"
     privileged: true
     restart: unless-stopped
     environment:
