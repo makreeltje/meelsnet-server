@@ -1,0 +1,30 @@
+version: "3.7"
+services:
+  mc-alloffabric6:
+    image: itzg/minecraft-server:java17
+    container_name: mc-alloffabric6
+    restart: unless-stopped
+    privileged: true
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+      EULA: "TRUE"
+      TYPE: CURSEFORGE
+      CF_SERVER_MOD: https://mediafilez.forgecdn.net/files/5273/760/All%20of%20Fabric%207-Server-2.1.2.zip
+      SERVER_NAME: "All of Fabric 7"
+      USE_MODPACK_START_SCRIPT: "true"
+      ENABLE_AUTOPAUSE: "TRUE"
+      AUTOPAUSE_TIMEOUT_INIT: "30"
+      AUTOPAUSE_TIMEOUT_EST: "60"
+      MAX_TICK_TIME: -1
+      INIT_MEMORY: "1G"
+      MAX_MEMORY: "8G"
+      ENABLE_RCON: "true"
+    stdin_open: true
+    volumes:
+      - ${CONF_DIR}/minecraft/data/alloffabric6:/data
+    ports:
+      - 25865:25565
+      - 25875:25575
+    tty: true
