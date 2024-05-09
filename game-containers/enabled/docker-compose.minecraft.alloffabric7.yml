@@ -1,8 +1,8 @@
 version: "3.7"
 services:
-  mc-alloffabric6:
+  mc-alloffabric7:
     image: itzg/minecraft-server:java17
-    container_name: mc-alloffabric6
+    container_name: mc-alloffabric7
     restart: unless-stopped
     privileged: true
     environment:
@@ -23,7 +23,7 @@ services:
       ENABLE_RCON: "true"
     stdin_open: true
     volumes:
-      - ${CONF_DIR}/minecraft/data/alloffabric6:/data
+      - ${CONF_DIR}/minecraft/data/alloffabric7:/data
     ports:
       - 25865:25565
       - 25875:25575
