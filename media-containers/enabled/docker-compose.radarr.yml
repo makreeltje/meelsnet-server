@@ -9,7 +9,7 @@ networks:
 
 services:
   radarr:
-    image: linuxserver/radarr:5.4.6
+    image: linuxserver/radarr:5.5.3
     container_name: radarr
     restart: unless-stopped
     cpus: 1
