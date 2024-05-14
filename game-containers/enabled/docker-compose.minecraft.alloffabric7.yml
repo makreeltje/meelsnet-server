@@ -1,25 +1,25 @@
 version: "3.7"
 services:
   mc-alloffabric7:
-    image: itzg/minecraft-server:java17
+    image: itzg/minecraft-server
     container_name: mc-alloffabric7
     restart: unless-stopped
-    privileged: true
     environment:
       PUID: ${PUID}
       PGID: ${PGID}
       TZ: ${TZ}
-      EULA: "TRUE"
-      TYPE: CURSEFORGE
-      CF_SERVER_MOD: https://mediafilez.forgecdn.net/files/5339/476/All%20of%20Fabric%207-Server-2.2.2.zip
+      EULA: true
+      MOD_PLATFORM: AUTO_CURSEFORGE
+      CF_API_KEY: ${CF_API_KEY}
+      CF_PAGE_URL: https://www.curseforge.com/minecraft/modpacks/all-of-fabric-7
+      CF_OVERRIDES_EXCLUSIONS: |
+        mods/iris*.jar
+        mods/sodium*.jar
       SERVER_NAME: "All of Fabric 7"
-      USE_MODPACK_START_SCRIPT: "false"
       ENABLE_AUTOPAUSE: "TRUE"
       AUTOPAUSE_TIMEOUT_INIT: "30"
       AUTOPAUSE_TIMEOUT_EST: "60"
       MAX_TICK_TIME: -1
-      INIT_MEMORY: "1G"
-      MAX_MEMORY: "8G"
       ENABLE_RCON: "true"
     stdin_open: true
     volumes:
