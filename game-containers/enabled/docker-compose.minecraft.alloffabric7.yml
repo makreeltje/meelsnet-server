@@ -13,7 +13,7 @@ services:
       TYPE: CURSEFORGE
       CF_SERVER_MOD: https://mediafilez.forgecdn.net/files/5339/476/All%20of%20Fabric%207-Server-2.2.2.zip
       SERVER_NAME: "All of Fabric 7"
-      USE_MODPACK_START_SCRIPT: "true"
+      USE_MODPACK_START_SCRIPT: "false"
       ENABLE_AUTOPAUSE: "TRUE"
       AUTOPAUSE_TIMEOUT_INIT: "30"
       AUTOPAUSE_TIMEOUT_EST: "60"
