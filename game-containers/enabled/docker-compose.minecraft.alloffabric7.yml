@@ -20,6 +20,7 @@ services:
       AUTOPAUSE_TIMEOUT_EST: "60"
       MAX_TICK_TIME: -1
       ENABLE_RCON: "true"
+      USE_MODPACK_START_SCRIPT: false
     stdin_open: true
     volumes:
       - ${CONF_DIR}/minecraft/data/alloffabric7:/data
