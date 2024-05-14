@@ -1,7 +1,7 @@
 version: "3.7"
 services:
   mc-alloffabric7:
-    image: itzg/minecraft-server
+    image: itzg/minecraft-server:2024.5.0
     container_name: mc-alloffabric7
     environment:
       PUID: ${PUID}
