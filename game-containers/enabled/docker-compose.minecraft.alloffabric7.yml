@@ -11,7 +11,7 @@ services:
       TZ: ${TZ}
       EULA: "TRUE"
       TYPE: CURSEFORGE
-      CF_SERVER_MOD: https://mediafilez.forgecdn.net/files/5273/760/All%20of%20Fabric%207-Server-2.1.2.zip
+      CF_SERVER_MOD: https://mediafilez.forgecdn.net/files/5339/476/All%20of%20Fabric%207-Server-2.2.2.zip
       SERVER_NAME: "All of Fabric 7"
       USE_MODPACK_START_SCRIPT: "true"
       ENABLE_AUTOPAUSE: "TRUE"
