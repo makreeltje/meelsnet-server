@@ -11,18 +11,17 @@ services:
       MOD_PLATFORM: AUTO_CURSEFORGE
       CF_API_KEY: ${CF_API_KEY}
       CF_PAGE_URL: https://www.curseforge.com/minecraft/modpacks/all-of-fabric-7
-      CF_OVERRIDES_EXCLUSIONS: |
-        mods/iris*.jar
-        mods/sodium*.jar
-      SERVER_NAME: "All of Fabric 7"
-      ENABLE_AUTOPAUSE: "TRUE"
-      AUTOPAUSE_TIMEOUT_INIT: "30"
-      AUTOPAUSE_TIMEOUT_EST: "60"
-      MAX_TICK_TIME: -1
-      ENABLE_RCON: "true"
+      # CF_OVERRIDES_EXCLUSIONS: |
+      #   mods/iris*.jar
+      #   mods/sodium*.jar
+      # SERVER_NAME: "All of Fabric 7"
+      # ENABLE_AUTOPAUSE: "TRUE"
+      # AUTOPAUSE_TIMEOUT_INIT: "30"
+      # AUTOPAUSE_TIMEOUT_EST: "60"
+      # MAX_TICK_TIME: -1
+      # ENABLE_RCON: "true"
     volumes:
-      - ${CONF_DIR}/minecraft/data/alloffabric7:/data
-      - ${CONF_DIR}/minecraft/downloads:/downloads
+      # - ${CONF_DIR}/minecraft/data/alloffabric7:/data
     ports:
       - 25865:25565
       - 25875:25575
