@@ -1,7 +1,7 @@
 version: "3.7"
 services:
   mc-alloffabric7:
-    image: itzg/minecraft-server:2024.5.0
+    image: itzg/minecraft-server:2024.5.0-java21
     container_name: mc-alloffabric7
     environment:
       PUID: ${PUID}
@@ -11,9 +11,9 @@ services:
       MOD_PLATFORM: AUTO_CURSEFORGE
       CF_API_KEY: ${CF_API_KEY}
       CF_PAGE_URL: https://www.curseforge.com/minecraft/modpacks/all-of-fabric-7
-      # CF_OVERRIDES_EXCLUSIONS: |
-      #   mods/iris*.jar
-      #   mods/sodium*.jar
+      CF_OVERRIDES_EXCLUSIONS: |
+        mods/iris*.jar
+        mods/sodium*.jar
       SERVER_NAME: "All of Fabric 7"
       ENABLE_AUTOPAUSE: "TRUE"
       AUTOPAUSE_TIMEOUT_INIT: "30"
@@ -26,4 +26,3 @@ services:
     ports:
       - 25865:25565
       - 25875:25575
-    tty: true
