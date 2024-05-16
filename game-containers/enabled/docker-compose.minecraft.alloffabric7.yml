@@ -19,6 +19,8 @@ services:
       AUTOPAUSE_TIMEOUT_INIT: "30"
       AUTOPAUSE_TIMEOUT_EST: "60"
       MAX_TICK_TIME: -1
+      INIT_MEMORY: "1G"
+      MAX_MEMORY: "8G"
       ENABLE_RCON: "true"
     volumes:
       - ${CONF_DIR}/minecraft/data/alloffabric7:/data
