@@ -33,4 +33,4 @@ services:
       - "traefik.http.routers.mc-rcon.tls=true"
       - "traefik.http.routers.mc-rcon.middlewares=chain-oauth@file"
       - "traefik.http.routers.mc-rcon.service=mc-rcon"
-      - "traefik.http.services.mc-rcon.loadbalancer.server.port=4326"
+      - "traefik.http.services.mc-rcon.loadbalancer.server.port=4327"
