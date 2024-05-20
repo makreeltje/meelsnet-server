@@ -28,3 +28,5 @@ services:
     ports:
       - 25865:25565
       - 25875:25575
+    stdin_open: true
+    tty: true
