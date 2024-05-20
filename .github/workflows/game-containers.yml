@@ -50,4 +50,4 @@ jobs:
           echo 'CF_API_KEY=${{ secrets.CF_API_KEY }}' >> .env
           echo 'MEELSNET_DOMAIN=${{ secrets.MEELSNET_DOMAIN }}' >> .env
           
-          docker-compose $(find docker-compose.*.yml | sed -e 's/^/-f /') up -d
+          docker compose $(find docker compose.*.yml | sed -e 's/^/-f /') up -d
