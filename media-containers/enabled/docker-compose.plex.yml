@@ -29,6 +29,7 @@ services:
       - ${MEDIA_DIR}/Movies:/data/movies
       - ${MEDIA_DIR}/Series:/data/series
       - ${MEDIA_DIR}/Animation:/data/animation
+       - ${MEDIA_DIR}/Anime:/data/anime
     networks:
       - traefik_proxy
     ports:
