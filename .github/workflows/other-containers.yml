@@ -70,5 +70,9 @@ jobs:
           echo 'MONGO_UNIFI_USER=${{ secrets.MONGO_UNIFI_USER }}' >> .env
           echo 'MONGO_UNIFI_PASSWORD=${{ secrets.MONGO_UNIFI_PASSWORD }}' >> .env
           echo 'MONGO_UNIFI_DB=${{ secrets.MONGO_UNIFI_DB }}' >> .env
+          echo 'PAPERLESS_DBNAME=${{ secrets.PAPERLESS_DBNAME }}' >> .env
+          echo 'PAPERLESS_DBUSER=${{ secrets.PAPERLESS_DBUSER }}' >> .env
+          echo 'PAPERLESS_DBPASS=${{ secrets.PAPERLESS_DBPASS }}' >> .env
+          echo 'DMS_DIR=${{ secrets.DMS_DIR }}' >> .env
           
           docker-compose $(find docker-compose.*.yml | sed -e 's/^/-f /') up -d
