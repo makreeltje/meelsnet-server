@@ -21,6 +21,7 @@ services:
       PAPERLESS_DBNAME: $PAPERLESS_DBNAME
       PAPERLESS_DBUSER: $PAPERLESS_DBUSER
       PAPERLESS_DBPASS: $PAPERLESS_DBPASS
+      PAPERLESS_URL: paperless.$MEELSNET_DOMAIN
     volumes:
       - ${CONF_DIR}/paperless/data:/usr/src/paperless/data
       - ${DMS_DIR}/media:/usr/src/paperless/media
