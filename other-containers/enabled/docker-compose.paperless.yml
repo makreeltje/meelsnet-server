@@ -36,6 +36,6 @@ services:
       - "traefik.http.routers.paperless.entrypoints=https"
       - "traefik.http.routers.paperless.rule=Host(`paperless.$MEELSNET_DOMAIN`)"
       - "traefik.http.routers.paperless.tls=true"
-      - "traefik.http.routers.paperless.middlewares=chain-oauth@file"
+      - "traefik.http.routers.paperless.middlewares=chain-no-auth@file"
       - "traefik.http.routers.paperless.service=paperless"
       - "traefik.http.services.paperless.loadbalancer.server.port=8000"
