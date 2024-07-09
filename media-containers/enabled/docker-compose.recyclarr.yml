@@ -1,0 +1,21 @@
+version: "3.7"
+
+networks:
+  traefik_proxy:
+    external:
+      name: traefik_proxy
+  default:
+    driver: bridge
+
+services:
+  recyclarr:
+    image: ghcr.io/recyclarr/recyclarr:7.0.0
+    container_name: recyclarr
+    restart: unless-stopped
+    user: $PUID:$PGID
+    environment:
+      - TZ=$TZ
+    volumes:
+      - $CONF_DIR/recyclarr/config:/config
+    networks:
+      - traefik_proxy
