@@ -26,7 +26,6 @@ services:
       - ${CONF_DIR}/paperless/data:/usr/src/paperless/data
       - ${DMS_DIR}/media:/usr/src/paperless/media
       - ${DMS_DIR}/consume:/usr/src/paperless/consume
-      - ${CLOUD_DIR}/:/usr/src/paperless/nextcloud_data
     networks:
       - traefik_proxy
     expose:
@@ -36,6 +35,6 @@ services:
       - "traefik.http.routers.paperless.entrypoints=https"
       - "traefik.http.routers.paperless.rule=Host(`paperless.$MEELSNET_DOMAIN`)"
       - "traefik.http.routers.paperless.tls=true"
-      - "traefik.http.routers.paperless.middlewares=chain-oauth@file"
+      - "traefik.http.routers.paperless.middlewares=chain-no-auth@file"
       - "traefik.http.routers.paperless.service=paperless"
       - "traefik.http.services.paperless.loadbalancer.server.port=8000"
