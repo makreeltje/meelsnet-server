@@ -3,7 +3,7 @@ name: Game containers
 on:
   push:
     branches: ["main"]
-    paths: ['game-containers/**']
+    paths: ['compose/game-containers/**']
 
 env:
   SOURCE_DIRECTORY: game-containers/enabled/docker-compose.*.yml

@@ -3,7 +3,7 @@ name: Other containers
 on:
   push:
     branches: ["main"]
-    paths: ['other-containers/**']
+    paths: ['compose/other-containers/**']
 
 env:
   SOURCE_DIRECTORY: other-containers/enabled/docker-compose.*.yml

@@ -3,7 +3,7 @@ name: Media containers
 on:
   push:
     branches: ["main"]
-    paths: ['media-containers/**']
+    paths: ['compose/media-containers/**']
 
 env:
   SOURCE_DIRECTORY: media-containers/enabled/docker-compose.*.yml
