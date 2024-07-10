@@ -6,7 +6,7 @@ on:
     paths: ['compose/other-containers/**']
 
 env:
-  SOURCE_DIRECTORY: other-containers/enabled/docker-compose.*.yml
+  SOURCE_DIRECTORY: compose/other-containers/enabled/docker-compose.*.yml
   TARGET_DIRECTORY: /opt/compose/server
 
 jobs:

@@ -1,13 +1,13 @@
-name: Game containers
+name: Media containers
 
 on:
   push:
     branches: ["main"]
-    paths: ['compose/game-containers/**']
+    paths: ['compose/media-containers/**']
 
 env:
-  SOURCE_DIRECTORY: game-containers/enabled/docker-compose.*.yml
-  TARGET_DIRECTORY: /opt/compose/game-servers
+  SOURCE_DIRECTORY: compose/media-containers/enabled/docker-compose.*.yml
+  TARGET_DIRECTORY: /opt/compose/media-server
 
 jobs:
   deploy:
@@ -21,7 +21,7 @@ jobs:
         port: ${{ secrets.SSH_PORT }}
         username: ${{ secrets.SSH_USERNAME }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
-        source: ${{ env.SOURCE_DIRECTORY}}
+        source: ${{ env.SOURCE_DIRECTORY }}
         target: ${{ env.TARGET_DIRECTORY }}
         strip_components: 2
         rm: true
@@ -40,14 +40,16 @@ jobs:
           echo 'PUID=${{ secrets.PUID }}' >> .env
           echo 'TZ=${{ secrets.TZ }}' >> .env
           echo 'CONF_DIR=${{ secrets.CONF_DIR }}' >> .env
-          echo 'VALHEIM_SERVER_NAME=${{ secrets.VALHEIM_SERVER_NAME }}' >> .env
-          echo 'VALHEIM_WORLD_NAME=${{ secrets.VALHEIM_WORLD_NAME }}' >> .env
-          echo 'VALHEIM_SERVER_PASS=${{ secrets.VALHEIM_SERVER_PASS }}' >> .env
-          echo 'USERNAME=${{ secrets.USERNAME }}' >> .env
-          echo 'PASSWORD=${{ secrets.PASSWORD }}' >> .env
-          echo 'MC_HOSTNAME=${{ secrets.MC_HOSTNAME }}' >> .env
-          echo 'MC_RCON_PASSWORD=${{ secrets.MC_RCON_PASSWORD }}' >> .env
-          echo 'CF_API_KEY=${{ secrets.CF_API_KEY }}' >> .env
+          echo 'MEDIA_DIR=${{ secrets.MEDIA_DIR }}' >> .env
+          echo 'DOWNLOAD_DIR=${{ secrets.DOWNLOAD_DIR }}' >> .env
+          echo 'PLEX_CLAIM_TOKEN=${{ secrets.PLEX_CLAIM_TOKEN }}' >> .env
+          echo 'VPN_PROVIDER=${{ secrets.VPN_PROVIDER }}' >> .env
+          echo 'VPN_USERNAME=${{ secrets.VPN_USERNAME }}' >> .env
+          echo 'VPN_PASSWORD=${{ secrets.VPN_PASSWORD }}' >> .env
+          echo 'TORRENT_USERNAME=${{ secrets.TORRENT_USERNAME }}' >> .env
+          echo 'TORRENT_PASSWORD=${{ secrets.TORRENT_PASSWORD }}' >> .env
+          echo 'TORRENT_BLOCKLIST=${{ secrets.TORRENT_BLOCKLIST }}' >> .env
           echo 'MEELSNET_DOMAIN=${{ secrets.MEELSNET_DOMAIN }}' >> .env
+          echo 'CINEMON_DOMAIN=${{ secrets.CINEMON_DOMAIN }}' >> .env
           
           docker-compose $(find docker-compose.*.yml | sed -e 's/^/-f /') up -d
