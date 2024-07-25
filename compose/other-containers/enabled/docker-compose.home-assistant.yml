@@ -18,6 +18,7 @@ services:
       - TZ=${TZ}
     volumes:
       - ${CONF_DIR}/homeassistant/config:/config
+      - ${CONF_DIR}/homeassistant/images:/images
       - /etc/localtime:/etc/localtime:ro
     devices:
       - /dev/ttyACM0:/dev/ttyACM0
