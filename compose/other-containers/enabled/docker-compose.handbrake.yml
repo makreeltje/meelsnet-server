@@ -28,5 +28,5 @@ services:
       - "traefik.http.routers.handbrake.rule=Host(`handbrake.$MEELSNET_DOMAIN`)"
       - "traefik.http.routers.handbrake.tls=true"
       - "traefik.http.routers.handbrake.middlewares=chain-oauth@file"
-      - "traefik.http.routers.handbrake.service=paperless"
+      - "traefik.http.routers.handbrake.service=handbrake"
       - "traefik.http.services.handbrake.loadbalancer.server.port=5800"
