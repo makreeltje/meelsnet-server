@@ -12,12 +12,16 @@ services:
     image: jlesage/handbrake:v23.06.1
     container_name: handbrake
     restart: unless-stopped
+    cpus: 2
+    mem_limit: 4G
     environment:
-      PUID: ${PUID}
-      PGID: ${PGID}
-      TZ: ${TZ}
+      - PGID=$PGID
+      - PUID=$PUID
+      - TZ=$TZ
     volumes:
-      - ${CONF_DIR}/handbrake/data:/config
+      - ${CONF_DIR}/handbrake/config:/config
+      - ${DOWNLOAD_DIR}/completed:/storage
+      - ${DOWNLOAD_DIR}/handbrake_output:/output
     networks:
       - traefik_proxy
     expose:
