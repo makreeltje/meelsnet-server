@@ -1,4 +1,4 @@
-name: Other containers
+name: Update env file
 
 on:
   push:
@@ -6,7 +6,6 @@ on:
     paths: ['compose/other-containers/**']
 
 env:
-  SOURCE_DIRECTORY: compose/reverse-proxy-containers/enabled/docker-compose.*.yml
   TARGET_DIRECTORY: /opt
 
 jobs:

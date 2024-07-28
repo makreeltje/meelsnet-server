@@ -1,4 +1,4 @@
-name: Other containers
+name: Reverse proxy containers
 
 on:
   push:
