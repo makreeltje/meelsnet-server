@@ -3,7 +3,6 @@ name: Update env file
 on:
   push:
     branches: ["main"]
-    paths: ['compose/other-containers/**']
 
 env:
   TARGET_DIRECTORY: /opt

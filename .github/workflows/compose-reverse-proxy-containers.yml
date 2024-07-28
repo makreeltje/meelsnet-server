@@ -9,7 +9,7 @@ env:
   PROFILE_NAME: reverse-proxy
   ROOT_FOLDER: compose
   MAIN_FILENAME: docker-compose.meelsnet.yml
-  SOURCE_DIRECTORY: compose/reverse-proxy-containers/enabled/*.yml
+  SOURCE_DIRECTORY: compose/reverse-proxy-containers/*.yml
   TARGET_DIRECTORY: /opt/compose/reverse-proxy
   COMPOSE_DIRECTORY: /opt
 
@@ -27,7 +27,7 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         source: ${{ env.SOURCE_DIRECTORY }}
         target: ${{ env.TARGET_DIRECTORY }}
-        strip_components: 3
+        strip_components: 2
         rm: false
     - name: SSH SCP | Copy main file
       uses: appleboy/scp-action@master
