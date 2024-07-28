@@ -12,7 +12,6 @@ services:
     container_name: homeassistant
     image: "ghcr.io/home-assistant/home-assistant:2024.7.3"
     restart: unless-stopped
-    network_mode: host
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
