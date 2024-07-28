@@ -12,6 +12,7 @@ services:
     container_name: homeassistant
     image: "ghcr.io/home-assistant/home-assistant:2024.7.3"
     restart: unless-stopped
+    network_mode: host
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
@@ -26,8 +27,6 @@ services:
       - traefik_proxy
     expose:
       - 8123
-    ports:
-      - 21064:21064 # Home Bridge
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.homeassistant.entrypoints=https"
