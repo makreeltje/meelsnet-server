@@ -26,6 +26,8 @@ services:
       - traefik_proxy
     expose:
       - 8123
+    ports:
+      - 21064:21064 # Home Bridge
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.homeassistant.entrypoints=https"
