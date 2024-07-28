@@ -1,0 +1,54 @@
+name: Other containers
+
+on:
+  push:
+    branches: ["main"]
+    paths: ['compose/reverse-proxy-containers/**']
+
+env:
+  PROFILE_NAME: reverse-proxy
+  ROOT_FOLDER: compose
+  MAIN_FILENAME: docker-compose.meelsnet.yml
+  SOURCE_DIRECTORY: compose/reverse-proxy-containers/enabled/*.yml
+  TARGET_DIRECTORY: /opt/compose/reverse-proxy
+  COMPOSE_DIRECTORY: /opt
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: SSH SCP | Copy container configurations
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        port: ${{ secrets.SSH_PORT }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        source: ${{ env.SOURCE_DIRECTORY }}
+        target: ${{ env.TARGET_DIRECTORY }}
+        strip_components: 2
+        rm: false
+    - name: SSH SCP | Copy main file
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        port: ${{ secrets.SSH_PORT }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        source: ${{ env.ROOT_FOLDER}}/${{ env.MAIN_FILENAME}}
+        target: ${{ env.COMPOSE_DIRECTORY }}
+        strip_components: 0
+        rm: false
+    - name: SSH | Start containers
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        port: ${{ secrets.SSH_PORT }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        passphrase: ${{ secrets.SSH_PASSPHRASE }}
+        script: |
+          cd ${{ env.COMPOSE_DIRECTORY }}
+          
+          docker compose -f ${{ env.MAIN_FILENAME}} up -d --profile ${{ env.PROFILE_NAME }}

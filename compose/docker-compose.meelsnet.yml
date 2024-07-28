@@ -1,0 +1,34 @@
+##### NETWORKS #####
+networks:
+  default:
+    driver: bridge
+  socket_proxy:
+    name: socket_proxy
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.1.0.0/16
+  t3_proxy:
+    name: t3_proxy
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.2.0.0/16
+
+##### SECRETS #####
+secrets:
+  basic_auth_credentials:
+    file: $DOCKER_DIR/secrets/basic_auth_credentials
+  cf_dns_api_token:
+    file: $DOCKER_DIR/secrets/cf_dns_api_token
+
+includes:
+  ##### SERVICES #####
+  # Reverse proxy
+  - compose/reverse-proxy/traefik.yml
+    
+  # Media containers
+  
+  # Game containers
+
+  # Other containers

@@ -1,0 +1,44 @@
+name: Other containers
+
+on:
+  push:
+    branches: ["main"]
+    paths: ['compose/other-containers/**']
+
+env:
+  SOURCE_DIRECTORY: compose/reverse-proxy-containers/enabled/docker-compose.*.yml
+  TARGET_DIRECTORY: /opt
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: SSH | Write env
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        port: ${{ secrets.SSH_PORT }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        passphrase: ${{ secrets.SSH_PASSPHRASE }}
+        script: |
+          cd ${{ env.TARGET_DIRECTORY }}
+          
+          rm ${{ env.TARGET_DIRECTORY}}/.env
+          echo 'PUID=${{ secrets.PUID }}' >> .env
+          echo 'PGID=${{ secrets.PGID }}' >> .env
+          echo 'TZ=${{ secrets.TZ }}' >> .env
+          echo 'DOCKER_DIR=${{ secrets.DOCKER_DIR }}' >> .env
+          echo 'CONF_DIR=${{ secrets.CONF_DIR }}' >> .env
+          echo 'CLOUD_DIR=${{ secrets.CLOUD_DIR }}' >> .env
+          echo 'MEDIA_DIR=${{ secrets.MEDIA_DIR }}' >> .env
+          echo 'DOWNLOAD_DIR=${{ secrets.DOWNLOAD_DIR }}' >> .env
+          echo 'DMS_DIR=${{ secrets.DMS_DIR }}' >> .env
+          echo 'DOWNLOAD_DIR=${{ secrets.DOWNLOAD_DIR }}' >> .env
+          echo 'HOSTNAME=${{ secrets.HOSTNAME }}' >> .env
+          echo 'DOMAINNAME_1=${{ secrets.MEELSNET_DOMAIN }}' >> .env
+          echo 'LOCAL_IPS=${{ secrets.LOCAL_IPS }}' >> .env
+          echo 'CLOUDFLARE_IPS=${{ secrets.CLOUDFLARE_IPS }}' >> .env
+
+
