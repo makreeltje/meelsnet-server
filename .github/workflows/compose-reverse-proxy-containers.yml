@@ -27,7 +27,7 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         source: ${{ env.SOURCE_DIRECTORY }}
         target: ${{ env.TARGET_DIRECTORY }}
-        strip_components: 2
+        strip_components: 3
         rm: false
     - name: SSH SCP | Copy main file
       uses: appleboy/scp-action@master
@@ -38,7 +38,7 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         source: ${{ env.ROOT_FOLDER}}/${{ env.MAIN_FILENAME}}
         target: ${{ env.COMPOSE_DIRECTORY }}
-        strip_components: 0
+        strip_components: 1
         rm: false
     - name: SSH | Start containers
       uses: appleboy/ssh-action@master
