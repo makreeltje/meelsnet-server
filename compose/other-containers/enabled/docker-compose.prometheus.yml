@@ -44,7 +44,7 @@ services:
       - cadvisor
   
   node-exporter:
-    image: prom/node-exporter:v1.8.1
+    image: prom/node-exporter:v1.8.2
     container_name: node-exporter
     user: ${PUID}:${PGID}
     restart: unless-stopped
@@ -68,7 +68,7 @@ services:
       - 9100
 
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:v0.49.1
+    image: gcr.io/cadvisor/cadvisor:v0.50.0
     container_name: cadvisor
     restart: unless-stopped
     volumes:

@@ -23,7 +23,7 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         source: ${{ env.SOURCE_DIRECTORY }}
         target: ${{ env.TARGET_DIRECTORY }}
-        strip_components: 2
+        strip_components: 3
         rm: true
     - name: SSH | Start containers
       uses: appleboy/ssh-action@master
