@@ -51,4 +51,4 @@ jobs:
         script: |
           cd ${{ env.COMPOSE_DIRECTORY }}
           
-          docker compose -f ${{ env.MAIN_FILENAME}} --profile ${{ env.PROFILE_NAME }} up -d
+          docker compose --profile ${{ env.PROFILE_NAME }} -f ${{ env.MAIN_FILENAME}} up -d
