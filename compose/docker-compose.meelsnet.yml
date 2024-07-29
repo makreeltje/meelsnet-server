@@ -22,7 +22,7 @@ secrets:
   cf_dns_api_token:
     file: $DOCKER_DIR/secrets/cf_dns_api_token
 
-includes:
+include:
   ##### SERVICES #####
   # Reverse proxy
   - compose/reverse-proxy/traefik.yml
