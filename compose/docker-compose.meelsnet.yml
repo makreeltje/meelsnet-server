@@ -21,11 +21,14 @@ secrets:
     file: $DOCKER_DIR/secrets/basic_auth_credentials
   cf_dns_api_token:
     file: $DOCKER_DIR/secrets/cf_dns_api_token
+  oauth_secrets:
+    file: $DOCKER_DIR/secrets/oauth_secrets
 
 include:
   ##### SERVICES #####
   # Reverse proxy
   - compose/reverse-proxy/traefik.yml
+  - compose/reverse-proxy/oauth.yml
     
   # Media containers
   
