@@ -1,0 +1,18 @@
+<mat-card appearance="outlined">
+  <img
+    mat-card-image
+    [src]="housingLocation.photo"
+    alt="Exterior of {{ housingLocation.name }}"
+    crossorigin
+  />
+  <mat-card-content>
+    <mat-card-title>{{ housingLocation.name }}</mat-card-title>
+    <mat-card-subtitle>
+      <mat-icon>home_pin</mat-icon> {{ housingLocation.city }},
+      {{ housingLocation.state }}</mat-card-subtitle
+    >
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-button [routerLink]="['/details', housingLocation.id]">Details</button>
+  </mat-card-actions>
+</mat-card>

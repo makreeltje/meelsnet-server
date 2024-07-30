@@ -1,0 +1,56 @@
+<article>
+  <img
+    class="listing-photo"
+    [src]="housingLocation?.photo"
+    alt="Exterior of {{ housingLocation?.name }}"
+    crossorigin
+  />
+  <section class="listing-description">
+    <h2 class="listing-heading">{{ housingLocation?.name }}</h2>
+    <p class="listing-location">
+      {{ housingLocation?.city }}, {{ housingLocation?.state }}
+    </p>
+  </section>
+  <section class="listing-features">
+    <h2 class="section-heading">About this housing location</h2>
+    <ul>
+      <li>Units available: {{ housingLocation?.availableUnits }}</li>
+      <li>Does this location have wifi: {{ housingLocation?.wifi }}</li>
+      <li>Does this location have laundry: {{ housingLocation?.laundry }}</li>
+    </ul>
+  </section>
+  <section class="listing-apply">
+    <h2 class="section-heading">Apply now to live here</h2>
+    <form [formGroup]="applyForm" (submit)="submitApplication()">
+      <table [cellSpacing]="0">
+        <tr>
+          <td>
+            <mat-form-field appearance="outline">
+              <mat-label>First Name</mat-label>
+              <input
+                matInput
+                type="text"
+                formControlName="firstName"
+                required
+              />
+              <mat-error>This field is required</mat-error>
+            </mat-form-field>
+          </td>
+          <td>
+            <mat-form-field appearance="outline">
+              <mat-label>Last Name</mat-label>
+              <input matInput type="text" formControlName="lastName" required />
+              <mat-error>This field is required</mat-error>
+            </mat-form-field>
+          </td>
+        </tr>
+      </table>
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" formControlName="email" required />
+        <mat-error>This field is required</mat-error>
+      </mat-form-field>
+      <button mat-stroked-button type="submit">Apply now</button>
+    </form>
+  </section>
+</article>
