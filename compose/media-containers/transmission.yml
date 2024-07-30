@@ -6,10 +6,6 @@ services:
     profiles: ["media", "all"]
     networks:
       - t3_proxy
-    secrets:
-      - vpn_provider
-      - vpn_username
-      - vpn_password
     environment:
       - PGID=$PGID
       - PUID=$PUID
@@ -19,9 +15,9 @@ services:
       - HEALTH_CHECK_HOST=google.com
       - LOCAL_NETWORK=192.168.0.0/24
       - OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60
-      - OPENVPN_PROVIDER=/run/secrets/vpn_provider
-      - OPENVPN_USERNAME=/run/secrets/vpn_username
-      - OPENVPN_PASSWORD=/run/secrets/vpn_password
+      - OPENVPN_PROVIDER=$VPN_PROVIDER
+      - OPENVPN_USERNAME=$VPN_USERNAME
+      - OPENVPN_PASSWORD=$VPN_PASSWORD
       - DOWNLOAD_QUEUE_ENABLED=true
       - QUEUE_STALLED_ENABLED=true
       - TRANSMISSION_RPC_AUTHENTICATION_REQUIRED=true

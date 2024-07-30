@@ -39,5 +39,8 @@ jobs:
           echo 'DOMAINNAME_1=${{ secrets.MEELSNET_DOMAIN }}' >> .env
           echo 'LOCAL_IPS=${{ secrets.LOCAL_IPS }}' >> .env
           echo 'CLOUDFLARE_IPS=${{ secrets.CLOUDFLARE_IPS }}' >> .env
+          echo 'VPN_PROVIDER=${{ secrets.VPN_PROVIDER }}' >> .env
+          echo 'VPN_USERNAME=${{ secrets.VPN_USERNAME }}' >> .env
+          echo 'VPN_PASSWORD=${{ secrets.VPN_PASSWORD }}' >> .env
 
 
