@@ -1,0 +1,24 @@
+services:
+  overseerr:
+    container_name: overseerr
+    image: linuxserver/overseerr:1.33.2
+    restart: unless-stopped
+    profiles: ["media", "all"]
+    networks:
+      - t3_proxy
+    environment:
+      - PGID=$PGID
+      - PUID=$PUID
+      - TZ=$TZ
+    volumes:
+      - $CONF_DIR/overseerr/config:/config
+    expose:
+      - 5055
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.overseerr-rtr.tls=true"
+      - "traefik.http.routers.overseerr-rtr.entrypoints=websecure"
+      - "traefik.http.routers.overseerr-rtr.rule=Host(`overseerr.$DOMAINNAME_1`) || Host(`request.$DOMAINNAME_1`) || Host(`ombi.$DOMAINNAME_1`)"
+      - "traefik.http.routers.overseerr-rtr.middlewares=chain-oauth@file"
+      - "traefik.http.routers.overseerr-rtr.service=overseerr-svc"
+      - "traefik.http.services.overseerr-svc.loadbalancer.server.port=5055"

@@ -1,0 +1,61 @@
+services:
+  transmission:
+    container_name: transmission
+    image: haugene/transmission-openvpn:5.3.1@sha256:a128b49e29379895c5815e8bea3c1b5eb42ccbef4ab9e5109a72b97d8fd7c0b0
+    restart: unless-stopped
+    profiles: ["media", "all"]
+    networks:
+      - t3_proxy
+    secrets:
+      - vpn_provider
+      - vpn_username
+      - vpn_password
+    environment:
+      - PGID=$PGID
+      - PUID=$PUID
+      - TZ=$TZ
+      - CREATE_TUN_DEVICE=true
+      - DROP_DEFAULT_ROUTE=true
+      - HEALTH_CHECK_HOST=google.com
+      - LOCAL_NETWORK=192.168.0.0/24
+      - OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60
+      - OPENVPN_PROVIDER=/run/secrets/vpn_provider
+      - OPENVPN_USERNAME=/run/secrets/vpn_username
+      - OPENVPN_PASSWORD=/run/secrets/vpn_password
+      - DOWNLOAD_QUEUE_ENABLED=true
+      - QUEUE_STALLED_ENABLED=true
+      - TRANSMISSION_RPC_AUTHENTICATION_REQUIRED=true
+      - TRANSMISSION_RPC_HOST_WHITELIST=127.0.0.1,192.168.*.*
+      - TRANSMISSION_RPC_HOST_WHITELIST_ENABLED=true
+      - TRANSMISSION_PORT_FORWARDING_ENABLED=true
+      - TRANSMISSION_RATIO_LIMIT=1.50
+      - TRANSMISSION_RATIO_LIMIT_ENABLED=true
+      - TRANSMISSION_IDLE_SEEDING_LIMIT_ENABLED=false
+      - TRANSMISSION_UTP_ENABLED=false
+      - TRANSMISSION_WEB_UI=flood-for-transmission
+    volumes:
+      - $CONF_DIR/transmission/data:/data
+      - $CONF_DIR/transmission/config:/config
+      - $DOWNLOAD_DIR/completed:/data/completed
+      - $DOWNLOAD_DIR/incomplete:/data/incomplete
+      - /etc/localtime:/etc/localtime:ro
+    expose:
+      - 9091
+    ports:
+      - 51413:51413
+      - 51413:51413/udp
+    dns:
+      - 1.1.1.1
+      - 1.0.0.1
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.transmission-rtr.tls=true"
+      - "traefik.http.routers.transmission-rtr.entrypoints=websecure"
+      - "traefik.http.routers.transmission-rtr.rule=Host(`transmission.$DOMAINNAME_1`) || Host(`torrents.$DOMAINNAME_1`)"
+      - "traefik.http.routers.transmission-rtr.middlewares=chain-oauth@file"
+      - "traefik.http.routers.transmission-rtr.service=transmission-svc"
+      - "traefik.http.services.transmission-svc.loadbalancer.server.port=9091"
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun

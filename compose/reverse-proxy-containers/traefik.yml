@@ -9,6 +9,8 @@ services:
     networks:
       t3_proxy:
         ipv4_address: 10.2.0.254
+    extra_hosts:
+      - host.docker.internal:host-gateway
     command:
       - --global.checkNewVersion=true
       - --global.sendAnonymousUsage=false
@@ -46,8 +48,19 @@ services:
       - --certificatesResolvers.dns-cloudflare.acme.dnsChallenge.provider=cloudflare
       - --certificatesResolvers.dns-cloudflare.acme.dnsChallenge.resolvers=1.1.1.1:53,1.0.0.1:53
       - --certificatesResolvers.dns-cloudflare.acme.dnsChallenge.delayBeforeCheck=90
-    extra_hosts:
-      - host.docker.internal:host-gateway
+    secrets:
+      - cf_dns_api_token
+      - basic_auth_credentials
+    environment:
+      - TZ=$TZ
+      - CF_DNS_API_TOKEN_FILE=/run/secrets/cf_dns_api_token    
+      - HTPASSWD_FILE=/run/secrets/basic_auth_credentials
+      - DOMAINNAME_1
+    volumes:
+      - $CONF_DIR/traefik3/rules/$HOSTNAME:/rules
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - $CONF_DIR/traefik3/acme/acme.json:/acme.json
+      - $DOCKER_DIR/logs/$HOSTNAME/traefik:/logs
     ports:
       - target: 80
         published: 80
@@ -57,19 +70,6 @@ services:
         published: 443
         protocol: tcp
         mode: host
-    volumes:
-      - $CONF_DIR/traefik3/rules/$HOSTNAME:/rules
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - $CONF_DIR/traefik3/acme/acme.json:/acme.json
-      - $DOCKER_DIR/logs/$HOSTNAME/traefik:/logs
-    environment:
-      - TZ=$TZ
-      - CF_DNS_API_TOKEN_FILE=/run/secrets/cf_dns_api_token    
-      - HTPASSWD_FILE=/run/secrets/basic_auth_credentials
-      - DOMAINNAME_1
-    secrets:
-      - cf_dns_api_token
-      - basic_auth_credentials
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.traefik-rtr.entrypoints=websecure"

@@ -1,0 +1,36 @@
+services:
+  sonarr:
+    container_name: sonarr
+    image: linuxserver/sonarr:4.0.8
+    restart: unless-stopped
+    profiles: ["media", "all"]
+    networks:
+      - t3_proxy
+    environment:
+      - PGID=$PGID
+      - PUID=$PUID
+      - TZ=$TZ
+    volumes:
+      - $CONF_DIR/sonarr/config:/config
+      - $MEDIA_DIR/TV:/tv
+      - $MEDIA_DIR/Series:/series
+      - $MEDIA_DIR/Anime:/anime
+      - $DOWNLOAD_DIR:/data
+      - $DOWNLOAD_DIR:/downloads
+    expose:
+      - 8989
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.sonarr.entrypoints=https"
+      - "traefik.http.routers.sonarr.rule=Host(`sonarr.$MEELSNET_DOMAIN`) || Host(`series.$MEELSNET_DOMAIN`)"
+      - "traefik.http.routers.sonarr.tls=true"
+      - "traefik.http.routers.sonarr.middlewares=chain-no-auth@file"
+      - "traefik.http.routers.sonarr.service=sonarr"
+      - "traefik.http.services.sonarr.loadbalancer.server.port=8989"
+      - "traefik.enable=true"
+      - "traefik.http.routers.sonarr-rtr.tls=true"
+      - "traefik.http.routers.sonarr-rtr.entrypoints=websecure"
+      - "traefik.http.routers.sonarr-rtr.rule=Host(`sonarr.$DOMAINNAME_1`) || Host(`series.$DOMAINNAME_1`)"
+      - "traefik.http.routers.sonarr-rtr.middlewares=chain-oauth@file"
+      - "traefik.http.routers.sonarr-rtr.service=sonarr-svc"
+      - "traefik.http.services.sonarr-svc.loadbalancer.server.port=8989"

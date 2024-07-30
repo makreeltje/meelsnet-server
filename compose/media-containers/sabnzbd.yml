@@ -1,0 +1,25 @@
+services:
+  sabnzbd:
+    container_name: sabnzbd
+    image: linuxserver/sabnzbd:4.3.2
+    restart: unless-stopped
+    profiles: ["media", "all"]
+    networks:
+      - t3_proxy
+    environment:
+      - PGID=$PGID
+      - PUID=$PUID
+      - TZ=$TZ
+    volumes:
+      - $CONF_DIR/sabnzbd/config:/config
+      - $DOWNLOAD_DIR:/downloads
+    expose:
+      - 8080
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.sabnzbd-rtr.tls=true"
+      - "traefik.http.routers.sabnzbd-rtr.entrypoints=websecure"
+      - "traefik.http.routers.sabnzbd-rtr.rule=Host(`sabnzbd.$DOMAINNAME_1`) || Host(`sab.$DOMAINNAME_1`)"
+      - "traefik.http.routers.sabnzbd-rtr.middlewares=chain-oauth@file"
+      - "traefik.http.routers.sabnzbd-rtr.service=sabnzbd-svc"
+      - "traefik.http.services.sabnzbd-svc.loadbalancer.server.port=8080"

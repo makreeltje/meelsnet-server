@@ -6,6 +6,9 @@ services:
     profiles: ["reverse-proxy", "all"]
     networks:
       - t3_proxy
+    secrets:
+      - source: oauth_secrets
+        target: /config
     environment:
       - CONFIG=/config
       - COOKIE_DOMAIN=$MEELSNET_DOMAIN
@@ -17,9 +20,6 @@ services:
       - LIFETIME=86400
       - DEFAULT_ACTION=auth
       - DEFAULT_PROVIDER=google
-    secrets:
-      - source: oauth_secrets
-        target: /config
     expose:
       - 4181
     labels:

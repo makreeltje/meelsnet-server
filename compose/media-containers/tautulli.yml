@@ -1,0 +1,25 @@
+services:
+  tautulli:
+    container_name: tautulli
+    image: tautulli/tautulli:v2.14.3
+    restart: unless-stopped
+    profiles: ["media", "all"]
+    networks:
+      - t3_proxy
+    environment:
+      - PGID=$PGID
+      - PUID=$PUID
+      - TZ=$TZ
+    volumes:
+      - $CONF_DIR/tautulli/config:/config
+      - $CONF_DIR/plex/config/Library/Application\ Support/Plex\ Media\ Server/Logs:/logs:ro
+    expose:
+    - 8181
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.tautulli-rtr.tls=true"
+      - "traefik.http.routers.tautulli-rtr.entrypoints=websecure"
+      - "traefik.http.routers.tautulli-rtr.rule=Host(`tautulli.$DOMAINNAME_1`)"
+      - "traefik.http.routers.tautulli-rtr.middlewares=chain-oauth@file"
+      - "traefik.http.routers.tautulli-rtr.service=tautulli-svc"
+      - "traefik.http.services.tautulli-svc.loadbalancer.server.port=8181"

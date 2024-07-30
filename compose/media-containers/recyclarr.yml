@@ -1,0 +1,13 @@
+services:
+  recyclarr:
+    container_name: recyclarr
+    image: ghcr.io/recyclarr/recyclarr:7.2.0
+    restart: unless-stopped
+    user: $PUID:$PGID
+    profiles: ["media", "all"]
+    networks:
+      - t3_proxy
+    environment:
+      - TZ=$TZ
+    volumes:
+      - $CONF_DIR/recyclarr/config:/config

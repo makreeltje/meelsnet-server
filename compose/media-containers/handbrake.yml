@@ -1,0 +1,26 @@
+services:
+  handbrake:
+    container_name: handbrake
+    image: jlesage/handbrake:v23.12.2
+    restart: unless-stopped
+    profiles: ["media", "all"]
+    networks:
+      - t3_proxy
+    environment:
+      - PGID=$PGID
+      - PUID=$PUID
+      - TZ=$TZ
+    volumes:
+      - $CONF_DIR/handbrake/config:/config
+      - $DOWNLOAD_DIR/completed:/storage
+      - $DOWNLOAD_DIR/handbrake_output:/output
+    expose:
+      - 5800
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.handbrake-rtr.tls=true"
+      - "traefik.http.routers.handbrake-rtr.entrypoints=websecure"
+      - "traefik.http.routers.handbrake-rtr.rule=Host(`handbrake.$DOMAINNAME_1`)"
+      - "traefik.http.routers.handbrake-rtr.middlewares=chain-oauth@file"
+      - "traefik.http.routers.handbrake-rtr.service=handbrake-svc"
+      - "traefik.http.services.handbrake-svc.loadbalancer.server.port=5800"

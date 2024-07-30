@@ -1,0 +1,28 @@
+services:
+  service_name:
+    container_name: container_name
+    image: image
+    restart: unless-stopped
+    profiles: ["all"]
+    networks:
+      - t3_proxy
+    command:
+      - commands
+    secrets:
+      - secret_name
+    environment:
+      - PGID=$PGID
+      - PUID=$PUID
+      - TZ=$TZ
+    volumes:
+      - $CONF_DIR/container_name/config:/config
+    expose:
+      - 0000
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.service_name-rtr.tls=true"
+      - "traefik.http.routers.service_name-rtr.entrypoints=websecure"
+      - "traefik.http.routers.service_name-rtr.rule=Host(`service_name.$DOMAINNAME_1`)"
+      - "traefik.http.routers.service_name-rtr.middlewares=chain-oauth@file"
+      - "traefik.http.routers.service_name-rtr.service=service_name-svc"
+      - "traefik.http.services.service_name-svc.loadbalancer.server.port=0000"

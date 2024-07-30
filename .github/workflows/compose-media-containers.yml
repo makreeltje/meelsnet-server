@@ -6,8 +6,12 @@ on:
     paths: ['compose/media-containers/**']
 
 env:
-  SOURCE_DIRECTORY: compose/media-containers/enabled/docker-compose.*.yml
+  PROFILE_NAME: media
+  ROOT_FOLDER: compose
+  MAIN_FILENAME: docker-compose.meelsnet.yml
+  SOURCE_DIRECTORY: compose/media-containers/*.yml
   TARGET_DIRECTORY: /opt/compose/media-server
+  COMPOSE_DIRECTORY: /opt
 
 jobs:
   deploy:
@@ -23,8 +27,19 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         source: ${{ env.SOURCE_DIRECTORY }}
         target: ${{ env.TARGET_DIRECTORY }}
-        strip_components: 3
-        rm: true
+        strip_components: 2
+        rm: false
+    - name: SSH SCP | Copy main file
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        port: ${{ secrets.SSH_PORT }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        source: ${{ env.ROOT_FOLDER}}/${{ env.MAIN_FILENAME}}
+        target: ${{ env.COMPOSE_DIRECTORY }}
+        strip_components: 1
+        rm: false
     - name: SSH | Start containers
       uses: appleboy/ssh-action@master
       with:
@@ -34,22 +49,6 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         passphrase: ${{ secrets.SSH_PASSPHRASE }}
         script: |
-          cd ${{ env.TARGET_DIRECTORY }}
+          cd ${{ env.COMPOSE_DIRECTORY }}
           
-          echo 'PGID=${{ secrets.PGID }}' >> .env
-          echo 'PUID=${{ secrets.PUID }}' >> .env
-          echo 'TZ=${{ secrets.TZ }}' >> .env
-          echo 'CONF_DIR=${{ secrets.CONF_DIR }}' >> .env
-          echo 'MEDIA_DIR=${{ secrets.MEDIA_DIR }}' >> .env
-          echo 'DOWNLOAD_DIR=${{ secrets.DOWNLOAD_DIR }}' >> .env
-          echo 'PLEX_CLAIM_TOKEN=${{ secrets.PLEX_CLAIM_TOKEN }}' >> .env
-          echo 'VPN_PROVIDER=${{ secrets.VPN_PROVIDER }}' >> .env
-          echo 'VPN_USERNAME=${{ secrets.VPN_USERNAME }}' >> .env
-          echo 'VPN_PASSWORD=${{ secrets.VPN_PASSWORD }}' >> .env
-          echo 'TORRENT_USERNAME=${{ secrets.TORRENT_USERNAME }}' >> .env
-          echo 'TORRENT_PASSWORD=${{ secrets.TORRENT_PASSWORD }}' >> .env
-          echo 'TORRENT_BLOCKLIST=${{ secrets.TORRENT_BLOCKLIST }}' >> .env
-          echo 'MEELSNET_DOMAIN=${{ secrets.MEELSNET_DOMAIN }}' >> .env
-          echo 'CINEMON_DOMAIN=${{ secrets.CINEMON_DOMAIN }}' >> .env
-          
-          docker-compose $(find docker-compose.*.yml | sed -e 's/^/-f /') up -d
+          docker compose --profile ${{ env.PROFILE_NAME }} -f ${{ env.MAIN_FILENAME}} up -d
