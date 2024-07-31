@@ -1,4 +1,3 @@
-version: "3.7"
 services:
   mc-allthemods9:
     container_name: mc-allthemods9
