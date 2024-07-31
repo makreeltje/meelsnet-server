@@ -2,15 +2,17 @@ services:
   oauth:
     container_name: oauth
     image: thomseddon/traefik-forward-auth:2.2.0
+    security_opt:
+      - no-new-privileges:true
     restart: unless-stopped
     profiles: ["reverse-proxy", "all"]
     networks:
       - t3_proxy
     environment:
       - CONFIG=/config
-      - COOKIE_DOMAIN=$MEELSNET_DOMAIN
+      - COOKIE_DOMAIN=$DOMAINNAME_1
       - INSECURE_COOKIE=false
-      - AUTH_HOST=oauth.$MEELSNET_DOMAIN
+      - AUTH_HOST=oauth.$DOMAINNAME_1
       - URL_PATH=/_oauth
       - LOG_LEVEL=warn
       - LOG_FORMAT=text
