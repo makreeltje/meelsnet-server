@@ -1,0 +1,33 @@
+version: "3.7"
+services:
+  mc-allthemods9:
+    container_name: mc-allthemods9
+    image: itzg/minecraft-server:2024.7.2-java21
+    restart: unless-stopped
+    profiles: ["games", "all"]
+    environment:
+      PUID: $PUID
+      PGID: $PGID
+      TZ: $TZ
+      EULA: true
+      MOD_PLATFORM: AUTO_CURSEFORGE
+      CF_API_KEY: $CF_API_KEY
+      CF_PAGE_URL: https://www.curseforge.com/minecraft/modpacks/all-the-mods-9
+      CF_OVERRIDES_EXCLUSIONS: |
+        mods/iris*.jar
+        mods/sodium*.jar
+      SERVER_NAME: "All The Mods 9"
+      ENABLE_AUTOPAUSE: "TRUE"
+      AUTOPAUSE_TIMEOUT_INIT: "30"
+      AUTOPAUSE_TIMEOUT_EST: "60"
+      MAX_TICK_TIME: -1
+      INIT_MEMORY: "1G"
+      MAX_MEMORY: "16G"
+      ENABLE_RCON: "true"
+    volumes:
+      - $CONF_DIR/minecraft/data/allthemods9:/data
+    ports:
+      - 25965:25565
+      - 25975:25575
+    stdin_open: true
+    tty: true

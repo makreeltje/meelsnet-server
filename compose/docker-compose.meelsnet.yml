@@ -39,5 +39,6 @@ include:
   - compose/media-server/transmission.yml
   
   # Game containers
+  - compose/game-servers/mc-allthemods9.yml
 
   # Other containers

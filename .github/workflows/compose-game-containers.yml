@@ -6,8 +6,12 @@ on:
     paths: ['compose/game-containers/**']
 
 env:
-  SOURCE_DIRECTORY: compose/game-containers/enabled/docker-compose.*.yml
+  PROFILE_NAME: games
+  ROOT_FOLDER: compose
+  MAIN_FILENAME: docker-compose.meelsnet.yml
+  SOURCE_DIRECTORY: compose/game-containers/*.yml
   TARGET_DIRECTORY: /opt/compose/game-servers
+  COMPOSE_DIRECTORY: /opt
 
 jobs:
   deploy:
@@ -23,8 +27,19 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         source: ${{ env.SOURCE_DIRECTORY}}
         target: ${{ env.TARGET_DIRECTORY }}
-        strip_components: 3
-        rm: true
+        strip_components: 2
+        rm: false
+    - name: SSH SCP | Copy main file
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        port: ${{ secrets.SSH_PORT }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        source: ${{ env.ROOT_FOLDER}}/${{ env.MAIN_FILENAME}}
+        target: ${{ env.COMPOSE_DIRECTORY }}
+        strip_components: 1
+        rm: false
     - name: SSH | Start containers
       uses: appleboy/ssh-action@master
       with:
@@ -34,20 +49,6 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         passphrase: ${{ secrets.SSH_PASSPHRASE }}
         script: |
-          cd ${{ env.TARGET_DIRECTORY }}
+          cd ${{ env.COMPOSE_DIRECTORY }}
           
-          echo 'PGID=${{ secrets.PGID }}' >> .env
-          echo 'PUID=${{ secrets.PUID }}' >> .env
-          echo 'TZ=${{ secrets.TZ }}' >> .env
-          echo 'CONF_DIR=${{ secrets.CONF_DIR }}' >> .env
-          echo 'VALHEIM_SERVER_NAME=${{ secrets.VALHEIM_SERVER_NAME }}' >> .env
-          echo 'VALHEIM_WORLD_NAME=${{ secrets.VALHEIM_WORLD_NAME }}' >> .env
-          echo 'VALHEIM_SERVER_PASS=${{ secrets.VALHEIM_SERVER_PASS }}' >> .env
-          echo 'USERNAME=${{ secrets.USERNAME }}' >> .env
-          echo 'PASSWORD=${{ secrets.PASSWORD }}' >> .env
-          echo 'MC_HOSTNAME=${{ secrets.MC_HOSTNAME }}' >> .env
-          echo 'MC_RCON_PASSWORD=${{ secrets.MC_RCON_PASSWORD }}' >> .env
-          echo 'CF_API_KEY=${{ secrets.CF_API_KEY }}' >> .env
-          echo 'MEELSNET_DOMAIN=${{ secrets.MEELSNET_DOMAIN }}' >> .env
-          
-          docker-compose $(find docker-compose.*.yml | sed -e 's/^/-f /') up -d
+          docker compose --profile ${{ env.PROFILE_NAME }} -f ${{ env.MAIN_FILENAME}} up -d

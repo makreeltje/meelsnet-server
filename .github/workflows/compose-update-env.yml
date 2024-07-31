@@ -42,6 +42,8 @@ jobs:
           echo 'VPN_USERNAME=${{ secrets.VPN_USERNAME }}' >> .env
           echo 'VPN_PASSWORD=${{ secrets.VPN_PASSWORD }}' >> .env
           echo 'TRAEFIK_AUTH_BYPASS_KEY=${{ secrets.TRAEFIK_AUTH_BYPASS_KEY }}' >> .env
+          echo 'CF_API_KEY=${{ secrets.CF_API_KEY }}' >> .env
+          
 
 
 
