@@ -21,7 +21,7 @@ services:
       - 8989
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.sonarr-rtr-bypass.entrypoints=https"
+      - "traefik.http.routers.sonarr-rtr-bypass.entrypoints=websecure"
       - "traefik.http.routers.sonarr-rtr-bypass.rule=Host(`series.$DOMAINNAME_1`) && Header(`traefik-auth-bypass-key`, `$TRAEFIK_AUTH_BYPASS_KEY`)"
       - "traefik.http.routers.sonarr-rtr-bypass.priority=100"
       - "traefik.http.routers.sonarr-rtr.tls=true"

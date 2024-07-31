@@ -17,7 +17,7 @@ services:
       - 8080
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.sabnzbd-rtr-bypass.entrypoints=https"
+      - "traefik.http.routers.sabnzbd-rtr-bypass.entrypoints=websecure"
       - "traefik.http.routers.sabnzbd-rtr-bypass.rule=Host(`sab.$DOMAINNAME_1`) && Header(`traefik-auth-bypass-key`, `$TRAEFIK_AUTH_BYPASS_KEY`)"
       - "traefik.http.routers.sabnzbd-rtr-bypass.priority=100"
       - "traefik.http.routers.sabnzbd-rtr.tls=true"
