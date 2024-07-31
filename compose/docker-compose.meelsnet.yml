@@ -17,12 +17,6 @@ secrets:
     file: $DOCKER_DIR/secrets/cf_dns_api_token
   oauth_secrets:
     file: $DOCKER_DIR/secrets/oauth_secrets
-  vpn_provider:
-    file: $DOCKER_DIR/secrets/vpn_provider
-  vpn_username:
-    file: $DOCKER_DIR/secrets/vpn_username
-  vpn_password:
-    file: $DOCKER_DIR/secrets/vpn_password
   plex_claim_token:
     file: $DOCKER_DIR/secrets/plex_claim_token
 
