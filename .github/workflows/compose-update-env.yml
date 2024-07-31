@@ -24,8 +24,7 @@ jobs:
         script: |
           cd ${{ env.TARGET_DIRECTORY }}
           
-          rm ${{ env.TARGET_DIRECTORY}}/.env
-          echo 'PUID=${{ secrets.PUID }}' >> .env
+          echo 'PUID=${{ secrets.PUID }}' > .env
           echo 'PGID=${{ secrets.PGID }}' >> .env
           echo 'TZ=${{ secrets.TZ }}' >> .env
           echo 'DOCKER_DIR=${{ secrets.DOCKER_DIR }}' >> .env
