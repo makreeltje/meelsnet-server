@@ -43,9 +43,9 @@ jobs:
           echo 'VPN_PASSWORD=${{ secrets.VPN_PASSWORD }}' >> .env
           echo 'TRAEFIK_AUTH_BYPASS_KEY=${{ secrets.TRAEFIK_AUTH_BYPASS_KEY }}' >> .env
           echo 'CF_API_KEY=${{ secrets.CF_API_KEY }}' >> .env
-          echo 'POSTGRESS_ROOT_PASSWORD=${{ secrets.POSTGRESS_PASSWORD }}' >> .env
-          echo 'MONGO_ROOT_USER=${{ secrets.MONGO_ROOT_USER }}' >> .env
-          echo 'MONGO_ROOT_PASSWORD=${{ secrets.MONGO_ROOT_PASSWORD }}' >> .env
+          echo 'PSQL_DBPASSWORD=${{ secrets.PSQL_DBPASSWORD }}' >> .env
+          echo 'MONGO_DBUSER=${{ secrets.MONGO_DBUSER }}' >> .env
+          echo 'MONGO_DBPASSWORD=${{ secrets.MONGO_DBPASSWORD }}' >> .env
           
 
 
