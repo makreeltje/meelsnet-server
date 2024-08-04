@@ -64,4 +64,4 @@ services:
       - "traefik.http.routers.unifi-rtr.middlewares=chain-unifi@file"
       - "traefik.http.routers.unifi-rtr.service=unifi-svc"
       - "traefik.http.services.unifi-svc.loadbalancer.server.port=8443"
-      - "traefik.http.services.unifi-svc.loadbalancer.server.scheme=https"
+      - "traefik.http.services.unifi-svc.loadbalancer.server.scheme=websecure"
