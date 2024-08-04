@@ -42,3 +42,5 @@ include:
   - compose/game-servers/mc-allthemods9.yml
 
   # Other containers
+  - compose/other-containers/mongo.yml
+  - compose/other-containers/postgress.yml

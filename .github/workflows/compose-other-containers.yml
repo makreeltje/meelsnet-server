@@ -6,7 +6,10 @@ on:
     paths: ['compose/other-containers/**']
 
 env:
-  SOURCE_DIRECTORY: compose/other-containers/enabled/docker-compose.*.yml
+  PROFILE_NAME: other
+  ROOT_FOLDER: compose
+  MAIN_FILENAME: docker-compose.meelsnet.yml
+  SOURCE_DIRECTORY: compose/other-containers/*.yml
   TARGET_DIRECTORY: /opt/compose/server
 
 jobs:
@@ -23,8 +26,19 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         source: ${{ env.SOURCE_DIRECTORY }}
         target: ${{ env.TARGET_DIRECTORY }}
-        strip_components: 3
-        rm: true
+        strip_components: 2
+        rm: false
+    - name: SSH SCP | Copy main file
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        port: ${{ secrets.SSH_PORT }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        source: ${{ env.ROOT_FOLDER}}/${{ env.MAIN_FILENAME}}
+        target: ${{ env.COMPOSE_DIRECTORY }}
+        strip_components: 1
+        rm: false
     - name: SSH | Start containers
       uses: appleboy/ssh-action@master
       with:
@@ -36,43 +50,4 @@ jobs:
         script: |
           cd ${{ env.TARGET_DIRECTORY }}
           
-          echo 'PGID=${{ secrets.PGID }}' >> .env
-          echo 'PUID=${{ secrets.PUID }}' >> .env
-          echo 'TZ=${{ secrets.TZ }}' >> .env
-          echo 'CONF_DIR=${{ secrets.CONF_DIR }}' >> .env
-          echo 'CLOUD_DIR=${{ secrets.CLOUD_DIR }}' >> .env
-          echo 'DB_CONN=${{ secrets.DB_CONN }}' >> .env
-          echo 'DB_HOST=${{ secrets.DB_HOST }}' >> .env
-          echo 'DB_PORT=${{ secrets.DB_PORT }}' >> .env
-          echo 'DB_STATPING_DATABASE=${{ secrets.DB_STATPING_DATABASE }}' >> .env
-          echo 'DB_STATPING_USER=${{ secrets.DB_STATPING_USER }}' >> .env
-          echo 'DB_STATPING_PASS=${{ secrets.DB_STATPING_PASS }}' >> .env
-          echo 'DIUN_WEBHOOK_URL=${{ secrets.DIUN_WEBHOOK_URL }}' >> .env
-          echo 'WATCHTOWER_WEBHOOK_URL=${{ secrets.WATCHTOWER_WEBHOOK_URL }}' >> .env
-          echo 'POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}' >> .env
-          echo 'SONARQUBE_JDBC_USERNAME=${{ secrets.SONARQUBE_JDBC_USERNAME }}' >> .env
-          echo 'SONARQUBE_JDBC_PASSWORD=${{ secrets.SONARQUBE_JDBC_PASSWORD }}' >> .env
-          echo 'MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}' >> .env
-          echo 'MYSQL_USER=${{ secrets.MYSQL_USER }}' >> .env
-          echo 'MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}' >> .env
-          echo 'MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}' >> .env
-          echo 'ASF_CRYPTKEY=${{ secrets.ASF_CRYPTKEY }}' >> .env
-          echo 'MEELSNET_DOMAIN=${{ secrets.MEELSNET_DOMAIN }}' >> .env
-          echo 'CINEMON_DOMAIN=${{ secrets.CINEMON_DOMAIN }}' >> .env
-          echo 'NEXTCLOUD_DB=${{ secrets.NEXTCLOUD_DB }}' >> .env
-          echo 'NEXTCLOUD_USER=${{ secrets.NEXTCLOUD_USER }}' >> .env
-          echo 'NEXTCLOUD_PASSWORD=${{ secrets.NEXTCLOUD_PASSWORD }}' >> .env
-          echo 'SONARR_API_KEY=${{ secrets.SONARR_API_KEY }}' >> .env
-          echo 'RADARR_API_KEY=${{ secrets.RADARR_API_KEY }}' >> .env
-          echo 'SABNZBD_API_KEY=${{ secrets.SABNZBD_API_KEY }}' >> .env
-          echo 'MONGO_ROOT_USER=${{ secrets.MONGO_ROOT_USER }}' >> .env
-          echo 'MONGO_ROOT_PASSWORD=${{ secrets.MONGO_ROOT_PASSWORD }}' >> .env
-          echo 'MONGO_UNIFI_USER=${{ secrets.MONGO_UNIFI_USER }}' >> .env
-          echo 'MONGO_UNIFI_PASSWORD=${{ secrets.MONGO_UNIFI_PASSWORD }}' >> .env
-          echo 'MONGO_UNIFI_DB=${{ secrets.MONGO_UNIFI_DB }}' >> .env
-          echo 'PAPERLESS_DBNAME=${{ secrets.PAPERLESS_DBNAME }}' >> .env
-          echo 'PAPERLESS_DBUSER=${{ secrets.PAPERLESS_DBUSER }}' >> .env
-          echo 'PAPERLESS_DBPASS=${{ secrets.PAPERLESS_DBPASS }}' >> .env
-          echo 'DMS_DIR=${{ secrets.DMS_DIR }}' >> .env
-          
-          docker-compose $(find docker-compose.*.yml | sed -e 's/^/-f /') up -d
+          docker compose --profile ${{ env.PROFILE_NAME }} -f ${{ env.MAIN_FILENAME}} up -d

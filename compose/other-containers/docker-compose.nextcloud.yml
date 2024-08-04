@@ -1,0 +1,54 @@
+version: "3.7"
+
+networks:
+  traefik_proxy:
+    external:
+      name: traefik_proxy
+  default:
+    driver: bridge
+
+services:
+  nextcloud:
+    image: nextcloud:29.0.4
+    container_name: nextcloud
+    hostname: nextcloud
+    restart: unless-stopped
+    environment:
+      REDIS_HOST: nc-redis
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+      NEXTCLOUD_DATA_DIR: /data
+      NEXTCLOUD_TRUSTED_DOMAIN: cloud.$MEELSNET_DOMAIN
+      TRUSTED_PROXIES: 172.21.0.0/16
+      POSTGRES_HOST: postgres:5432
+      POSTGRES_DB: ${NEXTCLOUD_DB}
+      POSTGRES_USER: ${NEXTCLOUD_USER}
+      POSTGRES_PASSWORD: ${NEXTCLOUD_PASSWORD}
+    volumes:
+      - ${CONF_DIR}/nextcloud/config:/var/www/html
+      - ${CLOUD_DIR}:/data
+    networks:
+      - traefik_proxy
+    expose:
+      - 80
+    ports:
+      - 8081:80
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nextcloud.entrypoints=https"
+      - "traefik.http.routers.nextcloud.rule=Host(`cloud.$MEELSNET_DOMAIN`)"
+      - "traefik.http.routers.nextcloud.tls=true"
+      - "traefik.http.routers.nextcloud.middlewares=chain-nextcloud@file"
+      - "traefik.http.routers.nextcloud.service=nextcloud"
+      - "traefik.http.services.nextcloud.loadbalancer.server.port=80"
+
+  nc-redis:
+    image: redis:7.2-alpine
+    container_name: nc-redis
+    hostname: nc-redis
+    restart: unless-stopped
+    volumes:
+      - ${CONF_DIR}/nextcloud/redis:/data
+    networks:
+      - traefik_proxy

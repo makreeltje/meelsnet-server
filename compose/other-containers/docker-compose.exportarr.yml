@@ -1,0 +1,58 @@
+version: "3.7"
+
+networks:
+  traefik_proxy:
+    external:
+      name: traefik_proxy
+  default:
+    driver: bridge
+
+services:
+  sonarr-exportarr:
+    container_name: sonarr-exportarr
+    image: ghcr.io/onedr0p/exportarr:v1.6.2
+    command: ["sonarr"]
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - PORT=9707
+      - URL=http://sonarr:8989
+      - APIKEY=${SONARR_API_KEY}
+    networks:
+      - traefik_proxy
+    ports:
+      - 9707:9707
+  radarr-exportarr:
+    container_name: radarr-exportarr
+    image: ghcr.io/onedr0p/exportarr:v1.6.2
+    command: ["radarr"]
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - PORT=9708
+      - URL=http://radarr:7878
+      - APIKEY=${RADARR_API_KEY}
+    networks:
+      - traefik_proxy
+    ports:
+      - 9708:9708
+  sabnzbd-exportarr:
+    container_name: sabnzbd-exportarr
+    image: ghcr.io/onedr0p/exportarr:v1.6.2
+    command: ["sabnzbd"]
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - PORT=9712
+      - URL=http://sabnzbd:8080
+      - APIKEY=${SABNZBD_API_KEY}
+    networks:
+      - traefik_proxy
+    ports:
+      - 9712:9712

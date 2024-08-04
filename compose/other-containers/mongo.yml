@@ -1,0 +1,40 @@
+services:
+  mongo:
+    container_name: mongo
+    image: mongo:7.0.12
+    restart: unless-stopped
+    profiles: ["other", "database", "all"]
+    networks:
+      - t3_proxy
+    environment:
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
+      - MONGO_INITDB_ROOT_USERNAME=$MONGO_ROOT_USER
+      - MONGO_INITDB_ROOT_PASSWORD=$MONGO_ROOT_PASSWORD
+    volumes:
+      - $CONF_DIR/mongo/db:/data/db
+    ports:
+      - 27017:27017
+
+  mongo-express:
+    container_name: mongo-express
+    image: mongo-express
+    restart: unless-stopped
+    profiles: ["database", "all"]
+    environment:
+      - ME_CONFIG_BASICAUTH_USERNAME=$MONGO_ROOT_USER
+      - ME_CONFIG_BASICAUTH_PASSWORD=$MONGO_ROOT_PASSWORD
+      - ME_CONFIG_MONGODB_URL=mongodb://$MONGO_ROOT_USER:$MONGO_ROOT_PASSWORD@mongo:27017/
+    networks:
+      - t3_proxy
+    expose:
+      - 8081
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mongo-express-rtr.tls=true"
+      - "traefik.http.routers.mongo-express-rtr.entrypoints=websecure"
+      - "traefik.http.routers.mongo-express-rtr.rule=Host(`mongo.$DOMAINNAME_1`)"
+      - "traefik.http.routers.mongo-express-rtr.middlewares=chain-oauth@file"
+      - "traefik.http.routers.mongo-express-rtr.service=mongo-express-svc"
+      - "traefik.http.services.mongo-express-svc.loadbalancer.server.port=8081"
