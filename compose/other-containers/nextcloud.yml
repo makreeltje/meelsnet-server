@@ -1,0 +1,49 @@
+services:
+  nextcloud:
+    container_name: nextcloud
+    image: nextcloud:29.0.4
+    restart: unless-stopped
+    profiles: ["other", "all"]
+    networks:
+      - t3_proxy
+    environment:
+      - REDIS_HOST=nc-redis
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
+      - NEXTCLOUD_DATA_DIR=/data
+      - NEXTCLOUD_TRUSTED_DOMAIN=cloud.$DOMAINNAME_1
+      - TRUSTED_PROXIES=10.2.0.0/16
+      - POSTGRES_HOST=postgres:5432
+      - POSTGRES_DB=$NEXTCLOUD_DBNAME
+      - POSTGRES_USER=$NEXTCLOUD_DBUSER
+      - POSTGRES_PASSWORD=$NEXTCLOUD_DBPASSWORD
+    volumes:
+      - $CONF_DIR/nextcloud/config:/var/www/html
+      - $CLOUD_DIR:/data
+    expose:
+      - 80
+    ports:
+      - 8081:80
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nextcloud-rtr.tls=true"
+      - "traefik.http.routers.nextcloud-rtr.entrypoints=websecure"
+      - "traefik.http.routers.nextcloud-rtr.rule=Host(`cloud.$DOMAINNAME_1`)"
+      - "traefik.http.routers.nextcloud-rtr.middlewares=chain-nextcloud@file"
+      - "traefik.http.routers.nextcloud-rtr.service=nextcloud-svc"
+      - "traefik.http.services.nextcloud-svc.loadbalancer.server.port=80"
+
+  nc-redis:
+    container_name: nc-redis
+    image: redis:7.2-alpine
+    restart: unless-stopped
+    profiles: ["other", "all"]
+    networks:
+      - t3_proxy
+    environment:
+      - PGID=$PGID
+      - PUID=$PUID
+      - TZ=$TZ
+    volumes:
+      - $CONF_DIR/nextcloud/redis:/data

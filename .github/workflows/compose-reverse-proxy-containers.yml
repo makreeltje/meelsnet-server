@@ -8,7 +8,7 @@ on:
 env:
   PROFILE_NAME: reverse-proxy
   ROOT_FOLDER: compose
-  MAIN_FILENAME: docker-compose.meelsnet.yml
+  MAIN_FILENAME: compose.yml
   SOURCE_DIRECTORY: compose/reverse-proxy-containers/*.yml
   TARGET_DIRECTORY: /opt/compose/reverse-proxy
   COMPOSE_DIRECTORY: /opt

@@ -54,6 +54,9 @@ jobs:
           echo 'PAPERLESS_DBNAME=${{ secrets.PAPERLESS_DBNAME }}' >> .env
           echo 'PAPERLESS_DBUSER=${{ secrets.PAPERLESS_DBUSER }}' >> .env
           echo 'PAPERLESS_DBPASS=${{ secrets.PAPERLESS_DBPASS }}' >> .env
+          echo 'NEXTCLOUD_DBNAME=${{ secrets.NEXTCLOUD_DBNAME }}' >> .env
+          echo 'NEXTCLOUD_DBUSER=${{ secrets.NEXTCLOUD_DBUSER }}' >> .env
+          echo 'NEXTCLOUD_DBPASS=${{ secrets.NEXTCLOUD_DBPASS }}' >> .env
           
 
 

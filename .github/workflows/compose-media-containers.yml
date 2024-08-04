@@ -8,7 +8,7 @@ on:
 env:
   PROFILE_NAME: media
   ROOT_FOLDER: compose
-  MAIN_FILENAME: docker-compose.meelsnet.yml
+  MAIN_FILENAME: compose.yml
   SOURCE_DIRECTORY: compose/media-containers/*.yml
   TARGET_DIRECTORY: /opt/compose/media-server
   COMPOSE_DIRECTORY: /opt

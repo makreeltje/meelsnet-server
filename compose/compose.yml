@@ -52,4 +52,5 @@ include:
   - compose/server/paperless.yml
   - compose/server/prometheus.yml
   - compose/server/telegraf.yml
+  - compose/server/nextcloud.yml
 
