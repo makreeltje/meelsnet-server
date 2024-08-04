@@ -4,5 +4,6 @@ services:
     image: monstrenyatko/mdns-repeater
     restart: unless-stopped
     profiles: ["other", "all"]
-    command: mdns-repeater-app -f enp1s0 br-c479159777cc
+    # command: ip a > /dev/stdout
+    command: mdns-repeater-app -f enp1s0 br-c10a265f4312
     network_mode: "host"
