@@ -43,6 +43,6 @@ include:
 
   # Other containers
   - compose/server/mongo.yml
-  - compose/server/postgress.yml
+  - compose/server/postgres.yml
   - compose/server/adminer.yml
 

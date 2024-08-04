@@ -3,7 +3,7 @@ services:
     container_name: postgres
     image: postgres:12.19
     restart: unless-stopped
-    profiles: ["database", "all"]
+    profiles: ["other", "database", "all"]
     networks:
       - t3_proxy
     environment:
