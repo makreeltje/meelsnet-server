@@ -49,6 +49,6 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         passphrase: ${{ secrets.SSH_PASSPHRASE }}
         script: |
-          cd ${{ env.TARGET_DIRECTORY }}
+          cd ${{ env.COMPOSE_DIRECTORY }}
           
           docker compose --profile ${{ env.PROFILE_NAME }} -f ${{ env.MAIN_FILENAME}} up -d

@@ -11,7 +11,7 @@ services:
       - PGID=$PGID
       - TZ=$TZ
       - MONGO_INITDB_ROOT_USERNAME=$MONGO_DBUSER
-      - MONGO_INITDB_ROOT_PASSWORD=$MONGO_DBPASSWORD
+      - MONGO_INITDB_ROOT_PASSWORD=$MONGO_DBPASS
     volumes:
       - $CONF_DIR/mongo/db:/data/db
     ports:
@@ -24,8 +24,8 @@ services:
     profiles: ["other", "database", "all"]
     environment:
       - ME_CONFIG_BASICAUTH_USERNAME=$MONGO_DBUSER
-      - ME_CONFIG_BASICAUTH_PASSWORD=$MONGO_DBPASSWORD
-      - ME_CONFIG_MONGODB_URL=mongodb://$MONGO_DBUSER:$MONGO_DBPASSWORD@mongo:27017/
+      - ME_CONFIG_BASICAUTH_PASSWORD=$MONGO_DBPASS
+      - ME_CONFIG_MONGODB_URL=mongodb://$MONGO_DBUSER:$MONGO_DBPASS@mongo:27017/
     networks:
       - t3_proxy
     expose:

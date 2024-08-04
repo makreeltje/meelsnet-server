@@ -10,7 +10,7 @@ services:
       - PGID=$PGID
       - PUID=$PUID
       - TZ=$TZ
-      - POSTGRES_PASSWORD=$POSTGRES_ROOT_PASSWORD
+      - POSTGRES_PASSWORD=$PSQL_DBPASS
     volumes:
       - $CONF_DIR/postgres:/var/lib/postgresql/data
     ports:
