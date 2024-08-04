@@ -57,6 +57,9 @@ jobs:
           echo 'NEXTCLOUD_DBNAME=${{ secrets.NEXTCLOUD_DBNAME }}' >> .env
           echo 'NEXTCLOUD_DBUSER=${{ secrets.NEXTCLOUD_DBUSER }}' >> .env
           echo 'NEXTCLOUD_DBPASS=${{ secrets.NEXTCLOUD_DBPASS }}' >> .env
+          echo 'UNIFI_DBNAME=${{ secrets.UNIFI_DBNAME }}' >> .env
+          echo 'UNIFI_DBUSER=${{ secrets.UNIFI_DBUSER }}' >> .env
+          echo 'UNIFI_DBPASS=${{ secrets.UNIFI_DBPASS }}' >> .env
           
 
 

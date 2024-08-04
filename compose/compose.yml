@@ -53,4 +53,5 @@ include:
   - compose/server/prometheus.yml
   - compose/server/telegraf.yml
   - compose/server/nextcloud.yml
+  - compose/server/unifi.yml
 
