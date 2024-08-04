@@ -3,7 +3,7 @@ name: Update env file
 on:
   push:
     branches: ["main"]
-    paths: ['compose/**']
+    paths: ['.github/workflows/compose-update-env.yml']
 
 env:
   TARGET_DIRECTORY: /opt
