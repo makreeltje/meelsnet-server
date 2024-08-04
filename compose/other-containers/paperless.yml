@@ -28,5 +28,5 @@ services:
       - "traefik.http.routers.paperless-rtr.entrypoints=websecure"
       - "traefik.http.routers.paperless-rtr.rule=Host(`paperless.$DOMAINNAME_1`)"
       - "traefik.http.routers.paperless-rtr.middlewares=chain-no-auth@file"
-      - "traefik.http.routers.paperless-rtr.service=service_name-svc"
+      - "traefik.http.routers.paperless-rtr.service=paperless-svc"
       - "traefik.http.services.paperless-svc.loadbalancer.server.port=8000"
