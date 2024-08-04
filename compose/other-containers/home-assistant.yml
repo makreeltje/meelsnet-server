@@ -1,0 +1,28 @@
+services:
+  homeassistant:
+    container_name: homeassistant
+    image: "ghcr.io/home-assistant/home-assistant:2024.7.3"
+    restart: unless-stopped
+    profiles: ["other", "all"]
+    networks:
+      - t3_proxy
+    environment:
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
+    volumes:
+      - $CONF_DIR/homeassistant/config:/config
+      - $CONF_DIR/homeassistant/images:/images
+      - /etc/localtime:/etc/localtime:ro
+    devices:
+      - /dev/ttyACM0:/dev/ttyACM0
+    expose:
+      - 8123
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.homeassistant-rtr.tls=true"
+      - "traefik.http.routers.homeassistant-rtr.entrypoints=websecure"
+      - "traefik.http.routers.homeassistant-rtr.rule=Host(`home.$DOMAINNAME_1`)"
+      - "traefik.http.routers.homeassistant-rtr.middlewares=chain-oauth@file"
+      - "traefik.http.routers.homeassistant-rtr.service=homeassistant-svc"
+      - "traefik.http.services.homeassistant-svc.loadbalancer.server.port=0000"

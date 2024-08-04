@@ -45,4 +45,6 @@ include:
   - compose/server/mongo.yml
   - compose/server/postgres.yml
   - compose/server/adminer.yml
+  - compose/server/mdns-repeater.yml
+  - compose/server/home-assistant.yml
 

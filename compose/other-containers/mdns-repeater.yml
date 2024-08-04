@@ -1,9 +1,8 @@
-version: "3.7"
-
 services:
   mdns-repeater:
-    image: monstrenyatko/mdns-repeater
     container_name: mdns-repeater
+    image: monstrenyatko/mdns-repeater
     restart: unless-stopped
+    profiles: ["other", "all"]
     command: mdns-repeater-app -f enp1s0 br-c479159777cc
     network_mode: "host"
