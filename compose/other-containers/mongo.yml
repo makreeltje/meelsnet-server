@@ -21,7 +21,7 @@ services:
     container_name: mongo-express
     image: mongo-express
     restart: unless-stopped
-    profiles: ["database", "all"]
+    profiles: ["other", "database", "all"]
     environment:
       - ME_CONFIG_BASICAUTH_USERNAME=$MONGO_DBUSER
       - ME_CONFIG_BASICAUTH_PASSWORD=$MONGO_DBPASSWORD
