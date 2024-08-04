@@ -1,0 +1,32 @@
+services:
+  paperless:
+    container_name: paperless
+    image: ghcr.io/paperless-ngx/paperless-ngx:2.11.2
+    restart: unless-stopped
+    profiles: ["other", "all"]
+    networks:
+      - t3_proxy
+    environment:
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
+      - PAPERLESS_REDIS=redis://nc-redis:6379
+      - PAPERLESS_DBHOST=postgres
+      - PAPERLESS_DBNAME=$PAPERLESS_DBNAME
+      - PAPERLESS_DBUSER=$PAPERLESS_DBUSER
+      - PAPERLESS_DBPASS=$PAPERLESS_DBPASS
+      - PAPERLESS_URL=https://paperless.$DOMAINNAME_1
+    volumes:
+      - $CONF_DIR/paperless/data:/usr/src/paperless/data
+      - $DMS_DIR/media:/usr/src/paperless/media
+      - $DMS_DIR/consume:/usr/src/paperless/consume
+    expose:
+      - 8000
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.paperless-rtr.tls=true"
+      - "traefik.http.routers.paperless-rtr.entrypoints=websecure"
+      - "traefik.http.routers.paperless-rtr.rule=Host(`paperless.$DOMAINNAME_1`)"
+      - "traefik.http.routers.paperless-rtr.middlewares=chain-no-auth@file"
+      - "traefik.http.routers.paperless-rtr.service=service_name-svc"
+      - "traefik.http.services.paperless-svc.loadbalancer.server.port=8000"

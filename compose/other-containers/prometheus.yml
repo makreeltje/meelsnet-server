@@ -1,0 +1,94 @@
+services:
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:v2.53.1
+    user: $PUID:$PGID
+    restart: unless-stopped
+    profiles: ["other", "statistics", "all"]
+    depends_on:
+      - node-exporter
+      - cadvisor
+    networks:
+      - t3_proxy
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.console.libraries=/etc/prometheus/console_libraries
+      - --web.console.templates=/etc/prometheus/consoles
+      - --web.enable-lifecycle
+    environment:
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
+    volumes:
+      - $CONF_DIR/prometheus:/prometheus
+      - $CONF_DIR/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    expose:
+      - 9090
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.prometheus-rtr.tls=true"
+      - "traefik.http.routers.prometheus-rtr.entrypoints=websecure"
+      - "traefik.http.routers.prometheus-rtr.rule=Host(`prometheus.$DOMAINNAME_1`)"
+      - "traefik.http.routers.prometheus-rtr.middlewares=chain-oauth@file"
+      - "traefik.http.routers.prometheus-rtr.service=prometheus-svc"
+      - "traefik.http.services.prometheus-svc.loadbalancer.server.port=9090"
+  
+  node-exporter:
+    container_name: node-exporter
+    image: prom/node-exporter:v1.8.2
+    user: $PUID:$PGID
+    restart: unless-stopped
+    profiles: ["other", "statistics", "all"]
+    networks:
+      - t3_proxy
+    command:
+      - --path.procfs=/host/proc
+      - --path.rootfs=/rootfs
+      - --path.sysfs=/host/sys
+      - --collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)
+      - --collector.textfile.directory=/rootfs/var/lib/node_exporter/textfile_collector
+    environment:
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    expose:
+      - 9100
+
+  cadvisor:
+    container_name: cadvisor
+    image: gcr.io/cadvisor/cadvisor:v0.50.0
+    restart: unless-stopped
+    profiles: ["other", "statistics", "all"]
+    networks:
+      - t3_proxy
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    expose:
+      - 8080
+
+  alertmanager:
+    container_name: alertmanager
+    image: prom/alertmanager:v0.27.0
+    restart: unless-stopped
+    profiles: ["other", "statistics", "all"]
+    networks:
+      - t3_proxy
+    command:
+      - --config.file=/config/alertmanager.yml
+    environment:
+      - PGID=$PGID
+      - PUID=$PUID
+      - TZ=$TZ
+    volumes:
+      - $CONF_DIR/alertmanager/config:/config
+      - $CONF_DIR/alertmanager/data:/data
+    ports:
+      - 9093:9093

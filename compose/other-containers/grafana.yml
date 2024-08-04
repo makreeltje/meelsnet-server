@@ -1,0 +1,29 @@
+services:
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:11.1.1
+    restart: unless-stopped
+    profiles: ["other", "statistics", "all"]
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - t3_proxy
+    environment:
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - $CONF_DIR/grafana/data:/var/lib/grafana
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    expose:
+      - 3000
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.grafana-rtr.tls=true"
+      - "traefik.http.routers.grafana-rtr.entrypoints=websecure"
+      - "traefik.http.routers.grafana-rtr.rule=Host(`grafana.$DOMAINNAME_1`)"
+      - "traefik.http.routers.grafana-rtr.middlewares=chain-oauth@file"
+      - "traefik.http.routers.grafana-rtr.service=grafana-svc"
+      - "traefik.http.services.grafana-svc.loadbalancer.server.port=3000"

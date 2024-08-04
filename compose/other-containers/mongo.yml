@@ -16,6 +16,7 @@ services:
       - $CONF_DIR/mongo/db:/data/db
     ports:
       - 27017:27017
+      
   mongo-express:
     container_name: mongo-express
     image: mongo-express

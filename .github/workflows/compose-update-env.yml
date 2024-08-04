@@ -46,6 +46,14 @@ jobs:
           echo 'PSQL_DBPASS=${{ secrets.PSQL_DBPASS }}' >> .env
           echo 'MONGO_DBUSER=${{ secrets.MONGO_DBUSER }}' >> .env
           echo 'MONGO_DBPASS=${{ secrets.MONGO_DBPASS }}' >> .env
+          echo 'SONARR_API_KEY=${{ secrets.SONARR_API_KEY }}' >> .env
+          echo 'RADARR_API_KEY=${{ secrets.RADARR_API_KEY }}' >> .env
+          echo 'SABNZBD_API_KEY=${{ secrets.SABNZBD_API_KEY }}' >> .env
+          echo 'INFLUXDB_USER=${{ secrets.INFLUXDB_USER }}' >> .env
+          echo 'INFLUXDB_PASS=${{ secrets.INFLUXDB_PASS }}' >> .env
+          echo 'PAPERLESS_DBNAME=${{ secrets.PAPERLESS_DBNAME }}' >> .env
+          echo 'PAPERLESS_DBUSER=${{ secrets.PAPERLESS_DBUSER }}' >> .env
+          echo 'PAPERLESS_DBPASS=${{ secrets.PAPERLESS_DBPASS }}' >> .env
           
 
 
