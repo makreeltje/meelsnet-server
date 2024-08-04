@@ -44,3 +44,5 @@ include:
   # Other containers
   - compose/server/mongo.yml
   - compose/server/postgress.yml
+  - compose/server/adminer.yml
+

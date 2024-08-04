@@ -1,0 +1,23 @@
+services:
+  adminer:
+    container_name: adminer
+    image: adminer:4.8.1-standalone
+    restart: unless-stopped
+    profiles: ["other", "database", "all"]
+    networks:
+      - t3_proxy
+    environment:
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
+    expose:
+      - 8080
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.adminer-rtr.tls=true"
+      - "traefik.http.routers.adminer-rtr.entrypoints=websecure"
+      - "traefik.http.routers.adminer-rtr.rule=Host(`adminer.$DOMAINNAME_1`)"
+      - "traefik.http.routers.adminer-rtr.middlewares=chain-oauth@file"
+      - "traefik.http.routers.adminer-rtr.service=adminer-svc"
+      - "traefik.http.services.adminer-svc.loadbalancer.server.port=8080"
+
