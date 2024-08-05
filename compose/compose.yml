@@ -23,35 +23,35 @@ secrets:
 include:
   ##### SERVICES #####
   # Reverse proxy
-  - compose/reverse-proxy/traefik.yml
-  - compose/reverse-proxy/oauth.yml
+  - compose/reverse-proxy/compose.traefik.yml
+  - compose/reverse-proxy/compose.oauth.yml
     
   # Media containers
-  - compose/media-server/handbrake.yml
-  - compose/media-server/overseerr.yml
-  # - compose/media-server/plex.yml
-  - compose/media-server/prowlarr.yml
-  - compose/media-server/radarr.yml
-  - compose/media-server/recyclarr.yml
-  - compose/media-server/sabnzbd.yml
-  - compose/media-server/sonarr.yml
-  - compose/media-server/tautulli.yml
-  - compose/media-server/transmission.yml
+  - compose/media-server/compose.handbrake.yml
+  - compose/media-server/compose.overseerr.yml
+  # - compose/media-server/compose.plex.yml
+  - compose/media-server/compose.prowlarr.yml
+  - compose/media-server/compose.radarr.yml
+  - compose/media-server/compose.recyclarr.yml
+  - compose/media-server/compose.sabnzbd.yml
+  - compose/media-server/compose.sonarr.yml
+  - compose/media-server/compose.tautulli.yml
+  - compose/media-server/compose.transmission.yml
   
   # Game containers
   - compose/game-servers/mc-allthemods9.yml
 
   # Other containers
-  - compose/server/mongo.yml
-  - compose/server/postgres.yml
-  - compose/server/adminer.yml
-  - compose/server/mdns-repeater.yml
-  - compose/server/home-assistant.yml
-  - compose/server/exportarr.yml
-  - compose/server/grafana.yml
-  - compose/server/paperless.yml
-  - compose/server/prometheus.yml
-  - compose/server/telegraf.yml
-  - compose/server/nextcloud.yml
-  - compose/server/unifi.yml
+  - compose/server/compose.mongo.yml
+  - compose/server/compose.postgres.yml
+  - compose/server/compose.adminer.yml
+  - compose/server/compose.mdns-repeater.yml
+  - compose/server/compose.home-assistant.yml
+  - compose/server/compose.exportarr.yml
+  - compose/server/compose.grafana.yml
+  - compose/server/compose.paperless.yml
+  - compose/server/compose.prometheus.yml
+  - compose/server/compose.telegraf.yml
+  - compose/server/compose.nextcloud.yml
+  - compose/server/compose.unifi.yml
 
