@@ -29,7 +29,7 @@ include:
   # Media containers
   - compose/media-server/compose.handbrake.yml
   - compose/media-server/compose.overseerr.yml
-  # - compose/media-server/compose.plex.yml
+  - compose/media-server/compose.plex.yml
   - compose/media-server/compose.prowlarr.yml
   - compose/media-server/compose.radarr.yml
   - compose/media-server/compose.recyclarr.yml

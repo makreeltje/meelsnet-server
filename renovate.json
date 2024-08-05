@@ -4,9 +4,7 @@
     "config:base"
   ],
   "ignorePaths": [
-    "game-containers/disabled/**",
-    "media-containers/disabled/**",
-    "other-containers/disabled/**"
+    ".archive"
   ],
   "packageRules": [
     {
