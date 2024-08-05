@@ -1,7 +1,7 @@
 services:
   sonarr-exportarr:
     container_name: sonarr-exportarr
-    image: ghcr.io/onedr0p/exportarr:v1.6.2
+    image: ghcr.io/onedr0p/exportarr:v2.0.1
     restart: unless-stopped
     profiles: ["other", "statistics", "all"]
     networks:
@@ -19,7 +19,7 @@ services:
 
   radarr-exportarr:
     container_name: radarr-exportarr
-    image: ghcr.io/onedr0p/exportarr:v1.6.2
+    image: ghcr.io/onedr0p/exportarr:v2.0.1
     restart: unless-stopped
     profiles: ["other", "statistics", "all"]
     networks:
@@ -37,7 +37,7 @@ services:
 
   sabnzbd-exportarr:
     container_name: sabnzbd-exportarr
-    image: ghcr.io/onedr0p/exportarr:v1.6.2
+    image: ghcr.io/onedr0p/exportarr:v2.0.1
     restart: unless-stopped
     profiles: ["other", "statistics", "all"]
     networks:
