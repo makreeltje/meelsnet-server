@@ -4,7 +4,6 @@ services:
     container_name: plex
     restart: unless-stopped
     profiles: ["media", "all"]
-    hostname: plex
     networks:
       - t3_proxy
     secrets:
