@@ -48,6 +48,7 @@ jobs:
           echo 'MONGO_DBPASS=${{ secrets.MONGO_DBPASS }}' >> .env
           echo 'SONARR_API_KEY=${{ secrets.SONARR_API_KEY }}' >> .env
           echo 'RADARR_API_KEY=${{ secrets.RADARR_API_KEY }}' >> .env
+          echo 'PROWLARR_API_KEY=${{ secrets.PROWLARR_API_KEY }}' >> .env
           echo 'SABNZBD_API_KEY=${{ secrets.SABNZBD_API_KEY }}' >> .env
           echo 'INFLUXDB_USER=${{ secrets.INFLUXDB_USER }}' >> .env
           echo 'INFLUXDB_PASS=${{ secrets.INFLUXDB_PASS }}' >> .env
