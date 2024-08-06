@@ -17,6 +17,7 @@ services:
     expose:
       - 9696
     labels:
+      - "traefik.enable=true"
       - "traefik.http.routers.prowlarr-rtr.tls=true"
       - "traefik.http.routers.prowlarr-rtr.entrypoints=websecure"
       - "traefik.http.routers.prowlarr-rtr.rule=Host(`prowlarr.$DOMAINNAME_1`)"
