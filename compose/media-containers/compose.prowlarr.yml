@@ -19,7 +19,7 @@ services:
     labels:
       - "traefik.http.routers.prowlarr-rtr.tls=true"
       - "traefik.http.routers.prowlarr-rtr.entrypoints=websecure"
-      - "traefik.http.routers.prowlarr-rtr.rule=Host(`prowlarr.$DOMAINNAME_1`) || Host(`prowlarr.$DOMAINNAME_1`)"
+      - "traefik.http.routers.prowlarr-rtr.rule=Host(`prowlarr.$DOMAINNAME_1`)"
       - "traefik.http.routers.prowlarr-rtr.middlewares=chain-oauth@file"
       - "traefik.http.routers.prowlarr-rtr.service=prowlarr-svc"
       - "traefik.http.services.prowlarr-svc.loadbalancer.server.port=9696"
