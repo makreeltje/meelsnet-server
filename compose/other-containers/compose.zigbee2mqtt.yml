@@ -1,0 +1,27 @@
+services:
+  grafana:
+    container_name: zigbee2mqtt
+    image: koenkk/zigbee2mqtt:1.39.1
+    restart: unless-stopped
+    profiles: ["other", "all"]
+    networks:
+      - t3_proxy
+    environment:
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
+    volumes:
+      - $CONF_DIR/zigbee2mqtt/data:/app/data
+      - /run/udev:/run/udev:ro
+    devices:
+      - /dev/serial/by-id/usb-dresden_elektronik_ingenieurtechnik_GmbH_ConBee_II_DE2434862-if00:/dev/ttyACM0
+    expose:
+      - 8080
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.zigbee2mqtt-rtr.tls=true"
+      - "traefik.http.routers.zigbee2mqtt-rtr.entrypoints=websecure"
+      - "traefik.http.routers.zigbee2mqtt-rtr.rule=Host(`zigbee2mqtt.$DOMAINNAME_1`)"
+      - "traefik.http.routers.zigbee2mqtt-rtr.middlewares=chain-oauth@file"
+      - "traefik.http.routers.zigbee2mqtt-rtr.service=zigbee2mqtt-svc"
+      - "traefik.http.services.zigbee2mqtt-svc.loadbalancer.server.port=8080"

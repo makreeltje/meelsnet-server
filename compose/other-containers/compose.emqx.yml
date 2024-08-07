@@ -1,0 +1,37 @@
+services:
+  grafana:
+    container_name: emqx
+    image: emqx/emqx-enterprise:5.7.2
+    restart: unless-stopped
+    profiles: ["other", "all"]
+    healthcheck:
+      test: ["CMD", "/opt/emqx/bin/emqx", "ctl", "status"]
+      interval: 5s
+      timeout: 25s
+      retries: 5
+    networks:
+      - t3_proxy
+    environment:
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
+    volumes:
+      - $CONF_DIR/emqx/data:/opt/emqx/data
+      - $CONF_DIR/emqx/log:/opt/emqx/log
+    devices:
+      - /dev/serial/by-id/usb-dresden_elektronik_ingenieurtechnik_GmbH_ConBee_II_DE2434862-if00:/dev/ttyACM0
+    expose:
+      - 18083
+    ports:
+      - 1883:1883
+      - 8083:8083
+      - 8084:8084
+      - 8883:8883
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.emqx-rtr.tls=true"
+      - "traefik.http.routers.emqx-rtr.entrypoints=websecure"
+      - "traefik.http.routers.emqx-rtr.rule=Host(`emqx.$DOMAINNAME_1`)"
+      - "traefik.http.routers.emqx-rtr.middlewares=chain-oauth@file"
+      - "traefik.http.routers.emqx-rtr.service=emqx-svc"
+      - "traefik.http.services.emqx-svc.loadbalancer.server.port=18083"
