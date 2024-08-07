@@ -61,6 +61,8 @@ jobs:
           echo 'UNIFI_DBNAME=${{ secrets.UNIFI_DBNAME }}' >> .env
           echo 'UNIFI_DBUSER=${{ secrets.UNIFI_DBUSER }}' >> .env
           echo 'UNIFI_DBPASS=${{ secrets.UNIFI_DBPASS }}' >> .env
+          echo 'TRANSMISSION_USER=${{ secrets.TRANSMISSION_USER }}' >> .env
+          echo 'TRANSMISSION_PASS=${{ secrets.TRANSMISSION_PASS }}' >> .env
           
 
 
