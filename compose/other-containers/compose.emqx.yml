@@ -19,7 +19,7 @@ services:
       - $CONF_DIR/emqx/data:/opt/emqx/data
       - $CONF_DIR/emqx/log:/opt/emqx/log
     devices:
-      - /dev/ttyACM0:/dev/ttyACM0
+      - /dev/serial/by-id/usb-dresden_elektronik_ingenieurtechnik_GmbH_ConBee_II_DE2468113-if00:/dev/ttyACM0
     expose:
       - 18083
     ports:
