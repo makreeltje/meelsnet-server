@@ -1,5 +1,5 @@
 services:
-  grafana:
+  zigbee2mqtt:
     container_name: zigbee2mqtt
     image: koenkk/zigbee2mqtt:1.39.1
     restart: unless-stopped

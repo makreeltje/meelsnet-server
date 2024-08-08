@@ -1,5 +1,5 @@
 services:
-  grafana:
+  emqx:
     container_name: emqx
     image: emqx/emqx-enterprise:5.7.2
     restart: unless-stopped
