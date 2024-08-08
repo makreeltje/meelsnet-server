@@ -54,4 +54,6 @@ include:
   - compose/server/compose.telegraf.yml
   - compose/server/compose.nextcloud.yml
   - compose/server/compose.unifi.yml
+  - compose/server/compose.zigbee2mqtt.yml
+  - compose/server/compose.emqx.yml
 
