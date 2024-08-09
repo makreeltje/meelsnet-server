@@ -1,7 +1,7 @@
 services:
   prometheus:
     container_name: prometheus
-    image: prom/prometheus:v2.53.1
+    image: prom/prometheus:v2.54.0
     user: $PUID:$PGID
     restart: unless-stopped
     profiles: ["other", "statistics", "all"]
