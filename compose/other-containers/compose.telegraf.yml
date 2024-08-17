@@ -1,7 +1,7 @@
 services:
   influxdb:
     container_name: influxdb
-    image: influxdb:2.7.9
+    image: influxdb:2.7.10
     restart: unless-stopped
     profiles: ["other", "statistics", "all"]
     networks:
