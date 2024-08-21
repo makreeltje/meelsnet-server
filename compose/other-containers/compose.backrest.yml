@@ -1,0 +1,29 @@
+services:
+  backrest:
+    container_name: backrest
+    image: garethgeorge/backrest:v1.4.0
+    restart: unless-stopped
+    profiles: ["other", "all"]
+    networks:
+      - t3_proxy
+    environment:
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
+      - XDG_CACHE_HOME=/cache
+      - BACKREST_CONFIG=/config/config.json
+      - BACKREST_DATA=/data
+    volumes:
+      - $CONF_DIR/backrest/data:/data
+      - $CONF_DIR/backrest/config:/config
+      - $CONF_DIR/backrest/cache:/cache
+    expose:
+      - 9898
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backrest-rtr.tls=true"
+      - "traefik.http.routers.backrest-rtr.entrypoints=websecure"
+      - "traefik.http.routers.backrest-rtr.rule=Host(`backrest.$DOMAINNAME_1`) || Host(`backup.$DOMAINNAME_1`)"
+      - "traefik.http.routers.backrest-rtr.middlewares=chain-oauth@file"
+      - "traefik.http.routers.backrest-rtr.service=backrest-svc"
+      - "traefik.http.services.backrest-svc.loadbalancer.server.port=9898"
