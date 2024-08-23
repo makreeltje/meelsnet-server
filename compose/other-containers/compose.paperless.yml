@@ -1,7 +1,7 @@
 services:
   paperless:
     container_name: paperless
-    image: ghcr.io/paperless-ngx/paperless-ngx:2.11.4
+    image: ghcr.io/paperless-ngx/paperless-ngx:2.11.5
     restart: unless-stopped
     profiles: ["other", "all"]
     networks:
