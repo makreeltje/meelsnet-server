@@ -1,7 +1,7 @@
 services:
   homeassistant:
     container_name: homeassistant
-    image: "ghcr.io/home-assistant/home-assistant:2024.8.1"
+    image: "ghcr.io/home-assistant/home-assistant:2024.8.3"
     restart: unless-stopped
     profiles: ["other", "all"]
     networks:
@@ -14,8 +14,6 @@ services:
       - $CONF_DIR/homeassistant/config:/config
       - $CONF_DIR/homeassistant/images:/images
       - /etc/localtime:/etc/localtime:ro
-    devices:
-      - /dev/ttyACM0:/dev/ttyACM0
     expose:
       - 8123
     labels:
