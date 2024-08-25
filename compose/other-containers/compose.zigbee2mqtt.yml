@@ -21,7 +21,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.zigbee2mqtt-rtr.tls=true"
       - "traefik.http.routers.zigbee2mqtt-rtr.entrypoints=websecure"
-      - "traefik.http.routers.zigbee2mqtt-rtr.rule=Host(`zigbee2mqtt.$DOMAINNAME_1`)"
+      - "traefik.http.routers.zigbee2mqtt-rtr.rule=Host(`z2m.$DOMAINNAME_1`)"
       - "traefik.http.routers.zigbee2mqtt-rtr.middlewares=chain-oauth@file"
       - "traefik.http.routers.zigbee2mqtt-rtr.service=zigbee2mqtt-svc"
       - "traefik.http.services.zigbee2mqtt-svc.loadbalancer.server.port=8080"
