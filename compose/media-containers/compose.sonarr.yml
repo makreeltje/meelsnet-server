@@ -1,7 +1,7 @@
 services:
   sonarr:
     container_name: sonarr
-    image: linuxserver/sonarr:4.0.8
+    image: linuxserver/sonarr:4.0.9
     restart: unless-stopped
     profiles: ["media", "all"]
     networks:
