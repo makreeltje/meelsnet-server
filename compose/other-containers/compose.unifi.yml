@@ -31,7 +31,7 @@ services:
 
   unifi-network-application:
     container_name: unifi-network-application
-    image: lscr.io/linuxserver/unifi-network-application:8.3.32
+    image: lscr.io/linuxserver/unifi-network-application:8.4.59
     restart: unless-stopped
     profiles: ["other", "all"]
     networks:
