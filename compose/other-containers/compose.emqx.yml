@@ -1,7 +1,7 @@
 services:
   emqx:
     container_name: emqx
-    image: emqx/emqx-enterprise:5.7.2
+    image: emqx/emqx-enterprise:5.8.0
     restart: unless-stopped
     profiles: ["other", "all"]
     healthcheck:
