@@ -22,6 +22,6 @@ services:
       - "traefik.http.routers.homarr-rtr.tls=true"
       - "traefik.http.routers.homarr-rtr.entrypoints=websecure"
       - "traefik.http.routers.homarr-rtr.rule=Host(`homarr.$DOMAINNAME_1`)"
-      - "traefik.http.routers.homarr-rtr.middlewares=chain-no-auth@file"
+      - "traefik.http.routers.homarr-rtr.middlewares=chain-oauth@file"
       - "traefik.http.routers.homarr-rtr.service=homarr-svc"
       - "traefik.http.services.homarr-svc.loadbalancer.server.port=7575"
