@@ -1,0 +1,27 @@
+services:
+  homarr:
+    container_name: homarr
+    image: ghcr.io/ajnart/homarr:0.15.3
+    restart: unless-stopped
+    profiles: ["media", "all"]
+    networks:
+      - t3_proxy
+    environment:
+      - PGID=$PGID
+      - PUID=$PUID
+      - TZ=$TZ
+    volumes:
+      - $CONF_DIR/homarr/configs:/app/data/configs
+      - $CONF_DIR/homarr/icons:/app/public/icons
+      - $CONF_DIR/homarr/data:/data
+      - /var/run/docker.sock:/var/run/docker.sock # Optional, only if you want docker integration
+    expose:
+      - 7575
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.homarr-rtr.tls=true"
+      - "traefik.http.routers.homarr-rtr.entrypoints=websecure"
+      - "traefik.http.routers.homarr-rtr.rule=Host(`homarr.$DOMAINNAME_1`)"
+      - "traefik.http.routers.homarr-rtr.middlewares=chain-no-auth@file"
+      - "traefik.http.routers.homarr-rtr.service=homarr-svc"
+      - "traefik.http.services.homarr-svc.loadbalancer.server.port=7575"
