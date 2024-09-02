@@ -21,6 +21,6 @@ services:
       - "traefik.http.routers.homeassistant-rtr.tls=true"
       - "traefik.http.routers.homeassistant-rtr.entrypoints=websecure"
       - "traefik.http.routers.homeassistant-rtr.rule=Host(`home.$DOMAINNAME_1`)"
-      - "traefik.http.routers.homeassistant-rtr.middlewares=chain-oauth@file"
+      - "traefik.http.routers.homeassistant-rtr.middlewares=chain-no-auth@file"
       - "traefik.http.routers.homeassistant-rtr.service=homeassistant-svc"
       - "traefik.http.services.homeassistant-svc.loadbalancer.server.port=8123"
