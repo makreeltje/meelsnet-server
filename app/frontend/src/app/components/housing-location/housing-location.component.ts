@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 
-import { HousingLocation } from '../../interfaces/housingocation';
+import { HousingLocation } from '../../interfaces/housinglocation';
 
 import {MatCardModule} from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';

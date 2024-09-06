@@ -10,7 +10,7 @@ import { HousingService } from '../../services/housing.service';
 
 import { HousingLocationComponent } from '../housing-location/housing-location.component';
 import { CommonModule } from '@angular/common';
-import { HousingLocation } from '../../interfaces/housingocation';
+import { HousingLocation } from '../../interfaces/housinglocation';
 
 @Component({
   selector: 'app-home',
