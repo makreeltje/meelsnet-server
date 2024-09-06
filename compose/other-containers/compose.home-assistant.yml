@@ -1,7 +1,7 @@
 services:
   homeassistant:
     container_name: homeassistant
-    image: "ghcr.io/home-assistant/home-assistant:2024.9.0"
+    image: "ghcr.io/home-assistant/home-assistant:2024.9.1"
     restart: unless-stopped
     profiles: ["other", "all"]
     networks:
