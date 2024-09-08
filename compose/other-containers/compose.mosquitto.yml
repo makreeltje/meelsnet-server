@@ -1,0 +1,19 @@
+services:
+  mosquitto:
+    container_name: mosquitto
+    image: eclipse-mosquitto:2.0.18
+    restart: unless-stopped
+    profiles: ["other", "all"]
+    networks:
+      - t3_proxy
+    environment:
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
+    volumes:
+      - $CONF_DIR/mosquitto/config:/mosquitto/config
+      - $CONF_DIR/mosquitto/data:/mosquitto/data
+      - $CONF_DIR/mosquitto/log:/mosquitto/log
+    ports:
+      - 1883:1883
+      - 9001:9001
