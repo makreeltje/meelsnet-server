@@ -17,6 +17,12 @@ services:
       - $CONF_DIR/backrest/data:/data
       - $CONF_DIR/backrest/config:/config
       - $CONF_DIR/backrest/cache:/cache
+      - $DOCKER_DIR:/mnt/docker
+      - $CONF_DIR:/mnt/conf
+      - $CLOUD_DIR:/mnt/cloud
+      - $MEDIA_DIR:/mnt/media
+      - $DOWNLOAD_DIR/mnt/download
+      - $DMS_DIR=/mnt/dms
     expose:
       - 9898
     labels:
