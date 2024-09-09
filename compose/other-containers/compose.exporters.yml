@@ -1,6 +1,9 @@
+## File for all the Prometheus exporters
+## Sonarr, Radarr, Prowlarr, SabNZBd and Mosquitto
+
 services:
-  sonarr-exportarr:
-    container_name: sonarr-exportarr
+  sonarr-exporter:
+    container_name: sonarr-exporter
     image: ghcr.io/onedr0p/exportarr:v2.0.1
     restart: unless-stopped
     profiles: ["other", "statistics", "all"]
@@ -17,8 +20,8 @@ services:
     ports:
       - 9707:9707
 
-  radarr-exportarr:
-    container_name: radarr-exportarr
+  radarr-exporter:
+    container_name: radarr-exporter
     image: ghcr.io/onedr0p/exportarr:v2.0.1
     restart: unless-stopped
     profiles: ["other", "statistics", "all"]
@@ -33,8 +36,8 @@ services:
       - URL=http://radarr:7878
       - APIKEY=$RADARR_API_KEY
   
-  prowlarr-exportarr:
-    container_name: prowlarr-exportarr
+  prowlarr-exporter:
+    container_name: prowlarr-exporter
     image: ghcr.io/onedr0p/exportarr:v2.0.1
     restart: unless-stopped
     profiles: ["other", "statistics", "all"]
@@ -49,8 +52,8 @@ services:
       - URL=http://prowlarr:9696
       - APIKEY=$PROWLARR_API_KEY
 
-  sabnzbd-exportarr:
-    container_name: sabnzbd-exportarr
+  sabnzbd-exporter:
+    container_name: sabnzbd-exporter
     image: ghcr.io/onedr0p/exportarr:v2.0.1
     restart: unless-stopped
     profiles: ["other", "statistics", "all"]
@@ -64,3 +67,16 @@ services:
       - PORT=9711
       - URL=http://sabnzbd:8080
       - APIKEY=$SABNZBD_API_KEY
+
+  mosquitto-exporter:
+    container_name: mosquitto-exporter
+    image: sapcc/mosquitto-exporter
+    restart: unless-stopped
+    profiles: ["other", "statistics", "all"]
+    networks:
+      - t3_proxy
+    command: --endpoint tcp://mosquitto:1883
+    environment:
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ

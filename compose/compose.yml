@@ -48,7 +48,7 @@ include:
   - compose/server/compose.adminer.yml
   - compose/server/compose.mdns-repeater.yml
   - compose/server/compose.home-assistant.yml
-  - compose/server/compose.exportarr.yml
+  - compose/server/compose.exporters.yml
   - compose/server/compose.grafana.yml
   - compose/server/compose.paperless.yml
   - compose/server/compose.prometheus.yml
