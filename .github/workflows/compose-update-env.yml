@@ -33,7 +33,6 @@ jobs:
           echo 'MEDIA_DIR=${{ secrets.MEDIA_DIR }}' >> .env
           echo 'DOWNLOAD_DIR=${{ secrets.DOWNLOAD_DIR }}' >> .env
           echo 'DMS_DIR=${{ secrets.DMS_DIR }}' >> .env
-          echo 'DOWNLOAD_DIR=${{ secrets.DOWNLOAD_DIR }}' >> .env
           echo 'HOSTNAME=${{ secrets.HOSTNAME }}' >> .env
           echo 'DOMAINNAME_1=${{ secrets.MEELSNET_DOMAIN }}' >> .env
           echo 'LOCAL_IPS=${{ secrets.LOCAL_IPS }}' >> .env
