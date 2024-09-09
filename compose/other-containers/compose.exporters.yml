@@ -78,7 +78,7 @@ services:
     command: 
       - --endpoint=tcp://mosquitto:1883
       - --user=$MOSQUITTO_USER
-      - --pass=$MOSUQITTO_PASS
+      - --pass=$MOSQUITTO_PASS
       - --client-id=mosquitto-exporter
     environment:
       - PUID=$PUID
