@@ -75,7 +75,10 @@ services:
     profiles: ["other", "statistics", "all"]
     networks:
       - t3_proxy
-    command: --endpoint tcp://mosquitto:1883
+    command: 
+      - --endpoint tcp://mosquitto:1883
+      - --user $MOSQUITTO_USER
+      - --pass $MOSUQITTO_PASS
     environment:
       - PUID=$PUID
       - PGID=$PGID
