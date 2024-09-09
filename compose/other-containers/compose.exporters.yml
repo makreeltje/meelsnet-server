@@ -76,9 +76,9 @@ services:
     networks:
       - t3_proxy
     command: 
-      - --endpoint tcp://mosquitto:1883
-      - --user $MOSQUITTO_USER
-      - --pass $MOSUQITTO_PASS
+      - --endpoint=tcp://mosquitto:1883
+      - --user=$MOSQUITTO_USER
+      - --pass=$MOSUQITTO_PASS
     environment:
       - PUID=$PUID
       - PGID=$PGID
