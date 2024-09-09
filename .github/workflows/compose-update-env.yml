@@ -64,6 +64,8 @@ jobs:
           echo 'UNIFI_DBPASS=${{ secrets.UNIFI_DBPASS }}' >> .env
           echo 'TRANSMISSION_USER=${{ secrets.TRANSMISSION_USER }}' >> .env
           echo 'TRANSMISSION_PASS=${{ secrets.TRANSMISSION_PASS }}' >> .env
+          echo 'MOSQUITTO_USER=${{ secrets.MOSQUITTO_USER }}' >> .env
+          echo 'MOSQUITTO_PASS=${{ secrets.MOSQUITTO_PASS }}' >> .env
           
 
 
