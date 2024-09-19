@@ -1,7 +1,7 @@
 services:
   nextcloud:
     container_name: nextcloud
-    image: nextcloud:29.0.6
+    image: nextcloud:29.0.7
     restart: unless-stopped
     profiles: ["other", "all"]
     networks:
