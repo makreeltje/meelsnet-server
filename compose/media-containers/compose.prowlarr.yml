@@ -1,7 +1,7 @@
 services:
   prowlarr:
     container_name: prowlarr
-    image: linuxserver/prowlarr:1.23.1
+    image: linuxserver/prowlarr:1.24.3
     restart: unless-stopped
     profiles: ["media", "all"]
     networks:
