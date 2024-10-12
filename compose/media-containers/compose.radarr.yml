@@ -1,7 +1,7 @@
 services:
   radarr:
     container_name: radarr
-    image: linuxserver/radarr:5.11.0
+    image: linuxserver/radarr:5.12.2
     restart: unless-stopped
     profiles: ["media", "all"]
     networks:
