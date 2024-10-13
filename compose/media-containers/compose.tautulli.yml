@@ -1,7 +1,7 @@
 services:
   tautulli:
     container_name: tautulli
-    image: tautulli/tautulli:v2.14.5
+    image: tautulli/tautulli:v2.14.6
     restart: unless-stopped
     profiles: ["media", "all"]
     networks:
