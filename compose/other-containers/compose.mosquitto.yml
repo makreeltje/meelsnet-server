@@ -1,7 +1,7 @@
 services:
   mosquitto:
     container_name: mosquitto
-    image: eclipse-mosquitto:2.0.19
+    image: eclipse-mosquitto:2.0.20
     restart: unless-stopped
     profiles: ["other", "all"]
     networks:
