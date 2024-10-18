@@ -1,7 +1,7 @@
 services:
   mc-allthemods9:
     container_name: mc-allthemods9
-    image: itzg/minecraft-server:2024.10.1-java21
+    image: itzg/minecraft-server:2024.10.2-java21
     restart: unless-stopped
     profiles: ["games", "all"]
     environment:
