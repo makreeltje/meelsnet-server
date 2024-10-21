@@ -1,0 +1,23 @@
+services:
+  hyperion:
+    container_name: hyperion
+    image: amd989/hyperion.ng:latest
+    restart: unless-stopped
+    profiles: ["other", "all"]
+    networks:
+      - t3_proxy
+    environment:
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
+    volumes:
+      - $CONF_DIR/hyperion/config:/config
+    expose:
+      - 8090
+    ports:
+      - "19400:19400"
+      - "19444:19444"
+      - "19445:19445"
+      - "2100:2100"
+      - "8090:8090"
+      - "8092:8092"

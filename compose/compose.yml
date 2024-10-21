@@ -58,3 +58,4 @@ include:
   - compose/server/compose.zigbee2mqtt.yml
   # - compose/server/compose.backrest.yml
   - compose/server/compose.mosquitto.yml
+  - compose/server/compose.hyperion.yml
