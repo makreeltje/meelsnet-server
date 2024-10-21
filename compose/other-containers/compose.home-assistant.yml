@@ -16,6 +16,8 @@ services:
       - /etc/localtime:/etc/localtime:ro
     expose:
       - 8123
+    ports:
+      - 21063:21063 # HomeKit Bridge
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.homeassistant-rtr.tls=true"
