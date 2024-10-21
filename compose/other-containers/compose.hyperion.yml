@@ -1,7 +1,7 @@
 services:
   hyperion:
     container_name: hyperion
-    image: amd989/hyperion.ng:latest
+    image: amd989/hyperion.ng:main
     restart: unless-stopped
     profiles: ["other", "all"]
     networks:
