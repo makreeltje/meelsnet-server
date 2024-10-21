@@ -16,8 +16,6 @@ services:
       - /etc/localtime:/etc/localtime:ro
     expose:
       - 8123
-    ports:
-      - 21064:21064 # HASS Bridge
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.homeassistant-rtr.tls=true"
