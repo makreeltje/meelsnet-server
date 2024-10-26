@@ -1,7 +1,7 @@
 services:
   mongo:
     container_name: mongo
-    image: mongo:7.0.14
+    image: mongo:7.0.15
     restart: unless-stopped
     profiles: ["other", "database", "all"]
     networks:
