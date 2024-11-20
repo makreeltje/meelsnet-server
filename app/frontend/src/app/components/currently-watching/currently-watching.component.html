@@ -1,8 +1,0 @@
-<h1>Currently Watching</h1>
-<div *ngIf="currentlyWatching.length === 0">No one is currently watching.</div>
-<div *ngFor="let video of currentlyWatching">
-  <h3>{{ video.title }}</h3>
-  <p>{{ video.summary }}</p>
-  <p><strong>Year:</strong> {{ video.year }}</p>
-  <img [src]="video.thumb" alt="{{ video.title }}" *ngIf="video.thumb" />
-</div>
