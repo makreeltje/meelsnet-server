@@ -52,7 +52,7 @@ include:
   - compose/server/compose.grafana.yml
   - compose/server/compose.paperless.yml
   - compose/server/compose.prometheus.yml
-  - compose/server/compose.telegraf.yml
+  # - compose/server/compose.telegraf.yml
   - compose/server/compose.nextcloud.yml
   - compose/server/compose.unifi.yml
   - compose/server/compose.zigbee2mqtt.yml
