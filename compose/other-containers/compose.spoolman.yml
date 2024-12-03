@@ -11,9 +11,7 @@ services:
       - PGID=$PGID
       - TZ=$TZ
     volumes:
-      - type: bind
-        source: $CONF_DIR/spoolman/data
-        target: /home/app/.local/share/spoolman
+      - $CONF_DIR/spoolman/data:/home/app/.local/share/spoolman
     expose:
       - 8123
     ports:
