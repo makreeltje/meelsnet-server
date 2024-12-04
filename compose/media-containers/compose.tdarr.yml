@@ -1,0 +1,62 @@
+services:
+  tdarr:
+    container_name: tdarr
+    image: haveagitgat/tdarr:2.27.02
+    restart: unless-stopped
+    profiles: ["media", "all"]
+    networks:
+      - t3_proxy
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+      - UMASK_SET=002
+      - serverIP=tdarr
+      - serverPort=8266
+      - webUIPort=8265
+    volumes:
+      - ${CONF_DIR}/tdarr/config:/app/configs
+      - ${CONF_DIR}/tdarr/logs:/app/logs
+      - ${CONF_DIR}/tdarr/server:/app/server
+      - ${CONF_DIR}/tdarr/transcode_cache:/temp
+      - ${MEDIA_DIR}:/media
+    ports:
+      - 8266:8266
+      - 8265:8265
+      - 8267:8267
+    expose:
+      - 8265
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.tdarr-rtr.tls=true"
+      - "traefik.http.routers.tdarr-rtr.entrypoints=websecure"
+      - "traefik.http.routers.tdarr-rtr.rule=Host(`tdarr.$DOMAINNAME_1`)"
+      - "traefik.http.routers.tdarr-rtr.middlewares=chain-oauth@file"
+      - "traefik.http.routers.tdarr-rtr.service=tdarr-svc"
+      - "traefik.http.services.tdarr-svc.loadbalancer.server.port=8265"
+
+
+  tdarr-node:
+    container_name: tdarr-node
+    image: haveagitgat/tdarr_node:latest
+    restart: unless-stopped
+    profiles: ["media", "all"]
+    networks:
+      - t3_proxy
+    environment:
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - TZ=${TZ}
+      - UMASK_SET=002
+      - nodeID=MainNode
+      - nodeIP=tdarr-node
+      - nodePort=8267
+      - serverIP=tdarr
+      - serverPort=8266
+    volumes:
+      - ${CONF_DIR}/tdarr/config:/app/configs
+      - ${CONF_DIR}/tdarr/logs:/app/logs
+      - ${CONF_DIR}/tdarr/transcode_cache:/temp
+      - ${MEDIA_DIR}:/media
+    devices:
+      - /dev/dri:/dev/dri

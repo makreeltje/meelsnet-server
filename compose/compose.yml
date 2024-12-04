@@ -38,6 +38,7 @@ include:
   - compose/media-server/compose.tautulli.yml
   - compose/media-server/compose.transmission.yml
   # - compose/media-server/compose.homarr.yml
+  - compose/media-server/compose.tdarr.yml
   
   # Game containers
   # - compose/game-servers/mc-allthemods9.yml
