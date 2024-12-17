@@ -1,7 +1,7 @@
 services:
   traefik:
     container_name: traefik
-    image: traefik:v3.2.2
+    image: traefik:v3.2.3
     security_opt:
       - no-new-privileges:true
     restart: unless-stopped
