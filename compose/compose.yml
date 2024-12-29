@@ -61,3 +61,4 @@ include:
   - compose/server/compose.mosquitto.yml
   - compose/server/compose.hyperion.yml
   - compose/server/compose.spoolman.yml
+  - compose/server/compose.firefly.yml

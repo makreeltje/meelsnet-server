@@ -66,7 +66,9 @@ jobs:
           echo 'TRANSMISSION_PASS=${{ secrets.TRANSMISSION_PASS }}' >> .env
           echo 'MOSQUITTO_USER=${{ secrets.MOSQUITTO_USER }}' >> .env
           echo 'MOSQUITTO_PASS=${{ secrets.MOSQUITTO_PASS }}' >> .env
-          
+          echo 'FIREFLY_DBNAME=${{ secrets.FIREFLY_DBNAME }}' >> .env
+          echo 'FIREFLY_DBUSER=${{ secrets.FIREFLY_DBUSER }}' >> .env
+          echo 'FIREFLY_DBPASS=${{ secrets.FIREFLY_DBPASS }}' >> .env
 
 
 
