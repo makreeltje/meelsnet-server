@@ -10,12 +10,7 @@ services:
       - PUID=$PUID
       - PGID=$PGID
       - TZ=$TZ
-      - DB_HOST=postgres
-      - DB_PORT=5432
-      - DB_CONNECTION=pgsql
-      - DB_DATABASE=$FIREFLY_DBNAME
-      - DB_USERNAME=$FIREFLY_DBUSER
-      - DB_PASSWORD=$FIREFLY_DBPASS
+    env_file: $CONF_DIR/firefly/.env
     volumes:
       - $CONF_DIR/firefly/upload:/var/www/html/storage/upload
     expose:
@@ -28,3 +23,19 @@ services:
       - "traefik.http.routers.firefly-rtr.middlewares=chain-oauth@file"
       - "traefik.http.routers.firefly-rtr.service=firefly-svc"
       - "traefik.http.services.firefly-svc.loadbalancer.server.port=8080"
+
+  firefly-importer:
+    container_name: firefly-importer
+    image: fireflyiii/data-importer:version-1.5.7
+    restart: unless-stopped
+    profiles: ["other", "all"]
+    networks:
+      - t3_proxy
+    environment:
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
+    env_file: $CONF_DIR/firefly/.importer.env
+    depends_on: ["firefly"]
+    ports:
+      - 81:8080
