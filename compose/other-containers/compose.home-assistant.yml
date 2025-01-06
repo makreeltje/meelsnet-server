@@ -4,8 +4,7 @@ services:
     image: ghcr.io/home-assistant/home-assistant:2024.12.5
     restart: unless-stopped
     profiles: ["other", "all"]
-    networks:
-      - t3_proxy
+    network_mode: host
     environment:
       - PUID=$PUID
       - PGID=$PGID
@@ -14,17 +13,17 @@ services:
       - $CONF_DIR/homeassistant/config:/config
       - $CONF_DIR/homeassistant/images:/images
       - /etc/localtime:/etc/localtime:ro
-    expose:
-      - 8123
-    ports:
-      - 8123:8123 # WebApp
-      - 5353:5353 # HomeKit Bridge
-      - 21063:21063 # HomeKit Bridge
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.homeassistant-rtr.tls=true"
-      - "traefik.http.routers.homeassistant-rtr.entrypoints=websecure"
-      - "traefik.http.routers.homeassistant-rtr.rule=Host(`home.$DOMAINNAME_1`)"
-      - "traefik.http.routers.homeassistant-rtr.middlewares=chain-no-auth@file"
-      - "traefik.http.routers.homeassistant-rtr.service=homeassistant-svc"
-      - "traefik.http.services.homeassistant-svc.loadbalancer.server.port=8123"
+    # expose:
+    #   - 8123
+    # ports:
+    #   - 8123:8123 # WebApp
+    #   - 5353:5353 # HomeKit Bridge
+    #   - 21063:21063 # HomeKit Bridge
+    # labels:
+    #   - "traefik.enable=true"
+    #   - "traefik.http.routers.homeassistant-rtr.tls=true"
+    #   - "traefik.http.routers.homeassistant-rtr.entrypoints=websecure"
+    #   - "traefik.http.routers.homeassistant-rtr.rule=Host(`home.$DOMAINNAME_1`)"
+    #   - "traefik.http.routers.homeassistant-rtr.middlewares=chain-no-auth@file"
+    #   - "traefik.http.routers.homeassistant-rtr.service=homeassistant-svc"
+    #   - "traefik.http.services.homeassistant-svc.loadbalancer.server.port=8123"
