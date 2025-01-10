@@ -1,7 +1,7 @@
 services:
   backrest:
     container_name: backrest
-    image: garethgeorge/backrest:v1.6.2
+    image: garethgeorge/backrest:v1.7.0
     restart: unless-stopped
     profiles: ["other", "all"]
     networks:
