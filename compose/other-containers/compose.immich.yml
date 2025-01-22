@@ -15,7 +15,7 @@ services:
     env_file:
       - $CONF_DIR/immich/.env
     volumes:
-      - $UPLOAD_LOCATION:/usr/src/app/upload
+      - $PHOTOS_DIR/library:/usr/src/app/upload
       - /etc/localtime:/etc/localtime:ro
     expose:
       - 2283
