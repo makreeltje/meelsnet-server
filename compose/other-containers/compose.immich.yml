@@ -1,0 +1,47 @@
+services:
+  immich:
+    container_name: immich
+    image: ghcr.io/immich-app/immich-server:v1.124.2
+    restart: unless-stopped
+    profiles: ["other", "all"]
+    healthcheck:
+      disable: false
+    networks:
+      - t3_proxy
+    environment:
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
+    env_file:
+      - $CONF_DIR/immich/.env
+    volumes:
+      - $CONF_DIR/immich/upload:/usr/src/app/upload
+      - /etc/localtime:/etc/localtime:ro
+    expose:
+      - 2283
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.immich-rtr.tls=true"
+      - "traefik.http.routers.immich-rtr.entrypoints=websecure"
+      - "traefik.http.routers.immich-rtr.rule=Host(`photos.$DOMAINNAME_1`) || Host(`immich.$DOMAINNAME_1`)"
+      - "traefik.http.routers.immich-rtr.middlewares=chain-oauth@file"
+      - "traefik.http.routers.immich-rtr.service=immich-svc"
+      - "traefik.http.services.immich-svc.loadbalancer.server.port=2283"
+
+  immich-machine-learning:
+    container_name: immich-machine-learning
+    image: ghcr.io/immich-app/immich-machine-learning:v1.124.2
+    restart: unless-stopped
+    profiles: ["other", "all"]
+    healthcheck:
+      disable: false
+    networks:
+      - t3_proxy
+    environment:
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
+    env_file:
+      - $CONF_DIR/immich/.env
+    volumes:
+      - $CONF_DIR/immich/cache:/cache
