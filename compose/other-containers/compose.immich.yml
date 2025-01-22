@@ -19,6 +19,8 @@ services:
       - /etc/localtime:/etc/localtime:ro
     expose:
       - 2283
+    ports:
+      - 2283:2283
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.immich-rtr.tls=true"
