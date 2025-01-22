@@ -24,7 +24,7 @@ services:
       - "traefik.http.routers.immich-rtr.tls=true"
       - "traefik.http.routers.immich-rtr.entrypoints=websecure"
       - "traefik.http.routers.immich-rtr.rule=Host(`photos.$DOMAINNAME_1`) || Host(`immich.$DOMAINNAME_1`)"
-      - "traefik.http.routers.immich-rtr.middlewares=chain-oauth@file"
+      - "traefik.http.routers.immich-rtr.middlewares=chain-no-auth@file"
       - "traefik.http.routers.immich-rtr.service=immich-svc"
       - "traefik.http.services.immich-svc.loadbalancer.server.port=2283"
 
