@@ -32,7 +32,7 @@ services:
 
   immich-machine-learning:
     container_name: immich-machine-learning
-    image: ghcr.io/immich-app/immich-machine-learning:v1.125.2
+    image: ghcr.io/immich-app/immich-machine-learning:v1.125.3
     restart: unless-stopped
     profiles: ["other", "all"]
     healthcheck:
