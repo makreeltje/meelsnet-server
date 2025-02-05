@@ -10,7 +10,7 @@ services:
       - PUID=$PUID
       - PGID=$PGID
       - TZ=$TZ
-      - MONGODB_URL=mongodb://mongodb:27017
+      - MONGODB_URL=mongodb://$MONGO_DBUSER:$MONGO_DBPASS@mongo:27017/
     volumes:
       - $CONF_DIR/chat-ui/data:/data
       - $CONF_DIR/chat-ui/.env.local:/app/.env.local
