@@ -4,6 +4,8 @@ services:
     image: ghcr.io/huggingface/chat-ui-db:0.9.4
     restart: unless-stopped
     profiles: ["other", "all"]
+    networks:
+      - t3_proxy
     environment:
       - PUID=$PUID
       - PGID=$PGID
@@ -29,13 +31,13 @@ services:
     image: ollama/ollama:0.5.7
     restart: unless-stopped
     profiles: ["other", "all"]
+    networks:
+      - t3_proxy
     environment:
       - PUID=$PUID
       - PGID=$PGID
       - TZ=$TZ
     volumes:
       - $CONF_DIR/ollama:/root/.ollama
-    networks:
-      - t3_proxy
     expose:
       - 11434
