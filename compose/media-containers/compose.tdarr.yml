@@ -1,7 +1,7 @@
 services:
   tdarr:
     container_name: tdarr
-    image: haveagitgat/tdarr:2.34.01
+    image: haveagitgat/tdarr:2.35.02
     restart: unless-stopped
     profiles: ["media", "all"]
     networks:
