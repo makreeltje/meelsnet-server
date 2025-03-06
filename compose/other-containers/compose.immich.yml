@@ -1,7 +1,7 @@
 services:
   immich:
     container_name: immich
-    image: ghcr.io/immich-app/immich-server:v1.128.0
+    image: ghcr.io/immich-app/immich-server:v1.129.0
     restart: unless-stopped
     profiles: ["other", "all"]
     healthcheck:
