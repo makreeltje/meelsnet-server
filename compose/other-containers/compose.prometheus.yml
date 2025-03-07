@@ -76,7 +76,7 @@ services:
 
   alertmanager:
     container_name: alertmanager
-    image: prom/alertmanager:v0.28.0
+    image: prom/alertmanager:v0.28.1
     restart: unless-stopped
     profiles: ["other", "statistics", "all"]
     networks:
