@@ -16,7 +16,7 @@ services:
       - $CONF_DIR/immich/.env
     volumes:
       - $PHOTOS_DIR/library:/usr/src/app/upload
-      - $CONF_DIR/external:/usr/src/app/external
+      - $CONF_DIR/immich/external:/usr/src/app/external
       - /etc/localtime:/etc/localtime:ro
     expose:
       - 2283
