@@ -39,6 +39,7 @@ include:
   - compose/media-server/compose.transmission.yml
   # - compose/media-server/compose.homarr.yml
   - compose/media-server/compose.tdarr.yml
+  - compose/media-server/compose.plexwatch.yml
   
   # Game containers
   # - compose/game-servers/mc-allthemods9.yml

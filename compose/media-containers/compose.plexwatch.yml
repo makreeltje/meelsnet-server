@@ -1,0 +1,16 @@
+services:
+  plexwatch:
+    container_name: plexwatch
+    image: ghcr.io/nichtlegacy/plexwatch:main-d82fa39
+    restart: unless-stopped
+    profiles: ["media", "all"]
+    networks:
+      - t3_proxy
+    environment:
+      - PGID=$PGID
+      - PUID=$PUID
+      - TZ=$TZ
+      - RUNNING_IN_DOCKER=true
+    env_file: $CONF_DIR/plexwatch/.env
+    volumes:
+      - $CONF_DIR/plexwatch/data:/app/data
