@@ -64,3 +64,5 @@ include:
   - compose/server/compose.firefly.yml
   - compose/server/compose.immich.yml
   - compose/server/compose.openchat-llm.yml
+  - compose/server/compose.uptime-kuma.yml
+
