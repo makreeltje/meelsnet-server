@@ -43,7 +43,7 @@ services:
 
   chronograf:
     container_name: chronograf
-    image: chronograf:1.10.5
+    image: chronograf:1.10.8
     restart: unless-stopped
     profiles: ["other", "statistics", "all"]
     networks:
