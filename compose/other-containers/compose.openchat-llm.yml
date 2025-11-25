@@ -1,7 +1,7 @@
 services:      
   chat-ui:
     container_name: chat-ui
-    image: ghcr.io/huggingface/chat-ui-db:0.9.4
+    image: ghcr.io/huggingface/chat-ui-db:0.9.5
     restart: unless-stopped
     profiles: ["other", "all"]
     networks:
