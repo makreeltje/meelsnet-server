@@ -1,7 +1,7 @@
 services:
   handbrake:
     container_name: handbrake
-    image: jlesage/handbrake:v24.12.1
+    image: jlesage/handbrake:v25.12.1
     restart: unless-stopped
     profiles: ["media", "all"]
     networks:
