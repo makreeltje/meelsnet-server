@@ -1,7 +1,7 @@
 services:
   transmission:
     container_name: transmission
-    image: haugene/transmission-openvpn:5.3.1
+    image: haugene/transmission-openvpn:5.3.2
     restart: unless-stopped
     profiles: ["media", "all"]
     networks:
