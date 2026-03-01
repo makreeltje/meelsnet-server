@@ -1,0 +1,22 @@
+services:
+  omni-tools:
+    container_name: omni-tools
+    image: iib0011/omni-tools:0.5.0
+    restart: unless-stopped
+    profiles: ["other", "all"]
+    networks:
+      - t3_proxy
+    environment:
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
+    expose:
+      - 80
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.omni-tools-rtr.tls=true"
+      - "traefik.http.routers.omni-tools-rtr.entrypoints=websecure"
+      - "traefik.http.routers.omni-tools-rtr.rule=Host(`tools.$DOMAINNAME_1`)"
+      - "traefik.http.routers.omni-tools-rtr.middlewares=chain-oauth@file"
+      - "traefik.http.routers.omni-tools-rtr.service=omni-tools-svc"
+      - "traefik.http.services.omni-tools-svc.loadbalancer.server.port=80"

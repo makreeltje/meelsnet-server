@@ -1,0 +1,23 @@
+services:
+  jellyfin:
+    container_name: jellyfin
+    image: jellyfin/jellyfin:10.11.6
+    restart: unless-stopped
+    profiles: ["media", "all"]
+    networks:
+      - t3_proxy
+    volumes:
+      - $CONF_DIR/jellyfin/config:/config
+      - $CONF_DIR/jellyfin/cache:/cache
+      - $MEDIA_DIR:/media
+    ports:
+      - 8096:8096/tcp
+      - 7359:7359/udp
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.jellyfin-rtr.tls=true"
+      - "traefik.http.routers.jellyfin-rtr.entrypoints=websecure"
+      - "traefik.http.routers.jellyfin-rtr.rule=Host(`jellyfin.$DOMAINNAME_1`)"
+      - "traefik.http.routers.jellyfin-rtr.middlewares=chain-no-auth@file"
+      - "traefik.http.routers.jellyfin-rtr.service=jellyfin-svc"
+      - "traefik.http.services.jellyfin-svc.loadbalancer.server.port=8096"

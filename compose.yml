@@ -1,0 +1,95 @@
+##### NETWORKS #####
+networks:
+  default:
+    driver: bridge
+  t3_proxy:
+    name: t3_proxy
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.2.0.0/16
+
+##### SECRETS #####
+secrets:
+  basic_auth_credentials:
+    file: $DOCKER_DIR/secrets/basic_auth_credentials
+  cf_dns_api_token:
+    file: $DOCKER_DIR/secrets/cf_dns_api_token
+  oauth_secrets:
+    file: $DOCKER_DIR/secrets/oauth_secrets
+  plex_claim_token:
+    file: $DOCKER_DIR/secrets/plex_claim_token
+
+include:
+  ##### SERVICES #####
+  # Reverse proxy
+  - compose/reverse-proxy/compose.traefik.yml
+  - compose/reverse-proxy/compose.oauth.yml
+  - compose/reverse-proxy/compose.authentik.yml
+    
+  # Media containers
+  # - compose/media-server/compose.handbrake.yml
+  - compose/media-server/compose.overseerr.yml
+  - compose/media-server/compose.seerr.yml
+  - compose/media-server/compose.plex.yml
+  - compose/media-server/compose.jellyfin.yml
+  - compose/media-server/compose.prowlarr.yml
+  - compose/media-server/compose.radarr.yml
+  # - compose/media-server/compose.recyclarr.yml
+  - compose/media-server/compose.sabnzbd.yml
+  - compose/media-server/compose.sonarr.yml
+  - compose/media-server/compose.tautulli.yml
+  # - compose/media-server/compose.transmission.yml
+  - compose/media-server/compose.qbittorrent.yml
+  # - compose/media-server/compose.homarr.yml
+  # - compose/media-server/compose.tdarr.yml
+  # - compose/media-server/compose.plexwatch.yml
+  - compose/media-server/compose.huntarr.yml
+  - compose/media-server/compose.notifiarr.yml
+  # - compose/media-server/compose.mydia.yml
+  - compose/media-server/compose.profilarr.yml
+  - compose/media-server/compose.maintainerr.yml
+  - compose/media-server/compose.plex-rewind.yml
+  - compose/media-server/compose.tracearr.yml
+  - compose/media-server/compose.agregarr.yml
+  - compose/media-server/compose.bazarr.yml
+  - compose/media-server/compose.lingarr.yml
+  - compose/media-server/compose.watchstate.yml
+
+  # Game containers
+  # - compose/game-servers/mc-allthemods9.yml
+
+  # Monitoring
+  - compose/monitoring/compose.exporters.yml
+  - compose/monitoring/compose.grafana.yml
+  - compose/monitoring/compose.loki.yml
+  - compose/monitoring/compose.promtail.yml
+  - compose/monitoring/compose.prometheus.yml
+  - compose/monitoring/compose.diun.yml
+
+  # Other containers
+  - compose/server/compose.mongo.yml
+  - compose/server/compose.postgres.yml
+  - compose/server/compose.adminer.yml
+  # - compose/server/compose.mdns-repeater.yml
+  - compose/server/compose.home-assistant.yml
+  - compose/server/compose.music-assistant.yml
+  - compose/server/compose.paperless.yml
+  - compose/server/compose.nextcloud.yml
+  - compose/server/compose.unifi.yml
+  - compose/server/compose.zigbee2mqtt.yml
+  - compose/server/compose.backrest.yml
+  - compose/server/compose.mosquitto.yml
+  - compose/server/compose.hyperion.yml
+  - compose/server/compose.spoolman.yml
+  - compose/server/compose.firefly.yml
+  - compose/server/compose.immich.yml
+  # - compose/server/compose.openchat-llm.yml
+  # - compose/server/compose.uptime-kuma.yml
+  - compose/server/compose.printer-calculator.yml
+  - compose/server/compose.pihole.yml
+  - compose/server/compose.frigate.yml
+  - compose/server/compose.omni-tools.yml
+  - compose/server/compose.nodered.yml
+  - compose/server/compose.n8n.yml
+  - compose/server/compose.redis.yml

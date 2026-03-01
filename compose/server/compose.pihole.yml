@@ -1,0 +1,37 @@
+services:
+  pihole:
+    container_name: pihole
+    image: pihole/pihole:2025.07.1
+    restart: unless-stopped
+    profiles: ["other", "all"]
+    networks:
+      - t3_proxy
+      - default
+    cap_add:
+      - SYS_NICE
+    environment:
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
+      - FTLCONF_webserver_api_password=$PIHOLE_PASS
+      - FTLCONF_dns_upstreams=1.1.1.1;1.0.0.1
+      - FTLCONF_dns_listeningMode=all
+    volumes:
+      - $CONF_DIR/pihole/data:/etc/pihole
+    expose:
+      - 80
+    dns:
+      - 1.1.1.1
+      - 1.0.0.1
+    ports:
+      # DNS Ports
+      - "53:53/tcp"
+      - "53:53/udp"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pihole-rtr.tls=true"
+      - "traefik.http.routers.pihole-rtr.entrypoints=websecure"
+      - "traefik.http.routers.pihole-rtr.rule=Host(`pihole.$DOMAINNAME_1`)"
+      - "traefik.http.routers.pihole-rtr.middlewares=chain-oauth@file"
+      - "traefik.http.routers.pihole-rtr.service=pihole-svc"
+      - "traefik.http.services.pihole-svc.loadbalancer.server.port=80"

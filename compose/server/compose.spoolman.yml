@@ -1,0 +1,26 @@
+services:
+  spoolman:
+    container_name: spoolman
+    image: ghcr.io/donkie/spoolman:0.21.0
+    restart: unless-stopped
+    profiles: ["other", "3d-printer", "all"]
+    networks:
+      - t3_proxy
+    environment:
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
+    volumes:
+      - $CONF_DIR/spoolman/data:/home/app/.local/share/spoolman
+    expose:
+      - 8123
+    ports:
+      - 7912:8000
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.spoolman-rtr.tls=true"
+      - "traefik.http.routers.spoolman-rtr.entrypoints=websecure"
+      - "traefik.http.routers.spoolman-rtr.rule=Host(`spoolman.$DOMAINNAME_1`)"
+      - "traefik.http.routers.spoolman-rtr.middlewares=chain-oauth@file"
+      - "traefik.http.routers.spoolman-rtr.service=spoolman-svc"
+      - "traefik.http.services.spoolman-svc.loadbalancer.server.port=8000"

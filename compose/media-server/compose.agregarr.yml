@@ -1,0 +1,25 @@
+services:
+  agregarr:
+    container_name: agregarr
+    image: agregarr/agregarr:v2.3.0
+    restart: unless-stopped
+    profiles: ["media", "all"]
+    networks:
+      - t3_proxy
+    environment:
+      - PGID=$PGID
+      - PUID=$PUID
+      - TZ=$TZ
+    volumes:
+      - $CONF_DIR/agregarr/config:/app/config
+      - $MEDIA_DIR/movies:/data/movies
+      - $MEDIA_DIR/tv-shows:/data/tv
+    expose:
+      - 7171
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.agregarr-rtr.entrypoints=websecure"
+      - "traefik.http.routers.agregarr-rtr.rule=Host(`agregarr.$DOMAINNAME_1`)"
+      - "traefik.http.routers.agregarr-rtr.middlewares=chain-authentik@file"
+      - "traefik.http.routers.agregarr-rtr.service=agregarr-svc"
+      - "traefik.http.services.agregarr-svc.loadbalancer.server.port=7171"

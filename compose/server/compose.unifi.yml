@@ -1,0 +1,58 @@
+services:
+  # unifi:
+  #   container_name: unifi
+  #   image: ghcr.io/linuxserver/unifi-controller
+  #   restart: unless-stopped
+  #   environment:
+  #     - PUID=${PUID}
+  #     - PGID=${PGID}
+  #     - TZ=${TZ}
+  #     - MEM_LIMIT=1024M
+  #     - MEM_STARTUP=1024M
+  #     - RUNAS_UID0="false"
+  #     - BIND_PRIV="false"
+  #   volumes:
+  #     - ${CONF_DIR}/unifi/config:/config
+  #     - /etc/timezone:/etc/timezone:ro
+  #     - /etc/localtime:/etc/localtime:ro
+  #   networks:
+  #     - traefik_proxy
+  #   security_opt:
+  #     - no-new-privileges:true
+  #   ports:
+  #     - "8080:8080"
+  #     - "8443:8443"
+  #     - "3478:3478/udp"
+  #     - "10001:10001/udp"
+  #     - "6789:6789"
+  #     #- "8081:8081"
+  #     #- "8843:8843"
+  #     #- "8880:8880"
+
+  unifi-network-application:
+    container_name: unifi-network-application
+    image: lscr.io/linuxserver/unifi-network-application:9.2.87
+    restart: unless-stopped
+    profiles: ["other", "all"]
+    networks:
+      - t3_proxy
+    environment:
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
+      - MONGO_USER=$UNIFI_DBUSER
+      - MONGO_PASS=$UNIFI_DBPASS
+      - MONGO_HOST=mongo
+      - MONGO_PORT=27017
+      - MONGO_DBNAME=$UNIFI_DBNAME
+    volumes:
+      - $CONF_DIR/unifi/config:/config
+    ports:
+      - 8443:8443
+      - 3478:3478/udp
+      - 10001:10001/udp
+      - 8080:8080
+      - 8843:8843 #optional
+      - 8880:8880 #optional
+      - 6789:6789 #optional
+      - 5514:5514/udp #optional

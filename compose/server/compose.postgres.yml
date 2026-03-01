@@ -1,0 +1,26 @@
+services:
+  postgres:
+    container_name: postgres
+    image: ghcr.io/immich-app/postgres:16-vectorchord0.4.2-pgvectors0.3.0
+    restart: unless-stopped
+    profiles: ["other", "database", "all"]
+    networks:
+      - t3_proxy
+    environment:
+      - PGID=$PGID
+      - PUID=$PUID
+      - TZ=$TZ
+      - POSTGRES_PASSWORD=$PSQL_DBPASS
+    volumes:
+      - $CONF_DIR/postgres:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    shm_size: 256M
+    healthcheck:
+      interval: 30s
+      retries: 5
+      start_period: 20s
+      test:
+      - CMD-SHELL
+      - pg_isready -d postgres -U postgres
+      timeout: 5s

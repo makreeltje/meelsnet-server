@@ -1,0 +1,98 @@
+## File for all the Prometheus exporters
+## Sonarr, Radarr, Prowlarr, SabNZBd and Mosquitto
+
+services:
+  sonarr-exporter:
+    container_name: sonarr-exporter
+    image: ghcr.io/onedr0p/exportarr:v2.0.1
+    restart: unless-stopped
+    profiles: ["monitoring", "all"]
+    networks:
+      - t3_proxy
+    command: ["sonarr"]
+    environment:
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
+      - PORT=9707
+      - URL=http://sonarr:8989
+      - APIKEY=$SONARR_API_KEY
+    ports:
+      - 9707:9707
+
+  radarr-exporter:
+    container_name: radarr-exporter
+    image: ghcr.io/onedr0p/exportarr:v2.0.1
+    restart: unless-stopped
+    profiles: ["monitoring", "all"]
+    networks:
+      - t3_proxy
+    command: ["radarr"]
+    environment:
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
+      - PORT=9708
+      - URL=http://radarr:7878
+      - APIKEY=$RADARR_API_KEY
+  
+  prowlarr-exporter:
+    container_name: prowlarr-exporter
+    image: ghcr.io/onedr0p/exportarr:v2.0.1
+    restart: unless-stopped
+    profiles: ["monitoring", "all"]
+    networks:
+      - t3_proxy
+    command: ["prowlarr"]
+    environment:
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
+      - PORT=9710
+      - URL=http://prowlarr:9696
+      - APIKEY=$PROWLARR_API_KEY
+
+  sabnzbd-exporter:
+    container_name: sabnzbd-exporter
+    image: ghcr.io/onedr0p/exportarr:v2.0.1
+    restart: unless-stopped
+    profiles: ["monitoring", "all"]
+    networks:
+      - t3_proxy
+    command: ["sabnzbd"]
+    environment:
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
+      - PORT=9711
+      - URL=http://sabnzbd:8080
+      - APIKEY=$SABNZBD_API_KEY
+
+  mosquitto-exporter:
+    container_name: mosquitto-exporter
+    image: sapcc/mosquitto-exporter
+    restart: unless-stopped
+    profiles: ["monitoring", "all"]
+    networks:
+      - t3_proxy
+    command: 
+      - --endpoint=tcp://mosquitto:1883
+      - --user=$MOSQUITTO_USER
+      - --pass=$MOSQUITTO_PASS
+      - --client-id=mosquitto-exporter
+    environment:
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
+
+  smartctl-exporter:
+    container_name: smartctl-exporter
+    image: prometheuscommunity/smartctl-exporter
+    restart: unless-stopped
+    profiles: ["monitoring", "all"]
+    networks:
+      - t3_proxy
+    privileged: true
+    user: root
+    ports:
+      - "9633:9633"

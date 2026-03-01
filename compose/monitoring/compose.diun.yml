@@ -1,0 +1,29 @@
+services:
+  diun:
+    container_name: diun
+    image: crazymax/diun:4.30.0
+    restart: unless-stopped
+    profiles: ["monitoring", "all"]
+    networks:
+      - t3_proxy
+    environment:
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
+      - DIUN_WATCH_WORKERS=20
+      - DIUN_WATCH_SCHEDULE=* * * * *
+      - DIUN_WATCH_JITTER=30s
+      - DIUN_PROVIDERS_DOCKER=true
+      # - DIUN_NOTIF_MQTT_SCHEME=mqtt
+      - DIUN_NOTIF_MQTT_HOST=mosquitto
+      - DIUN_NOTIF_MQTT_PORT=1883
+      - DIUN_NOTIF_MQTT_USERNAME=$MOSQUITTO_USER
+      - DIUN_NOTIF_MQTT_PASSWORD=$MOSQUITTO_PASS
+      - DIUN_NOTIF_MQTT_CLIENT=diun
+      - DIUN_NOTIF_MQTT_TOPIC=docker/diun
+      - DIUN_NOTIF_MQTT_QOS=0
+    volumes:
+      - $CONF_DIR/diun/data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      - "diun.enable=true"

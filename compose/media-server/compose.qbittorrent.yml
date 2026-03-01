@@ -1,0 +1,60 @@
+services:
+  qbittorrent:
+    container_name: qbittorrent
+    image: binhex/arch-qbittorrentvpn:5.1
+    restart: unless-stopped
+    profiles: ["media", "all"]
+    networks:
+      - t3_proxy
+    environment:
+      - PGID=$PGID
+      - PUID=$PUID
+      - TZ=$TZ
+      - UMASK=000
+      - VPN_ENABLED=yes
+      - VPN_USER=$VPN_USERNAME
+      - VPN_PASS=$VPN_PASSWORD
+      - VPN_PROV=$VPN_PROVIDER
+      - VPN_CLIENT=openvpn
+      - VPN_INPUT_PORTS=1234
+      - VPN_OUTPUT_PORTS=5678
+      - ENABLE_STARTUP_SCRIPTS=no
+      - ENABLE_PRIVOXY=yes
+      - STRICT_PORT_FORWARD=yes
+      - USERSPACE_WIREGUARD=no
+      - ENABLE_SOCKS=yes
+      - SOCKS_USER=$QBITTORRENT_USER
+      - SOCKS_PASS=$QBITTORRENT_PASS
+      - LAN_NETWORK=192.168.2.0/24
+      - NAME_SERVERS=1.1.1.1,1.0.0.1
+      - DEBUG=true
+      - WEBUI_PORT=8080
+    volumes:
+      - $DOWNLOAD_DIR:/data
+      - $CONF_DIR/qbittorrent/config:/config
+      - /etc/localtime:/etc/localtime:ro
+    expose:
+      - 8080
+    ports:
+      # - 8080:8080
+      - 8118:8118
+      - 9118:9118
+      - 58946:58946
+      - 58946:58946/udp
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.qbittorrent-rtr-bypass.entrypoints=websecure"
+      - "traefik.http.routers.qbittorrent-rtr-bypass.rule=Host(`qbittorrent.$DOMAINNAME_1`) && Header(`traefik-auth-bypass-key`, `$TRAEFIK_AUTH_BYPASS_KEY`)"
+      - "traefik.http.routers.qbittorrent-rtr-bypass.priority=100"
+      - "traefik.http.routers.qbittorrent-rtr.entrypoints=websecure"
+      - "traefik.http.routers.qbittorrent-rtr.rule=Host(`qbittorrent.$DOMAINNAME_1`)"
+      - "traefik.http.routers.qbittorrent-rtr.priority=99"
+      - "traefik.http.routers.qbittorrent-rtr-bypass.middlewares=chain-no-auth@file"
+      - "traefik.http.routers.qbittorrent-rtr.middlewares=chain-authentik@file"
+      - "traefik.http.routers.qbittorrent-rtr.service=qbittorrent-svc"
+      - "traefik.http.routers.qbittorrent-rtr-bypass.service=qbittorrent-svc"
+      - "traefik.http.services.qbittorrent-svc.loadbalancer.server.port=8080"
+    cap_add:
+      - NET_ADMIN
+        # devices:
+        #  - /dev/net/tun

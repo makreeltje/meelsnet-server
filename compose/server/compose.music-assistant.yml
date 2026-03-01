@@ -1,0 +1,23 @@
+services:
+  musicassistant:
+    container_name: musicassistant
+    image: ghcr.io/music-assistant/server:2.7.2
+    cap_add:
+      - SYS_ADMIN
+      - DAC_READ_SEARCH
+    security_opt:
+      - apparmor:unconfined
+    restart: unless-stopped
+    profiles: ["other", "all"]
+    network_mode: host
+    networks:
+      - t3_proxy
+    environment:
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
+      - LOG_LEVEL=debug
+    volumes:
+      - $CONF_DIR/musicassistant/data:/data
+    labels:
+      - "diun.enable=true"

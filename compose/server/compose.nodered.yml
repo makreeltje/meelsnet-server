@@ -1,0 +1,24 @@
+services:
+  nodered:
+    container_name: nodered
+    image: nodered/node-red:4.1.0
+    restart: unless-stopped
+    profiles: ["other", "smarthome", "all"]
+    networks:
+      - t3_proxy
+    environment:
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
+    volumes:
+      - $CONF_DIR/node-red/data:/home/pi/.node-red
+    expose:
+      - 1880
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nodered-rtr.tls=true"
+      - "traefik.http.routers.nodered-rtr.entrypoints=websecure"
+      - "traefik.http.routers.nodered-rtr.rule=Host(`nodered.$DOMAINNAME_1`)"
+      - "traefik.http.routers.nodered-rtr.middlewares=chain-authentik@file"
+      - "traefik.http.routers.nodered-rtr.service=nodered-svc"
+      - "traefik.http.services.nodered-svc.loadbalancer.server.port=1880"

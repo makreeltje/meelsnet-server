@@ -1,0 +1,67 @@
+services:
+  authentik:
+    container_name: authentik
+    image: ghcr.io/goauthentik/server:2025.8.1
+    restart: unless-stopped
+    profiles: ["reverse-proxy", "all"]
+    networks:
+      - t3_proxy
+    command: server
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
+      - AUTHENTIK_POSTGRESQL__HOST=postgres
+      - AUTHENTIK_POSTGRESQL__NAME=$AUTHENTIK_DBNAME
+      - AUTHENTIK_POSTGRESQL__PASSWORD=$AUTHENTIK_DBPASS
+      - AUTHENTIK_POSTGRESQL__USER=$AUTHENTIK_DBUSER
+      - AUTHENTIK_REDIS__HOST=redis
+      - AUTHENTIK_SECRET_KEY=$AUTHENTIK_SECRET
+    volumes:
+      - $CONF_DIR/authentik/media:/media
+      - $CONF_DIR/authentik/custom-templates:/templates
+    expose:
+      - 9000
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.authentik-rtr.tls=true"
+      - "traefik.http.routers.authentik-rtr.entrypoints=websecure"
+      - "traefik.http.routers.authentik-rtr.rule=Host(`authentik.$DOMAINNAME_1`)"
+      - "traefik.http.routers.authentik-rtr.middlewares=chain-no-auth@file"
+      - "traefik.http.routers.authentik-rtr.service=authentik-svc"
+      - "traefik.http.services.authentik-svc.loadbalancer.server.port=9000"
+
+  authentik-worker:
+    container_name: authentik-worker
+    image: ghcr.io/goauthentik/server:2025.8.1
+    restart: unless-stopped
+    profiles: ["reverse-proxy", "all"]
+    user: root
+    networks:
+      - t3_proxy
+    command: worker
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      - TZ=$TZ
+      - AUTHENTIK_POSTGRESQL__HOST=postgres
+      - AUTHENTIK_POSTGRESQL__NAME=$AUTHENTIK_DBNAME
+      - AUTHENTIK_POSTGRESQL__PASSWORD=$AUTHENTIK_DBPASS
+      - AUTHENTIK_POSTGRESQL__USER=$AUTHENTIK_DBUSER
+      - AUTHENTIK_REDIS__HOST=redis
+      - AUTHENTIK_SECRET_KEY=$AUTHENTIK_SECRET
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - $CONF_DIR/authentik/certs:/certs
+      - $CONF_DIR/authentik/media:/media
+      - $CONF_DIR/authentik/custom-templates:/templates
+
+  

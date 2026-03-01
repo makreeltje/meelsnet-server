@@ -1,0 +1,32 @@
+services:
+  mydia:
+    container_name: mydia
+    image: ghcr.io/getmydia/mydia:0.4.6
+    restart: unless-stopped
+    profiles: ["media", "all"]
+    networks:
+      - t3_proxy
+    environment:
+      - PGID=$PGID
+      - PUID=$PUID
+      - TZ=$TZ
+      - SECRET_KEY_BASE=$MYDIA_SECRET
+      - GUARDIAN_SECRET_KEY=$MYDIA_GUARDIAN
+      - PHX_HOST=192.168.2.200
+      - PORT=4000
+      - MOVIES_PATH=/media/Movies
+      - TV_PATH=/media/Series
+    volumes:
+      - $CONF_DIR/mydia/config:/config
+      - $MEDIA_DIR:/media
+    expose:
+      - 4000
+    ports:
+      - 4000:4000
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mydia-rtr.entrypoints=websecure"
+      - "traefik.http.routers.mydia-rtr.rule=Host(`mydia.$DOMAINNAME_1`)"
+      - "traefik.http.routers.mydia-rtr.middlewares=chain-authentik@file"
+      - "traefik.http.routers.mydia-rtr.service=mydia-svc"
+      - "traefik.http.services.mydia-svc.loadbalancer.server.port=400"

@@ -1,0 +1,21 @@
+services:
+  watchstate:
+    container_name: watchstate
+    image: ghcr.io/arabcoders/watchstate:v1.0.8
+    restart: unless-stopped
+    profiles: ["media", "all"]
+    user: ${PUID:-1000}:${PGID:-1000}
+    networks:
+      - t3_proxy
+    volumes:
+      - $CONF_DIR/watchstate/config:/config
+    expose:
+      - 8080
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.watchstate-rtr.tls=true"
+      - "traefik.http.routers.watchstate-rtr.entrypoints=websecure"
+      - "traefik.http.routers.watchstate-rtr.rule=Host(`watchstate.$DOMAINNAME_1`)"
+      - "traefik.http.routers.watchstate-rtr.middlewares=chain-authentik@file"
+      - "traefik.http.routers.watchstate-rtr.service=watchstate-svc"
+      - "traefik.http.services.watchstate-svc.loadbalancer.server.port=8080"

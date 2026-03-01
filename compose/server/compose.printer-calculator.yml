@@ -1,0 +1,29 @@
+services:
+  printer-calculator:
+    container_name: printer-calculator
+    image: rick043/3d-printer-cost-calculator
+    restart: unless-stopped
+    profiles: ["other", "all"]
+    networks:
+      - t3_proxy
+    environment:
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
+      - DATABASE_URL=postgresql://${PRINTER_CALCULATOR_DBUSER}:${PRINTER_CALCULATOR_DBPASS}@postgres:5432/${PRINTER_CALCULATOR_DBNAME}
+      - STREAMLIT_SERVER_MAX_UPLOAD_SIZE=2000
+    volumes:
+      - $CONF_DIR/3d-printer-cost-calculator/uploads:/app/uploads
+    expose:
+      - 5000
+    ports:
+      - 5000:5000
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.printer-calculator-rtr.tls=true"
+      - "traefik.http.routers.printer-calculator-rtr.entrypoints=websecure"
+      - "traefik.http.routers.printer-calculator-rtr.rule=Host(`calculator.$DOMAINNAME_1`)"
+      - "traefik.http.routers.printer-calculator-rtr.middlewares=chain-oauth@file"
+      - "traefik.http.routers.printer-calculator-rtr.service=printer-calculator-svc"
+      - "traefik.http.services.printer-calculator-svc.loadbalancer.server.port=5000"
+

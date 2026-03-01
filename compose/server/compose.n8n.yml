@@ -1,0 +1,33 @@
+services:
+  n8n:
+    container_name: n8n
+    image: docker.n8n.io/n8nio/n8n:2.4.5
+    restart: unless-stopped
+    profiles: ["other", "all"]
+    networks:
+      - t3_proxy
+    environment:
+      - PUID=$PUID
+      - PGID=$PGID
+      - TZ=$TZ
+      - GENERIC_TIMEZONE=$TZ
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+      - N8N_RUNNERS_ENABLED=true
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=$N8N_DBNAME
+      - DB_POSTGRESDB_USER=$N8N_DBUSER
+      - DB_POSTGRESDB_PASSWORD=$N8N_DBPASS
+    volumes:
+      - $CONF_DIR/n8n/data:/home/node/.n8n
+    expose:
+      - 5678
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.n8n-rtr.tls=true"
+      - "traefik.http.routers.n8n-rtr.entrypoints=websecure"
+      - "traefik.http.routers.n8n-rtr.rule=Host(`n8n.$DOMAINNAME_1`)"
+      - "traefik.http.routers.n8n-rtr.middlewares=chain-authentik@file"
+      - "traefik.http.routers.n8n-rtr.service=n8n-svc"
+      - "traefik.http.services.n8n-svc.loadbalancer.server.port=5678"

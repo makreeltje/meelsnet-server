@@ -1,0 +1,28 @@
+services:
+  notifiarr:
+    container_name: notifiarr
+    image: golift/notifiarr:0.9.1
+    restart: unless-stopped
+    privileged: true
+    profiles: ["media", "all"]
+    networks:
+      - t3_proxy
+    environment:
+      - PGID=$PGID
+      - PUID=$PUID
+      - TZ=$TZ
+      - DN_API_KEY=$NOTIFIARR_API_KEY
+    volumes:
+      - $CONF_DIR/notifiarr/config:/config
+      - /var/run/utmp:/var/run/utmp
+      - /etc/machine-id:/etc/machine-id
+    expose:
+      - 5454
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.notifiarr-rtr.tls=true"
+      - "traefik.http.routers.notifiarr-rtr.entrypoints=websecure"
+      - "traefik.http.routers.notifiarr-rtr.rule=Host(`notifiarr.$DOMAINNAME_1`)"
+      - "traefik.http.routers.notifiarr-rtr.middlewares=chain-authentik@file"
+      - "traefik.http.routers.notifiarr-rtr.service=notifiarr-svc"
+      - "traefik.http.services.notifiarr-svc.loadbalancer.server.port=5454"
