@@ -6,7 +6,7 @@ services:
     networks:
       - t3_proxy
     environment:
-      TZ: ${TZ}
+      TZ: $TZ
 
   # Base for LinuxServer.io containers (adds PUID/PGID)
   common-lsio:
@@ -14,9 +14,9 @@ services:
     networks:
       - t3_proxy
     environment:
-      PUID: ${PUID}
-      PGID: ${PGID}
-      TZ: ${TZ}
+      PUID: $PUID
+      PGID: $PGID
+      TZ: $TZ
 
   # Base for non-LSIO containers that depend on postgres + redis
   common-db:
@@ -24,7 +24,7 @@ services:
     networks:
       - t3_proxy
     environment:
-      TZ: ${TZ}
+      TZ: $TZ
     depends_on:
       postgres:
         condition: service_healthy
@@ -37,9 +37,9 @@ services:
     networks:
       - t3_proxy
     environment:
-      PUID: ${PUID}
-      PGID: ${PGID}
-      TZ: ${TZ}
+      PUID: $PUID
+      PGID: $PGID
+      TZ: $TZ
     depends_on:
       postgres:
         condition: service_healthy
@@ -54,4 +54,4 @@ services:
     networks:
       - t3_proxy
     environment:
-      TZ: ${TZ}
+      TZ: $TZ
