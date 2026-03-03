@@ -3,7 +3,7 @@ services:
     container_name: qbittorrent
     image: binhex/arch-qbittorrentvpn:5.1
     restart: unless-stopped
-    profiles: ["media", "all"]
+    profiles: [ "media", "all" ]
     networks:
       - t3_proxy
     environment:

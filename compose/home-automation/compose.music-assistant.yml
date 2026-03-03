@@ -8,7 +8,7 @@ services:
     security_opt:
       - apparmor:unconfined
     restart: unless-stopped
-    profiles: ["other", "all"]
+    profiles: [ "home", "all" ]
     network_mode: host
     networks:
       - t3_proxy

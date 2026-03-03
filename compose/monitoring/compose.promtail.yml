@@ -3,7 +3,7 @@ services:
     container_name: promtail
     image: grafana/promtail:3.5.3
     restart: unless-stopped
-    profiles: ["monitoring", "all"]
+    profiles: [ "monitoring", "all" ]
     networks:
       - t3_proxy
     command: -config.file=/mnt/config/promtail-config.yaml
@@ -16,7 +16,7 @@ services:
     volumes:
       - $CONF_DIR/promtail/config:/mnt/config
       - /var/log:/var/log
-    expose: 
+    expose:
       - 9080
     ports:
       - 9080:9080

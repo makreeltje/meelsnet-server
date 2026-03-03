@@ -5,7 +5,7 @@ services:
     security_opt:
       - no-new-privileges:true
     restart: unless-stopped
-    profiles: ["reverse-proxy", "all"]
+    profiles: [ "reverse-proxy", "all" ]
     networks:
       t3_proxy:
         ipv4_address: 10.2.0.254
@@ -36,7 +36,7 @@ services:
       - --providers.docker=true
       - --providers.docker.endpoint=unix:///var/run/docker.sock
       - --providers.docker.exposedByDefault=false
-      - --providers.docker.network=t3_proxy 
+      - --providers.docker.network=t3_proxy
       # - --providers.docker.swarmMode=false # Traefik v2 Swarm
       # - --providers.swarm.endpoint=tcp://127.0.0.1:2377 # Traefik v3 Swarm
       - --entrypoints.websecure.http.tls.options=tls-opts@file
@@ -55,7 +55,7 @@ services:
       - basic_auth_credentials
     environment:
       - TZ=$TZ
-      - CF_DNS_API_TOKEN_FILE=/run/secrets/cf_dns_api_token    
+      - CF_DNS_API_TOKEN_FILE=/run/secrets/cf_dns_api_token
       - HTPASSWD_FILE=/run/secrets/basic_auth_credentials
       - DOMAINNAME_1
     volumes:

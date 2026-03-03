@@ -3,7 +3,7 @@ services:
     container_name: mc-allthemods9
     image: itzg/minecraft-server:2024.12.1-java21
     restart: unless-stopped
-    profiles: ["games", "all"]
+    profiles: [ "games", "all" ]
     environment:
       PUID: $PUID
       PGID: $PGID

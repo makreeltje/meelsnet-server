@@ -3,7 +3,7 @@ services:
     container_name: prowlarr
     image: linuxserver/prowlarr:1.31.2
     restart: unless-stopped
-    profiles: ["media", "all"]
+    profiles: [ "media", "all" ]
     networks:
       - t3_proxy
     environment:

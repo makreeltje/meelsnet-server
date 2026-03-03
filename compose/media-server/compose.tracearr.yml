@@ -3,7 +3,7 @@ services:
     container_name: tracearr
     image: ghcr.io/connorgallopo/tracearr:supervised-1.4.19
     restart: unless-stopped
-    profiles: ["media", "all"]
+    profiles: [ "media", "all" ]
     networks:
       - t3_proxy
     environment:
@@ -17,7 +17,7 @@ services:
     expose:
       - 3000
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://127.0.0.1:3000/health"]
+      test: [ "CMD", "curl", "-f", "http://127.0.0.1:3000/health" ]
       interval: 30s
       timeout: 10s
       start_period: 60s

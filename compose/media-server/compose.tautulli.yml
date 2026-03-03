@@ -3,7 +3,7 @@ services:
     container_name: tautulli
     image: tautulli/tautulli:v2.16.0
     restart: unless-stopped
-    profiles: ["media", "all"]
+    profiles: [ "media", "all" ]
     networks:
       - t3_proxy
     environment:
@@ -15,7 +15,7 @@ services:
       - $CONF_DIR/plex/config/Library/Application\ Support/Plex\ Media\ Server/Logs:/logs:ro
       - $DOCKER_DIR:/opt
     expose:
-    - 8181
+      - 8181
     ports:
       - 8181:8181
     labels:

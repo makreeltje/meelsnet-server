@@ -3,7 +3,7 @@ services:
     container_name: nextcloud
     image: nextcloud:32.0.0
     restart: unless-stopped
-    profiles: ["other", "all"]
+    profiles: [ "productivity", "all" ]
     networks:
       - t3_proxy
     environment:

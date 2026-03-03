@@ -5,7 +5,7 @@ services:
     init: true
     user: root
     restart: unless-stopped
-    profiles: ["media", "all"]
+    profiles: [ "media", "all" ]
     networks:
       - t3_proxy
     environment:

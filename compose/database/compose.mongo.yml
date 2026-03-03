@@ -3,7 +3,7 @@ services:
     container_name: mongo
     image: mongo:7.0.17
     restart: unless-stopped
-    profiles: ["other", "database", "all"]
+    profiles: [ "database", "all" ]
     networks:
       - t3_proxy
     environment:
@@ -16,12 +16,12 @@ services:
       - $CONF_DIR/mongo/db:/data/db
     ports:
       - 27017:27017
-      
+
   mongo-express:
     container_name: mongo-express
     image: mongo-express
     restart: unless-stopped
-    profiles: ["other", "database", "all"]
+    profiles: [ "database", "all" ]
     environment:
       - ME_CONFIG_BASICAUTH_USERNAME=$MONGO_DBUSER
       - ME_CONFIG_BASICAUTH_PASSWORD=$MONGO_DBPASS

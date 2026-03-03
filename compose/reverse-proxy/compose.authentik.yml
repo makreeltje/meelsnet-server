@@ -3,7 +3,7 @@ services:
     container_name: authentik
     image: ghcr.io/goauthentik/server:2025.8.1
     restart: unless-stopped
-    profiles: ["reverse-proxy", "all"]
+    profiles: [ "reverse-proxy", "all" ]
     networks:
       - t3_proxy
     command: server
@@ -40,7 +40,7 @@ services:
     container_name: authentik-worker
     image: ghcr.io/goauthentik/server:2025.8.1
     restart: unless-stopped
-    profiles: ["reverse-proxy", "all"]
+    profiles: [ "reverse-proxy", "all" ]
     user: root
     networks:
       - t3_proxy
@@ -63,5 +63,3 @@ services:
       - $CONF_DIR/authentik/certs:/certs
       - $CONF_DIR/authentik/media:/media
       - $CONF_DIR/authentik/custom-templates:/templates
-
-  

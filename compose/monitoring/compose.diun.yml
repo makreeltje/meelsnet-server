@@ -3,7 +3,7 @@ services:
     container_name: diun
     image: crazymax/diun:4.30.0
     restart: unless-stopped
-    profiles: ["monitoring", "all"]
+    profiles: [ "monitoring", "all" ]
     networks:
       - t3_proxy
     environment:

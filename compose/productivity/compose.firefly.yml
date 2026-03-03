@@ -3,7 +3,7 @@ services:
     container_name: firefly
     image: fireflyiii/core:version-6.2.12
     restart: unless-stopped
-    profiles: ["other", "all"]
+    profiles: [ "productivity", "all" ]
     networks:
       - t3_proxy
     environment:
@@ -28,7 +28,7 @@ services:
     container_name: firefly-importer
     image: fireflyiii/data-importer:version-1.6.2
     restart: unless-stopped
-    profiles: ["other", "all"]
+    profiles: [ "other", "all" ]
     networks:
       - t3_proxy
     environment:
@@ -36,6 +36,6 @@ services:
       - PGID=$PGID
       - TZ=$TZ
     env_file: $CONF_DIR/firefly/.importer.env
-    depends_on: ["firefly"]
+    depends_on: [ "firefly" ]
     ports:
       - 81:8080

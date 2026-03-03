@@ -3,7 +3,7 @@ services:
     container_name: adminer
     image: adminer:4.17.1-standalone
     restart: unless-stopped
-    profiles: ["other", "database", "all"]
+    profiles: [ "database", "all" ]
     networks:
       - t3_proxy
     environment:
@@ -20,4 +20,3 @@ services:
       - "traefik.http.routers.adminer-rtr.middlewares=chain-oauth@file"
       - "traefik.http.routers.adminer-rtr.service=adminer-svc"
       - "traefik.http.services.adminer-svc.loadbalancer.server.port=8080"
-

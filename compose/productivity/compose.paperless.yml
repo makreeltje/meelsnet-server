@@ -3,7 +3,7 @@ services:
     container_name: paperless
     image: ghcr.io/paperless-ngx/paperless-ngx:2.14.7
     restart: unless-stopped
-    profiles: ["other", "all"]
+    profiles: [ "productivity", "all" ]
     networks:
       - t3_proxy
     environment:

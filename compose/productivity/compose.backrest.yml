@@ -3,7 +3,7 @@ services:
     container_name: backrest
     image: garethgeorge/backrest:v1.9.2
     restart: unless-stopped
-    profiles: ["other", "all"]
+    profiles: [ "productivity", "all" ]
     networks:
       - t3_proxy
     environment:

@@ -3,10 +3,10 @@ services:
     container_name: loki
     image: grafana/loki:3.5.3
     restart: unless-stopped
-    profiles: ["monitoring", "all"]
+    profiles: [ "monitoring", "all" ]
     networks:
       - t3_proxy
-    command: 
+    command:
       - -config.file=/mnt/config/loki-config.yaml
     environment:
       - PUID=$PUID

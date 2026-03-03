@@ -3,7 +3,7 @@ services:
     container_name: nodered
     image: nodered/node-red:4.1.0
     restart: unless-stopped
-    profiles: ["other", "smarthome", "all"]
+    profiles: [ "home", "all" ]
     networks:
       - t3_proxy
     environment:

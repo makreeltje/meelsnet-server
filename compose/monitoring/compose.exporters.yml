@@ -6,10 +6,10 @@ services:
     container_name: sonarr-exporter
     image: ghcr.io/onedr0p/exportarr:v2.0.1
     restart: unless-stopped
-    profiles: ["monitoring", "all"]
+    profiles: [ "monitoring", "all" ]
     networks:
       - t3_proxy
-    command: ["sonarr"]
+    command: [ "sonarr" ]
     environment:
       - PUID=$PUID
       - PGID=$PGID
@@ -24,10 +24,10 @@ services:
     container_name: radarr-exporter
     image: ghcr.io/onedr0p/exportarr:v2.0.1
     restart: unless-stopped
-    profiles: ["monitoring", "all"]
+    profiles: [ "monitoring", "all" ]
     networks:
       - t3_proxy
-    command: ["radarr"]
+    command: [ "radarr" ]
     environment:
       - PUID=$PUID
       - PGID=$PGID
@@ -35,15 +35,15 @@ services:
       - PORT=9708
       - URL=http://radarr:7878
       - APIKEY=$RADARR_API_KEY
-  
+
   prowlarr-exporter:
     container_name: prowlarr-exporter
     image: ghcr.io/onedr0p/exportarr:v2.0.1
     restart: unless-stopped
-    profiles: ["monitoring", "all"]
+    profiles: [ "monitoring", "all" ]
     networks:
       - t3_proxy
-    command: ["prowlarr"]
+    command: [ "prowlarr" ]
     environment:
       - PUID=$PUID
       - PGID=$PGID
@@ -56,10 +56,10 @@ services:
     container_name: sabnzbd-exporter
     image: ghcr.io/onedr0p/exportarr:v2.0.1
     restart: unless-stopped
-    profiles: ["monitoring", "all"]
+    profiles: [ "monitoring", "all" ]
     networks:
       - t3_proxy
-    command: ["sabnzbd"]
+    command: [ "sabnzbd" ]
     environment:
       - PUID=$PUID
       - PGID=$PGID
@@ -72,10 +72,10 @@ services:
     container_name: mosquitto-exporter
     image: sapcc/mosquitto-exporter
     restart: unless-stopped
-    profiles: ["monitoring", "all"]
+    profiles: [ "monitoring", "all" ]
     networks:
       - t3_proxy
-    command: 
+    command:
       - --endpoint=tcp://mosquitto:1883
       - --user=$MOSQUITTO_USER
       - --pass=$MOSQUITTO_PASS
@@ -89,7 +89,7 @@ services:
     container_name: smartctl-exporter
     image: prometheuscommunity/smartctl-exporter
     restart: unless-stopped
-    profiles: ["monitoring", "all"]
+    profiles: [ "monitoring", "all" ]
     networks:
       - t3_proxy
     privileged: true

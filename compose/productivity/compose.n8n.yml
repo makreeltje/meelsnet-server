@@ -3,7 +3,7 @@ services:
     container_name: n8n
     image: docker.n8n.io/n8nio/n8n:2.4.5
     restart: unless-stopped
-    profiles: ["other", "all"]
+    profiles: [ "productivity", "all" ]
     networks:
       - t3_proxy
     environment:

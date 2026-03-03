@@ -3,7 +3,7 @@ services:
     container_name: zigbee2mqtt
     image: koenkk/zigbee2mqtt:2.7.2
     restart: unless-stopped
-    profiles: ["other", "smart-home", "all"]
+    profiles: [ "home", "all" ]
     networks:
       - t3_proxy
     environment:

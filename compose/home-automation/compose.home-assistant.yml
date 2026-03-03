@@ -3,7 +3,7 @@ services:
     container_name: homeassistant
     image: ghcr.io/home-assistant/home-assistant:2026.3.0b0
     restart: unless-stopped
-    profiles: ["other", "all"]
+    profiles: [ "home", "all" ]
     network_mode: host
     environment:
       - PUID=$PUID

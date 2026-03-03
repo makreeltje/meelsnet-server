@@ -3,7 +3,7 @@ services:
     container_name: grafana
     image: grafana/grafana:11.5.2
     restart: unless-stopped
-    profiles: ["monitoring", "all"]
+    profiles: [ "monitoring", "all" ]
     security_opt:
       - no-new-privileges:true
     networks:

@@ -21,45 +21,74 @@ secrets:
     file: $DOCKER_DIR/secrets/plex_claim_token
 
 include:
-  ##### SERVICES #####
-  # Reverse proxy
+  # =========================================================
+  # REVERSE PROXY STACK (LXC 101: infra)
+  # =========================================================
   - compose/reverse-proxy/compose.traefik.yml
   - compose/reverse-proxy/compose.oauth.yml
   - compose/reverse-proxy/compose.authentik.yml
-    
-  # Media containers
-  # - compose/media-server/compose.handbrake.yml
-  - compose/media-server/compose.overseerr.yml
-  - compose/media-server/compose.seerr.yml
+
+  # =========================================================
+  # DATABASE STACK (LXC 101: infra)
+  # =========================================================
+  - compose/database/compose.postgres.yml
+  - compose/database/compose.redis.yml
+  - compose/database/compose.mongo.yml
+  - compose/database/compose.adminer.yml
+
+  # =========================================================
+  # MEDIA SERVER STACK (LXC 102: media)
+  # =========================================================
   - compose/media-server/compose.plex.yml
   - compose/media-server/compose.jellyfin.yml
-  - compose/media-server/compose.prowlarr.yml
-  - compose/media-server/compose.radarr.yml
-  # - compose/media-server/compose.recyclarr.yml
-  - compose/media-server/compose.sabnzbd.yml
+  - compose/media-server/compose.overseerr.yml
   - compose/media-server/compose.sonarr.yml
-  - compose/media-server/compose.tautulli.yml
-  # - compose/media-server/compose.transmission.yml
+  - compose/media-server/compose.radarr.yml
+  - compose/media-server/compose.prowlarr.yml
+  - compose/media-server/compose.sabnzbd.yml
   - compose/media-server/compose.qbittorrent.yml
-  # - compose/media-server/compose.homarr.yml
-  # - compose/media-server/compose.tdarr.yml
-  # - compose/media-server/compose.plexwatch.yml
+  - compose/media-server/compose.bazarr.yml
+  - compose/media-server/compose.tautulli.yml
   - compose/media-server/compose.huntarr.yml
   - compose/media-server/compose.notifiarr.yml
-  # - compose/media-server/compose.mydia.yml
   - compose/media-server/compose.profilarr.yml
   - compose/media-server/compose.maintainerr.yml
   - compose/media-server/compose.plex-rewind.yml
   - compose/media-server/compose.tracearr.yml
   - compose/media-server/compose.agregarr.yml
-  - compose/media-server/compose.bazarr.yml
   - compose/media-server/compose.lingarr.yml
   - compose/media-server/compose.watchstate.yml
 
-  # Game containers
-  # - compose/game-servers/mc-allthemods9.yml
+  # =========================================================
+  # HOME AUTOMATION STACK (LXC 103: home)
+  # =========================================================
+  - compose/home-automation/compose.home-assistant.yml
+  - compose/home-automation/compose.zigbee2mqtt.yml
+  - compose/home-automation/compose.mosquitto.yml
+  - compose/home-automation/compose.nodered.yml
+  - compose/home-automation/compose.music-assistant.yml
+  - compose/home-automation/compose.hyperion.yml
+  - compose/home-automation/compose.frigate.yml
 
-  # Monitoring
+  # =========================================================
+  # PRODUCTIVITY STACK (LXC 104: productivity)
+  # =========================================================
+  - compose/productivity/compose.immich.yml
+  - compose/productivity/compose.paperless.yml
+  - compose/productivity/compose.nextcloud.yml
+  - compose/productivity/compose.n8n.yml
+  - compose/productivity/compose.firefly.yml
+  - compose/productivity/compose.backrest.yml
+
+  # =========================================================
+  # NETWORK STACK (LXC 105: network)
+  # =========================================================
+  - compose/network/compose.unifi.yml
+  - compose/network/compose.pihole.yml
+
+  # =========================================================
+  # MONITORING STACK (LXC 106: monitoring)
+  # =========================================================
   - compose/monitoring/compose.exporters.yml
   - compose/monitoring/compose.grafana.yml
   - compose/monitoring/compose.loki.yml
@@ -67,29 +96,9 @@ include:
   - compose/monitoring/compose.prometheus.yml
   - compose/monitoring/compose.diun.yml
 
-  # Other containers
-  - compose/server/compose.mongo.yml
-  - compose/server/compose.postgres.yml
-  - compose/server/compose.adminer.yml
-  # - compose/server/compose.mdns-repeater.yml
-  - compose/server/compose.home-assistant.yml
-  - compose/server/compose.music-assistant.yml
-  - compose/server/compose.paperless.yml
-  - compose/server/compose.nextcloud.yml
-  - compose/server/compose.unifi.yml
-  - compose/server/compose.zigbee2mqtt.yml
-  - compose/server/compose.backrest.yml
-  - compose/server/compose.mosquitto.yml
-  - compose/server/compose.hyperion.yml
-  - compose/server/compose.spoolman.yml
-  - compose/server/compose.firefly.yml
-  - compose/server/compose.immich.yml
-  # - compose/server/compose.openchat-llm.yml
-  # - compose/server/compose.uptime-kuma.yml
-  - compose/server/compose.printer-calculator.yml
-  - compose/server/compose.pihole.yml
-  - compose/server/compose.frigate.yml
-  - compose/server/compose.omni-tools.yml
-  - compose/server/compose.nodered.yml
-  - compose/server/compose.n8n.yml
-  - compose/server/compose.redis.yml
+  # =========================================================
+  # UTILITIES STACK (LXC 107: utilities)
+  # =========================================================
+  - compose/utilities/compose.omni-tools.yml
+  - compose/utilities/compose.spoolman.yml
+  - compose/utilities/compose.printer-calculator.yml

@@ -4,7 +4,7 @@ services:
     image: golift/notifiarr:0.9.1
     restart: unless-stopped
     privileged: true
-    profiles: ["media", "all"]
+    profiles: [ "media", "all" ]
     networks:
       - t3_proxy
     environment:

@@ -4,7 +4,7 @@ services:
     image: prom/prometheus:v2.55.1
     user: $PUID:$PGID
     restart: unless-stopped
-    profiles: ["monitoring", "all"]
+    profiles: [ "monitoring", "all" ]
     depends_on:
       - node-exporter
       - cadvisor
@@ -34,13 +34,13 @@ services:
       - "traefik.http.routers.prometheus-rtr.middlewares=chain-oauth@file"
       - "traefik.http.routers.prometheus-rtr.service=prometheus-svc"
       - "traefik.http.services.prometheus-svc.loadbalancer.server.port=9090"
-  
+
   node-exporter:
     container_name: node-exporter
     image: prom/node-exporter:v1.9.0
     user: $PUID:$PGID
     restart: unless-stopped
-    profiles: ["monitoring", "all"]
+    profiles: [ "monitoring", "all" ]
     networks:
       - t3_proxy
     command:
@@ -64,8 +64,8 @@ services:
     container_name: cadvisor
     image: gcr.io/cadvisor/cadvisor:v0.52.0
     restart: unless-stopped
-    profiles: ["monitoring", "all"]
-    command: 
+    profiles: [ "monitoring", "all" ]
+    command:
       - '--housekeeping_interval=15s'
       - '--docker_only=true'
       - '--disable_metrics=disk,network,tcp,udp,percpu,sched,process'
@@ -85,7 +85,7 @@ services:
     container_name: alertmanager
     image: prom/alertmanager:v0.28.1
     restart: unless-stopped
-    profiles: ["monitoring", "all"]
+    profiles: [ "monitoring", "all" ]
     networks:
       - t3_proxy
     command:
