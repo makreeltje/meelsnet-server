@@ -20,6 +20,12 @@ services:
       - $CONF_DIR/n8n/data:/home/node/.n8n
     expose:
       - 5678
+    healthcheck:
+      test: [ "CMD", "wget", "-qO-", "http://localhost:5678/healthz" ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.n8n-rtr.tls=true"

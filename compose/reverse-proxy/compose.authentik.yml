@@ -24,6 +24,12 @@ services:
       - $CONF_DIR/authentik/custom-templates:/templates
     expose:
       - 9000
+    healthcheck:
+      test: [ "CMD", "wget", "-qO-", "http://localhost:9000/-/health/ready/" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.authentik-rtr.tls=true"
@@ -54,6 +60,12 @@ services:
       AUTHENTIK_POSTGRESQL__USER: $AUTHENTIK_DBUSER
       AUTHENTIK_REDIS__HOST: redis
       AUTHENTIK_SECRET_KEY: $AUTHENTIK_SECRET
+    healthcheck:
+      test: [ "CMD-SHELL", "ak healthcheck || exit 1" ]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - $CONF_DIR/authentik/certs:/certs

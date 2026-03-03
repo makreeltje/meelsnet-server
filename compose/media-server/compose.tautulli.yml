@@ -12,6 +12,12 @@ services:
       - $DOCKER_DIR:/opt
     ports:
       - 8181:8181
+    healthcheck:
+      test: [ "CMD", "curl", "-fsSo", "/dev/null", "http://localhost:8181/status" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.tautulli-rtr-bypass.entrypoints=websecure"

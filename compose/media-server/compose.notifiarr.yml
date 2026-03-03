@@ -14,6 +14,12 @@ services:
       - /etc/machine-id:/etc/machine-id
     expose:
       - 5454
+    healthcheck:
+      test: [ "CMD", "curl", "-fsSo", "/dev/null", "http://localhost:5454/api/v1/healthcheck/" ]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.notifiarr-rtr.tls=true"

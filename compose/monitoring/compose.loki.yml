@@ -12,3 +12,9 @@ services:
       - $CONF_DIR/loki/config:/mnt/config
     ports:
       - 3100:3100
+    healthcheck:
+      test: [ "CMD", "wget", "-qO-", "http://localhost:3100/ready" ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s

@@ -13,3 +13,9 @@ services:
     ports:
       - 1883:1883
       - 9001:9001
+    healthcheck:
+      test: [ "CMD-SHELL", "mosquitto_sub -h localhost -t '$$SYS/#' -C 1 -u $MOSQUITTO_USER -P $MOSQUITTO_PASS -W 3 || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s

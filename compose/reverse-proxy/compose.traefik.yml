@@ -11,6 +11,8 @@ services:
     extra_hosts:
       - host.docker.internal:host-gateway
     command:
+      - --ping=true
+      - --ping.entrypoint=traefik
       - --global.checkNewVersion=true
       - --global.sendAnonymousUsage=false
       - --entrypoints.web.address=:80
@@ -75,6 +77,12 @@ services:
         published: 8082
         protocol: tcp
         mode: host
+    healthcheck:
+      test: ["CMD", "traefik", "healthcheck", "--ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.traefik-rtr.entrypoints=websecure"

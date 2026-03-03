@@ -26,6 +26,12 @@ services:
       - 8554:8554
       - 8555:8555/tcp
       - 8555:8555/udp
+    healthcheck:
+      test: [ "CMD", "wget", "-qO-", "http://localhost:5000/api/stats" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.frigate-rtr.tls=true"

@@ -16,5 +16,9 @@ services:
       LOG_LEVEL: info
     volumes:
       - $CONF_DIR/musicassistant/data:/data
-    labels:
-      - "diun.enable=true"
+    healthcheck:
+      test: [ "CMD", "curl", "-fsSo", "/dev/null", "http://localhost:8095/" ]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 30s

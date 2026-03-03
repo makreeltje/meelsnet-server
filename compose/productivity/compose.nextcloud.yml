@@ -20,6 +20,12 @@ services:
       - $CLOUD_DIR:/data
     ports:
       - 8081:80
+    healthcheck:
+      test: [ "CMD", "curl", "-fsSo", "/dev/null", "http://localhost:80/status.php" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
     labels:
       - "diun.enable=true"
       - "traefik.enable=true"

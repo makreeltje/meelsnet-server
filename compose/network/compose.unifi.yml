@@ -6,6 +6,9 @@ services:
     container_name: unifi-network-application
     image: lscr.io/linuxserver/unifi-network-application:9.2.87
     profiles: [ "network", "all" ]
+    depends_on:
+      mongo:
+        condition: service_healthy
     environment:
       MONGO_USER: $UNIFI_DBUSER
       MONGO_PASS: $UNIFI_DBPASS
@@ -23,3 +26,9 @@ services:
       - 8880:8880 #optional
       - 6789:6789 #optional
       - 5514:5514/udp #optional
+    healthcheck:
+      test: [ "CMD", "curl", "-fsSo", "/dev/null", "--insecure", "https://localhost:8443/" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s

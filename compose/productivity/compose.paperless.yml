@@ -37,6 +37,12 @@ services:
       - $DMS_DIR/consume:/usr/src/paperless/consume
     expose:
       - 8000
+    healthcheck:
+      test: [ "CMD", "curl", "-fsSo", "/dev/null", "http://localhost:8000/" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.paperless-rtr.tls=true"

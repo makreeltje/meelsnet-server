@@ -13,6 +13,12 @@ services:
       - $DOWNLOAD_DIR:/downloads
     expose:
       - 8989
+    healthcheck:
+      test: [ "CMD", "curl", "-fsSo", "/dev/null", "http://localhost:8989/api/v3/system/status?apikey=$SONARR_API_KEY" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.sonarr-rtr-bypass.entrypoints=websecure"
@@ -41,6 +47,12 @@ services:
       - $DOWNLOAD_DIR:/downloads
     expose:
       - 8989
+    healthcheck:
+      test: [ "CMD", "curl", "-fsSo", "/dev/null", "http://localhost:8989/api/v3/system/status?apikey=$SONARR_API_KEY" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.sonarr-4k-rtr-bypass.entrypoints=websecure"

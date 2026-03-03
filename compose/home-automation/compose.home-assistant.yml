@@ -11,3 +11,9 @@ services:
       - $CONF_DIR/homeassistant/config:/config
       - $CONF_DIR/homeassistant/images:/images
       - /etc/localtime:/etc/localtime:ro
+    healthcheck:
+      test: [ "CMD", "curl", "-fsSo", "/dev/null", "http://localhost:8123/" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s

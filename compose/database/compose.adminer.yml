@@ -8,6 +8,12 @@ services:
     profiles: [ "database", "all" ]
     expose:
       - 8080
+    healthcheck:
+      test: [ "CMD-SHELL", "nc -z localhost 8080 || exit 1" ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.adminer-rtr.tls=true"

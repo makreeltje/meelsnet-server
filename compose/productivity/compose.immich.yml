@@ -6,8 +6,6 @@ services:
     container_name: immich
     image: ghcr.io/immich-app/immich-server:$IMMICH_VERSION
     profiles: [ "productivity", "all" ]
-    healthcheck:
-      disable: false
     env_file:
       - $CONF_DIR/immich/.env
     volumes:
@@ -16,6 +14,12 @@ services:
       - /etc/localtime:/etc/localtime:ro
     ports:
       - 2283:2283
+    healthcheck:
+      test: [ "CMD", "wget", "-qO-", "http://localhost:2283/api/server-info/ping" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.immich-rtr.tls=true"
@@ -31,10 +35,14 @@ services:
       service: common
     container_name: immich-machine-learning
     image: ghcr.io/immich-app/immich-machine-learning:$IMMICH_VERSION
-    profiles: [ "other", "all" ]
-    healthcheck:
-      disable: false
+    profiles: [ "productivity", "all" ]
     env_file:
       - $CONF_DIR/immich/.env
     volumes:
       - $CONF_DIR/immich/cache:/cache
+    healthcheck:
+      test: [ "CMD", "curl", "-fsSo", "/dev/null", "http://localhost:3003/ping" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s

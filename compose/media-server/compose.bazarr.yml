@@ -12,6 +12,12 @@ services:
       - $MEDIA_DIR/tv-shows:/tv
     expose:
       - 6767
+    healthcheck:
+      test: [ "CMD", "curl", "-fsSo", "/dev/null", "http://localhost:6767/api/system/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.bazarr-rtr-bypass.entrypoints=websecure"

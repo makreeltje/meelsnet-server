@@ -11,6 +11,12 @@ services:
       - $DOWNLOAD_DIR:/downloads
     expose:
       - 8080
+    healthcheck:
+      test: [ "CMD", "curl", "-fsSo", "/dev/null", "http://localhost:8080/api?mode=version&output=json&apikey=$SABNZBD_API_KEY" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.sabnzbd-rtr-bypass.entrypoints=websecure"
