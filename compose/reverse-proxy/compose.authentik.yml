@@ -1,11 +1,11 @@
 services:
   authentik:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
     container_name: authentik
-    image: ghcr.io/goauthentik/server:2025.8.1
-    restart: unless-stopped
+    image: ghcr.io/goauthentik/server:$AUTHENTIK_VERSION
     profiles: [ "reverse-proxy", "all" ]
-    networks:
-      - t3_proxy
     command: server
     depends_on:
       postgres:
@@ -13,15 +13,12 @@ services:
       redis:
         condition: service_healthy
     environment:
-      - PUID=$PUID
-      - PGID=$PGID
-      - TZ=$TZ
-      - AUTHENTIK_POSTGRESQL__HOST=postgres
-      - AUTHENTIK_POSTGRESQL__NAME=$AUTHENTIK_DBNAME
-      - AUTHENTIK_POSTGRESQL__PASSWORD=$AUTHENTIK_DBPASS
-      - AUTHENTIK_POSTGRESQL__USER=$AUTHENTIK_DBUSER
-      - AUTHENTIK_REDIS__HOST=redis
-      - AUTHENTIK_SECRET_KEY=$AUTHENTIK_SECRET
+      AUTHENTIK_POSTGRESQL__HOST: postgres
+      AUTHENTIK_POSTGRESQL__NAME: $AUTHENTIK_DBNAME
+      AUTHENTIK_POSTGRESQL__PASSWORD: $AUTHENTIK_DBPASS
+      AUTHENTIK_POSTGRESQL__USER: $AUTHENTIK_DBUSER
+      AUTHENTIK_REDIS__HOST: redis
+      AUTHENTIK_SECRET_KEY: $AUTHENTIK_SECRET
     volumes:
       - $CONF_DIR/authentik/media:/media
       - $CONF_DIR/authentik/custom-templates:/templates
@@ -37,13 +34,13 @@ services:
       - "traefik.http.services.authentik-svc.loadbalancer.server.port=9000"
 
   authentik-worker:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
     container_name: authentik-worker
-    image: ghcr.io/goauthentik/server:2025.8.1
-    restart: unless-stopped
+    image: ghcr.io/goauthentik/server:$AUTHENTIK_VERSION
     profiles: [ "reverse-proxy", "all" ]
     user: root
-    networks:
-      - t3_proxy
     command: worker
     depends_on:
       postgres:
@@ -51,13 +48,12 @@ services:
       redis:
         condition: service_healthy
     environment:
-      - TZ=$TZ
-      - AUTHENTIK_POSTGRESQL__HOST=postgres
-      - AUTHENTIK_POSTGRESQL__NAME=$AUTHENTIK_DBNAME
-      - AUTHENTIK_POSTGRESQL__PASSWORD=$AUTHENTIK_DBPASS
-      - AUTHENTIK_POSTGRESQL__USER=$AUTHENTIK_DBUSER
-      - AUTHENTIK_REDIS__HOST=redis
-      - AUTHENTIK_SECRET_KEY=$AUTHENTIK_SECRET
+      AUTHENTIK_POSTGRESQL__HOST: postgres
+      AUTHENTIK_POSTGRESQL__NAME: $AUTHENTIK_DBNAME
+      AUTHENTIK_POSTGRESQL__PASSWORD: $AUTHENTIK_DBPASS
+      AUTHENTIK_POSTGRESQL__USER: $AUTHENTIK_DBUSER
+      AUTHENTIK_REDIS__HOST: redis
+      AUTHENTIK_SECRET_KEY: $AUTHENTIK_SECRET
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - $CONF_DIR/authentik/certs:/certs

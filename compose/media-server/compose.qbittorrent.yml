@@ -1,42 +1,36 @@
 services:
   qbittorrent:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
     container_name: qbittorrent
     image: binhex/arch-qbittorrentvpn:5.1
-    restart: unless-stopped
     profiles: [ "media", "all" ]
-    networks:
-      - t3_proxy
     environment:
-      - PGID=$PGID
-      - PUID=$PUID
-      - TZ=$TZ
-      - UMASK=000
-      - VPN_ENABLED=yes
-      - VPN_USER=$VPN_USERNAME
-      - VPN_PASS=$VPN_PASSWORD
-      - VPN_PROV=$VPN_PROVIDER
-      - VPN_CLIENT=openvpn
-      - VPN_INPUT_PORTS=1234
-      - VPN_OUTPUT_PORTS=5678
-      - ENABLE_STARTUP_SCRIPTS=no
-      - ENABLE_PRIVOXY=yes
-      - STRICT_PORT_FORWARD=yes
-      - USERSPACE_WIREGUARD=no
-      - ENABLE_SOCKS=yes
-      - SOCKS_USER=$QBITTORRENT_USER
-      - SOCKS_PASS=$QBITTORRENT_PASS
-      - LAN_NETWORK=192.168.2.0/24
-      - NAME_SERVERS=1.1.1.1,1.0.0.1
-      - DEBUG=true
-      - WEBUI_PORT=8080
+      UMASK: 0
+      VPN_ENABLED: yes
+      VPN_USER: $VPN_USERNAME
+      VPN_PASS: $VPN_PASSWORD
+      VPN_PROV: $VPN_PROVIDER
+      VPN_CLIENT: openvpn
+      VPN_INPUT_PORTS: 1234
+      VPN_OUTPUT_PORTS: 5678
+      ENABLE_STARTUP_SCRIPTS: no
+      ENABLE_PRIVOXY: yes
+      STRICT_PORT_FORWARD: yes
+      USERSPACE_WIREGUARD: no
+      ENABLE_SOCKS: yes
+      SOCKS_USER: $QBITTORRENT_USER
+      SOCKS_PASS: $QBITTORRENT_PASS
+      LAN_NETWORK: 192.168.2.0/24
+      NAME_SERVERS: 1.1.1.1,1.0.0.1
+      DEBUG: true
+      WEBUI_PORT: 8080
     volumes:
       - $DOWNLOAD_DIR:/data
       - $CONF_DIR/qbittorrent/config:/config
       - /etc/localtime:/etc/localtime:ro
-    expose:
-      - 8080
     ports:
-      # - 8080:8080
       - 8118:8118
       - 9118:9118
       - 58946:58946

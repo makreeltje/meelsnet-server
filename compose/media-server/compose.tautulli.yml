@@ -1,21 +1,15 @@
 services:
   tautulli:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
     container_name: tautulli
     image: tautulli/tautulli:v2.16.0
-    restart: unless-stopped
     profiles: [ "media", "all" ]
-    networks:
-      - t3_proxy
-    environment:
-      - PGID=$PGID
-      - PUID=$PUID
-      - TZ=$TZ
     volumes:
       - $CONF_DIR/tautulli/config:/config
       - $CONF_DIR/plex/config/Library/Application\ Support/Plex\ Media\ Server/Logs:/logs:ro
       - $DOCKER_DIR:/opt
-    expose:
-      - 8181
     ports:
       - 8181:8181
     labels:

@@ -1,18 +1,15 @@
 services:
   grafana:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
     container_name: grafana
     image: grafana/grafana:11.5.2
-    restart: unless-stopped
     profiles: [ "monitoring", "all" ]
     security_opt:
       - no-new-privileges:true
-    networks:
-      - t3_proxy
     environment:
-      - PUID=$PUID
-      - PGID=$PGID
-      - TZ=$TZ
-      - GF_USERS_ALLOW_SIGN_UP=false
+      GF_USERS_ALLOW_SIGN_UP: "false"
     volumes:
       - $CONF_DIR/grafana/data:/var/lib/grafana
       - /etc/timezone:/etc/timezone:ro

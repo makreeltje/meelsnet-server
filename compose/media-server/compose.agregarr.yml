@@ -1,15 +1,11 @@
 services:
   agregarr:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
     container_name: agregarr
     image: agregarr/agregarr:v2.3.0
-    restart: unless-stopped
     profiles: [ "media", "all" ]
-    networks:
-      - t3_proxy
-    environment:
-      - PGID=$PGID
-      - PUID=$PUID
-      - TZ=$TZ
     volumes:
       - $CONF_DIR/agregarr/config:/app/config
       - $MEDIA_DIR/movies:/data/movies

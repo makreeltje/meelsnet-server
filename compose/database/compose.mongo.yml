@@ -1,33 +1,30 @@
 services:
   mongo:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
     container_name: mongo
     image: mongo:7.0.17
-    restart: unless-stopped
     profiles: [ "database", "all" ]
-    networks:
-      - t3_proxy
     environment:
-      - PUID=$PUID
-      - PGID=$PGID
-      - TZ=$TZ
-      - MONGO_INITDB_ROOT_USERNAME=$MONGO_DBUSER
-      - MONGO_INITDB_ROOT_PASSWORD=$MONGO_DBPASS
+      MONGO_INITDB_ROOT_USERNAME: $MONGO_DBUSER
+      MONGO_INITDB_ROOT_PASSWORD: $MONGO_DBPASS
     volumes:
       - $CONF_DIR/mongo/db:/data/db
     ports:
       - 27017:27017
 
   mongo-express:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
     container_name: mongo-express
     image: mongo-express
-    restart: unless-stopped
     profiles: [ "database", "all" ]
     environment:
-      - ME_CONFIG_BASICAUTH_USERNAME=$MONGO_DBUSER
-      - ME_CONFIG_BASICAUTH_PASSWORD=$MONGO_DBPASS
-      - ME_CONFIG_MONGODB_URL=mongodb://$MONGO_DBUSER:$MONGO_DBPASS@mongo:27017/
-    networks:
-      - t3_proxy
+      ME_CONFIG_BASICAUTH_USERNAME: $MONGO_DBUSER
+      ME_CONFIG_BASICAUTH_PASSWORD: $MONGO_DBPASS
+      ME_CONFIG_MONGODB_URL: mongodb://$MONGO_DBUSER:$MONGO_DBPASS@mongo:27017/
     expose:
       - 8081
     labels:

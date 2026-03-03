@@ -1,15 +1,11 @@
 services:
   redis:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
     container_name: redis
     image: redis:7.4-alpine
-    restart: unless-stopped
     profiles: [ "database", "all" ]
-    networks:
-      - t3_proxy
-    environment:
-      - PGID=$PGID
-      - PUID=$PUID
-      - TZ=$TZ
     volumes:
       - $CONF_DIR/redis/data:/data
     healthcheck:

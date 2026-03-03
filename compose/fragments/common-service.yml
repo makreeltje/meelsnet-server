@@ -1,0 +1,57 @@
+services:
+
+  # Base
+  common:
+    restart: unless-stopped
+    networks:
+      - t3_proxy
+    environment:
+      TZ: ${TZ}
+
+  # Base for LinuxServer.io containers (adds PUID/PGID)
+  common-lsio:
+    restart: unless-stopped
+    networks:
+      - t3_proxy
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+
+  # Base for non-LSIO containers that depend on postgres + redis
+  common-db:
+    restart: unless-stopped
+    networks:
+      - t3_proxy
+    environment:
+      TZ: ${TZ}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # Base for LSIO containers that depend on postgres + redis (rare)
+  common-lsio-db:
+    restart: unless-stopped
+    networks:
+      - t3_proxy
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # Base for all exportarr Prometheus exporters
+  exportarr-base:
+    image: ghcr.io/onedr0p/exportarr:$EXPORTARR_VERSION
+    restart: unless-stopped
+    profiles: [ "monitoring", "all" ]
+    networks:
+      - t3_proxy
+    environment:
+      TZ: ${TZ}

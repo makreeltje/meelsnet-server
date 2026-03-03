@@ -1,15 +1,11 @@
 services:
   zigbee2mqtt:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
     container_name: zigbee2mqtt
     image: koenkk/zigbee2mqtt:2.7.2
-    restart: unless-stopped
     profiles: [ "home", "all" ]
-    networks:
-      - t3_proxy
-    environment:
-      - PUID=$PUID
-      - PGID=$PGID
-      - TZ=$TZ
     volumes:
       - $CONF_DIR/zigbee2mqtt/data:/app/data
       - /run/udev:/run/udev:ro

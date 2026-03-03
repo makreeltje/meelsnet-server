@@ -1,15 +1,11 @@
 services:
   nodered:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
     container_name: nodered
     image: nodered/node-red:4.1.0
-    restart: unless-stopped
     profiles: [ "home", "all" ]
-    networks:
-      - t3_proxy
-    environment:
-      - PUID=$PUID
-      - PGID=$PGID
-      - TZ=$TZ
     volumes:
       - $CONF_DIR/node-red/data:/home/pi/.node-red
     expose:

@@ -1,15 +1,14 @@
 services:
   tracearr:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
     container_name: tracearr
     image: ghcr.io/connorgallopo/tracearr:supervised-1.4.19
-    restart: unless-stopped
     profiles: [ "media", "all" ]
-    networks:
-      - t3_proxy
     environment:
-      - TZ=$TZ
-      - LOG_LEVEL=debug
-      - TRUST_PROXY=true
+      LOG_LEVEL: debug
+      TRUST_PROXY: true
     volumes:
       - $CONF_DIR/tracearr/postgres:/data/postgres
       - $CONF_DIR/tracearr/redis:/data/redis

@@ -1,25 +1,19 @@
 services:
   immich:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
     container_name: immich
-    image: ghcr.io/immich-app/immich-server:v2.5.3
-    restart: unless-stopped
+    image: ghcr.io/immich-app/immich-server:$IMMICH_VERSION
     profiles: [ "productivity", "all" ]
     healthcheck:
       disable: false
-    networks:
-      - t3_proxy
-    environment:
-      - PUID=$PUID
-      - PGID=$PGID
-      - TZ=$TZ
     env_file:
       - $CONF_DIR/immich/.env
     volumes:
       - $PHOTOS_DIR/library:/usr/src/app/upload
       - $CONF_DIR/immich/external:/usr/src/app/external
       - /etc/localtime:/etc/localtime:ro
-    expose:
-      - 2283
     ports:
       - 2283:2283
     labels:
@@ -32,18 +26,14 @@ services:
       - "traefik.http.services.immich-svc.loadbalancer.server.port=2283"
 
   immich-machine-learning:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
     container_name: immich-machine-learning
-    image: ghcr.io/immich-app/immich-machine-learning:v2.5.3
-    restart: unless-stopped
+    image: ghcr.io/immich-app/immich-machine-learning:$IMMICH_VERSION
     profiles: [ "other", "all" ]
     healthcheck:
       disable: false
-    networks:
-      - t3_proxy
-    environment:
-      - PUID=$PUID
-      - PGID=$PGID
-      - TZ=$TZ
     env_file:
       - $CONF_DIR/immich/.env
     volumes:

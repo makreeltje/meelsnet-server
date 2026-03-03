@@ -1,15 +1,11 @@
 services:
   mosquitto:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
     container_name: mosquitto
     image: eclipse-mosquitto:2.0.21
-    restart: unless-stopped
     profiles: [ "home", "all" ]
-    networks:
-      - t3_proxy
-    environment:
-      - PUID=$PUID
-      - PGID=$PGID
-      - TZ=$TZ
     volumes:
       - $CONF_DIR/mosquitto/config:/mosquitto/config
       - $CONF_DIR/mosquitto/data:/mosquitto/data

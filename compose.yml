@@ -41,7 +41,6 @@ include:
   # =========================================================
   - compose/media-server/compose.plex.yml
   - compose/media-server/compose.jellyfin.yml
-  - compose/media-server/compose.overseerr.yml
   - compose/media-server/compose.sonarr.yml
   - compose/media-server/compose.radarr.yml
   - compose/media-server/compose.prowlarr.yml
@@ -49,14 +48,10 @@ include:
   - compose/media-server/compose.qbittorrent.yml
   - compose/media-server/compose.bazarr.yml
   - compose/media-server/compose.tautulli.yml
-  - compose/media-server/compose.huntarr.yml
   - compose/media-server/compose.notifiarr.yml
   - compose/media-server/compose.profilarr.yml
-  - compose/media-server/compose.maintainerr.yml
-  - compose/media-server/compose.plex-rewind.yml
   - compose/media-server/compose.tracearr.yml
   - compose/media-server/compose.agregarr.yml
-  - compose/media-server/compose.lingarr.yml
   - compose/media-server/compose.watchstate.yml
 
   # =========================================================
@@ -77,7 +72,6 @@ include:
   - compose/productivity/compose.paperless.yml
   - compose/productivity/compose.nextcloud.yml
   - compose/productivity/compose.n8n.yml
-  - compose/productivity/compose.firefly.yml
   - compose/productivity/compose.backrest.yml
 
   # =========================================================

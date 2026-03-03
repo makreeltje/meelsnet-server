@@ -1,24 +1,21 @@
 services:
   n8n:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
     container_name: n8n
     image: docker.n8n.io/n8nio/n8n:2.4.5
-    restart: unless-stopped
     profiles: [ "productivity", "all" ]
-    networks:
-      - t3_proxy
     environment:
-      - PUID=$PUID
-      - PGID=$PGID
-      - TZ=$TZ
-      - GENERIC_TIMEZONE=$TZ
-      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
-      - N8N_RUNNERS_ENABLED=true
-      - DB_TYPE=postgresdb
-      - DB_POSTGRESDB_HOST=postgres
-      - DB_POSTGRESDB_PORT=5432
-      - DB_POSTGRESDB_DATABASE=$N8N_DBNAME
-      - DB_POSTGRESDB_USER=$N8N_DBUSER
-      - DB_POSTGRESDB_PASSWORD=$N8N_DBPASS
+      GENERIC_TIMEZONE: $TZ
+      N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: true
+      N8N_RUNNERS_ENABLED: true
+      DB_TYPE: postgresdb
+      DB_POSTGRESDB_HOST: postgres
+      DB_POSTGRESDB_PORT: 5432
+      DB_POSTGRESDB_DATABASE: $N8N_DBNAME
+      DB_POSTGRESDB_USER: $N8N_DBUSER
+      DB_POSTGRESDB_PASSWORD: $N8N_DBPASS
     volumes:
       - $CONF_DIR/n8n/data:/home/node/.n8n
     expose:

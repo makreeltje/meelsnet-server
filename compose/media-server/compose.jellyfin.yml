@@ -1,15 +1,16 @@
 services:
   jellyfin:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
     container_name: jellyfin
     image: jellyfin/jellyfin:10.11.6
-    restart: unless-stopped
     profiles: [ "media", "all" ]
-    networks:
-      - t3_proxy
     volumes:
       - $CONF_DIR/jellyfin/config:/config
       - $CONF_DIR/jellyfin/cache:/cache
       - $MEDIA_DIR:/media
+      - "$CLOUD_DIR/rick/files/Documents/Personal/3D prints:/media/3d-prints"
     ports:
       - 8096:8096/tcp
       - 7359:7359/udp

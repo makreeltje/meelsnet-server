@@ -1,20 +1,14 @@
 services:
   loki:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
     container_name: loki
     image: grafana/loki:3.5.3
-    restart: unless-stopped
     profiles: [ "monitoring", "all" ]
-    networks:
-      - t3_proxy
     command:
       - -config.file=/mnt/config/loki-config.yaml
-    environment:
-      - PUID=$PUID
-      - PGID=$PGID
-      - TZ=$TZ
     volumes:
       - $CONF_DIR/loki/config:/mnt/config
-    expose:
-      - 3100
     ports:
       - 3100:3100

@@ -1,19 +1,13 @@
 services:
   hyperion:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
     container_name: hyperion
     image: amd989/hyperion.ng:main
-    restart: unless-stopped
     profiles: [ "home", "all" ]
-    networks:
-      - t3_proxy
-    environment:
-      - PUID=$PUID
-      - PGID=$PGID
-      - TZ=$TZ
     volumes:
       - $CONF_DIR/hyperion/config:/config
-    expose:
-      - 8090
     ports:
       - "19400:19400"
       - "19444:19444"

@@ -1,15 +1,11 @@
 services:
   prowlarr:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common-lsio
     container_name: prowlarr
     image: linuxserver/prowlarr:1.31.2
-    restart: unless-stopped
     profiles: [ "media", "all" ]
-    networks:
-      - t3_proxy
-    environment:
-      - PGID=$PGID
-      - PUID=$PUID
-      - TZ=$TZ
     volumes:
       - $CONF_DIR/prowlarr/config:/config
       - $DOWNLOAD_DIR:/data

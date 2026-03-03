@@ -1,13 +1,12 @@
 services:
   mc-allthemods9:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
     container_name: mc-allthemods9
     image: itzg/minecraft-server:2024.12.1-java21
-    restart: unless-stopped
     profiles: [ "games", "all" ]
     environment:
-      PUID: $PUID
-      PGID: $PGID
-      TZ: $TZ
       EULA: true
       MOD_PLATFORM: AUTO_CURSEFORGE
       CF_API_KEY: $CF_API_KEY

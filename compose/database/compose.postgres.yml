@@ -1,16 +1,13 @@
 services:
   postgres:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
     container_name: postgres
     image: ghcr.io/immich-app/postgres:16-vectorchord0.4.2-pgvectors0.3.0
-    restart: unless-stopped
     profiles: [ "database", "all" ]
-    networks:
-      - t3_proxy
     environment:
-      - PGID=$PGID
-      - PUID=$PUID
-      - TZ=$TZ
-      - POSTGRES_PASSWORD=$PSQL_DBPASS
+      POSTGRES_PASSWORD: $PSQL_DBPASS
     volumes:
       - $CONF_DIR/postgres:/var/lib/postgresql/data
     ports:

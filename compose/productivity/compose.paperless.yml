@@ -1,15 +1,12 @@
 services:
   paperless:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
     container_name: paperless
     image: ghcr.io/paperless-ngx/paperless-ngx:2.14.7
-    restart: unless-stopped
     profiles: [ "productivity", "all" ]
-    networks:
-      - t3_proxy
     environment:
-      PUID: $PUID
-      PGID: $PGID
-      TZ: $TZ
       PAPERLESS_REDIS: redis://redis:6379
       PAPERLESS_DBHOST: postgres
       PAPERLESS_DBNAME: $PAPERLESS_DBNAME

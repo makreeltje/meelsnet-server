@@ -1,20 +1,17 @@
 services:
   frigate:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
     container_name: frigate
     image: ghcr.io/blakeblackshear/frigate:0.17.0
-    restart: unless-stopped
     profiles: [ "home", "all" ]
-    networks:
-      - t3_proxy
     shm_size: 128mb
     devices:
       - /dev/dri:/dev/dri
     environment:
-      - PUID=$PUID
-      - PGID=$PGID
-      - TZ=$TZ
-      - FRIGATE_RTSP_PASSWORD=$FRIGATE_RTSP_PASSWORD
-      - LIBVA_DRIVER_NAME=i965
+      FRIGATE_RTSP_PASSWORD: $FRIGATE_RTSP_PASSWORD
+      LIBVA_DRIVER_NAME: i965
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - $CONF_DIR/frigate/openvino-model:/openvino-model
@@ -24,8 +21,6 @@ services:
         target: /tmp/cache
         tmpfs:
           size: 1000000000
-    expose:
-      - 5000
     ports:
       - 5001:5000
       - 8554:8554

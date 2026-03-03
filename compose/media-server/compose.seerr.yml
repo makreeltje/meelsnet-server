@@ -1,16 +1,15 @@
 services:
   seerr:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
     container_name: seerr
     image: ghcr.io/seerr-team/seerr:develop
     init: true
     user: root
-    restart: unless-stopped
     profiles: [ "media", "all" ]
-    networks:
-      - t3_proxy
     environment:
-      - TZ=$TZ
-      - LOG_LEVEL=debug
+      LOG_LEVEL: debug
     volumes:
       - $CONF_DIR/seerr/config:/app/config
     expose:

@@ -1,15 +1,11 @@
 services:
   radarr:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common-lsio
     container_name: radarr
     image: linuxserver/radarr:6.0.4
-    restart: unless-stopped
     profiles: [ "media", "all" ]
-    networks:
-      - t3_proxy
-    environment:
-      - PGID=$PGID
-      - PUID=$PUID
-      - TZ=$TZ
     volumes:
       - $CONF_DIR/radarr/config:/config
       - $MEDIA_DIR:/media
@@ -32,16 +28,12 @@ services:
       - "traefik.http.services.radarr-svc.loadbalancer.server.port=7878"
 
   radarr-4k:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common-lsio
     container_name: radarr-4k
     image: linuxserver/radarr:6.0.4
-    restart: unless-stopped
     profiles: [ "media", "all" ]
-    networks:
-      - t3_proxy
-    environment:
-      - PGID=$PGID
-      - PUID=$PUID
-      - TZ=$TZ
     volumes:
       - $CONF_DIR/radarr-4k/config:/config
       - $MEDIA_DIR:/media

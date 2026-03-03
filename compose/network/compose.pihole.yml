@@ -1,21 +1,17 @@
 services:
   pihole:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
     container_name: pihole
     image: pihole/pihole:2025.07.1
-    restart: unless-stopped
     profiles: [ "network", "all" ]
-    networks:
-      - t3_proxy
-      - default
     cap_add:
       - SYS_NICE
     environment:
-      - PUID=$PUID
-      - PGID=$PGID
-      - TZ=$TZ
-      - FTLCONF_webserver_api_password=$PIHOLE_PASS
-      - FTLCONF_dns_upstreams=1.1.1.1;1.0.0.1
-      - FTLCONF_dns_listeningMode=all
+      FTLCONF_webserver_api_password: $PIHOLE_PASS
+      FTLCONF_dns_upstreams: 1.1.1.1;1.0.0.1
+      FTLCONF_dns_listeningMode: all
     volumes:
       - $CONF_DIR/pihole/data:/etc/pihole
     expose:

@@ -1,14 +1,13 @@
 services:
   traefik:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
     container_name: traefik
     image: traefik:v3.6.2
     security_opt:
       - no-new-privileges:true
-    restart: unless-stopped
     profiles: [ "reverse-proxy", "all" ]
-    networks:
-      t3_proxy:
-        ipv4_address: 10.2.0.254
     extra_hosts:
       - host.docker.internal:host-gateway
     command:

@@ -1,15 +1,11 @@
 services:
   omni-tools:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
     container_name: omni-tools
     image: iib0011/omni-tools:0.5.0
-    restart: unless-stopped
-    profiles: ["other", "all"]
-    networks:
-      - t3_proxy
-    environment:
-      - PUID=$PUID
-      - PGID=$PGID
-      - TZ=$TZ
+    profiles: [ "utilities", "all" ]
     expose:
       - 80
     labels:
