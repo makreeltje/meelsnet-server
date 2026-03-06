@@ -6,12 +6,9 @@ services:
     container_name: plex
     image: plexinc/pms-docker:plexpass
     profiles: [ "media", "all" ]
-    secrets:
-      - plex_claim_token
     environment:
-      - TZ=$TZ
-      - PLEX_CLAIM=/run/secrets/plex_claim_token
-      - ADVERTISE_IP=https://plex.$DOMAINNAME_1/
+      PLEX_CLAIM: $PLEX_CLAIM_TOKEN
+      ADVERTISE_IP: https://plex.$DOMAINNAME_1/
     volumes:
       - $CONF_DIR/plex/config:/config
       - $CONF_DIR/plex/data:/data

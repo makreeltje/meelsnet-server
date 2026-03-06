@@ -1,0 +1,13 @@
+networks:
+  t3_proxy:
+    name: t3_proxy
+    driver: bridge
+
+include:
+  - ../../compose/home-automation/compose.home-assistant.yml
+  - ../../compose/home-automation/compose.zigbee2mqtt.yml
+  - ../../compose/home-automation/compose.mosquitto.yml
+  - ../../compose/home-automation/compose.nodered.yml
+  - ../../compose/home-automation/compose.music-assistant.yml
+  - ../../compose/home-automation/compose.hyperion.yml
+  - ../../compose/home-automation/compose.frigate.yml

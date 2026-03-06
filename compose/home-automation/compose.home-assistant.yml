@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: homeassistant
-    image: ghcr.io/home-assistant/home-assistant:2026.3.0b0
+    image: ghcr.io/home-assistant/home-assistant:2026.3.0
     profiles: [ "home", "all" ]
     network_mode: host
     volumes:

@@ -1,0 +1,11 @@
+networks:
+  t3_proxy:
+    name: t3_proxy
+    driver: bridge
+
+include:
+  - ../../compose/monitoring/compose.exporters.yml
+  - ../../compose/monitoring/compose.grafana.yml
+  - ../../compose/monitoring/compose.loki.yml
+  - ../../compose/monitoring/compose.promtail.yml
+  - ../../compose/monitoring/compose.prometheus.yml

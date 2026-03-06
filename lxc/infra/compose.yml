@@ -1,0 +1,23 @@
+networks:
+  t3_proxy:
+    name: t3_proxy
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.2.0.0/16
+  default:
+    driver: bridge
+
+secrets:
+  basic_auth_credentials:
+    file: $DOCKER_DIR/secrets/basic_auth_credentials
+  cf_dns_api_token:
+    file: $DOCKER_DIR/secrets/cf_dns_api_token
+
+include:
+  - ../../compose/reverse-proxy/compose.traefik.yml
+  - ../../compose/reverse-proxy/compose.authentik.yml
+  - ../../compose/database/compose.postgres.yml
+  - ../../compose/database/compose.redis.yml
+  - ../../compose/database/compose.mongo.yml
+  - ../../compose/database/compose.adminer.yml

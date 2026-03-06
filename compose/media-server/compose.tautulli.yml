@@ -9,7 +9,6 @@ services:
     volumes:
       - $CONF_DIR/tautulli/config:/config
       - $CONF_DIR/plex/config/Library/Application\ Support/Plex\ Media\ Server/Logs:/logs:ro
-      - $DOCKER_DIR:/opt
     ports:
       - 8181:8181
     healthcheck:

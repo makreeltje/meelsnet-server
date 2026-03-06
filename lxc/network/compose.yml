@@ -1,0 +1,8 @@
+networks:
+  t3_proxy:
+    name: t3_proxy
+    driver: bridge
+
+include:
+  - ../../compose/network/compose.unifi.yml
+  - ../../compose/network/compose.pihole.yml

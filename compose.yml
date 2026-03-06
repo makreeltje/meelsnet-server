@@ -25,7 +25,6 @@ include:
   # REVERSE PROXY STACK (LXC 101: infra)
   # =========================================================
   - compose/reverse-proxy/compose.traefik.yml
-  - compose/reverse-proxy/compose.oauth.yml
   - compose/reverse-proxy/compose.authentik.yml
 
   # =========================================================
@@ -43,6 +42,7 @@ include:
   - compose/media-server/compose.jellyfin.yml
   - compose/media-server/compose.sonarr.yml
   - compose/media-server/compose.radarr.yml
+  - compose/media-server/compose.seerr.yml
   - compose/media-server/compose.prowlarr.yml
   - compose/media-server/compose.sabnzbd.yml
   - compose/media-server/compose.qbittorrent.yml
@@ -88,7 +88,6 @@ include:
   - compose/monitoring/compose.loki.yml
   - compose/monitoring/compose.promtail.yml
   - compose/monitoring/compose.prometheus.yml
-  - compose/monitoring/compose.diun.yml
 
   # =========================================================
   # UTILITIES STACK (LXC 107: utilities)

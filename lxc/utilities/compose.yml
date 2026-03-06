@@ -1,0 +1,9 @@
+networks:
+  t3_proxy:
+    name: t3_proxy
+    driver: bridge
+
+include:
+  - ../../compose/utilities/compose.omni-tools.yml
+  - ../../compose/utilities/compose.spoolman.yml
+  - ../../compose/utilities/compose.printer-calculator.yml

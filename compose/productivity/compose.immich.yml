@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: immich
-    image: ghcr.io/immich-app/immich-server:$IMMICH_VERSION
+    image: ghcr.io/immich-app/immich-server:v2.5.6
     profiles: [ "productivity", "all" ]
     env_file:
       - $CONF_DIR/immich/.env
@@ -34,7 +34,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: immich-machine-learning
-    image: ghcr.io/immich-app/immich-machine-learning:$IMMICH_VERSION
+    image: ghcr.io/immich-app/immich-machine-learning:v2.5.6
     profiles: [ "productivity", "all" ]
     env_file:
       - $CONF_DIR/immich/.env
