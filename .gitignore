@@ -6,7 +6,7 @@ appdata/
 logs/
 *.log
 
-guides/
+# guides/
 CLAUDE.md
 
 appdata/traefik3/acme/

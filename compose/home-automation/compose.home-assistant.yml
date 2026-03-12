@@ -2,11 +2,10 @@ services:
   homeassistant:
     extends:
       file: ../fragments/common-service.yml
-      service: common
+      service: common-host
     container_name: homeassistant
     image: ghcr.io/home-assistant/home-assistant:2026.3.0
     profiles: [ "home", "all" ]
-    network_mode: host
     volumes:
       - $CONF_DIR/homeassistant/config:/config
       - $CONF_DIR/homeassistant/images:/images

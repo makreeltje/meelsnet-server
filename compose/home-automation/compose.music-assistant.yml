@@ -2,7 +2,7 @@ services:
   musicassistant:
     extends:
       file: ../fragments/common-service.yml
-      service: common
+      service: common-host
     container_name: musicassistant
     image: ghcr.io/music-assistant/server:2.7.2
     cap_add:
@@ -11,7 +11,6 @@ services:
     security_opt:
       - apparmor:unconfined
     profiles: [ "home", "all" ]
-    network_mode: host
     environment:
       LOG_LEVEL: info
     volumes:

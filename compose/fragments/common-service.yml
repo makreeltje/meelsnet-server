@@ -8,6 +8,13 @@ services:
     environment:
       TZ: $TZ
 
+  # Base for host mode containers
+  common-host:
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      TZ: $TZ
+
   # Base for LinuxServer.io containers (adds PUID/PGID)
   common-lsio:
     restart: unless-stopped

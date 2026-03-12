@@ -25,7 +25,7 @@ services:
     expose:
       - 9000
     healthcheck:
-      test: [ "CMD", "wget", "-qO-", "http://localhost:9000/-/health/ready/" ]
+      test: [ "CMD", "/lifecycle/ak", "healthcheck" ]
       interval: 30s
       timeout: 10s
       retries: 3
