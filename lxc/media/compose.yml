@@ -14,7 +14,6 @@ include:
   - compose/media-server/compose.tautulli.yml
   - compose/media-server/compose.seerr.yml
   - compose/media-server/compose.jellyfin.yml
-  - compose/media-server/compose.handbrake.yml
   - compose/media-server/compose.notifiarr.yml
   - compose/media-server/compose.profilarr.yml
   - compose/media-server/compose.tracearr.yml
