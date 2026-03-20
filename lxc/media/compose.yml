@@ -3,24 +3,20 @@ networks:
     name: t3_proxy
     driver: bridge
 
-secrets:
-  plex_claim_token:
-    file: $DOCKER_DIR/secrets/plex_claim_token
-
 include:
-  - ../../compose/media-server/compose.plex.yml
-  - ../../compose/media-server/compose.sonarr.yml
-  - ../../compose/media-server/compose.radarr.yml
-  - ../../compose/media-server/compose.prowlarr.yml
-  - ../../compose/media-server/compose.sabnzbd.yml
-  - ../../compose/media-server/compose.qbittorrent.yml
-  - ../../compose/media-server/compose.bazarr.yml
-  - ../../compose/media-server/compose.tautulli.yml
-  - ../../compose/media-server/compose.seerr.yml
-  - ../../compose/media-server/compose.jellyfin.yml
-  - ../../compose/media-server/compose.handbrake.yml
-  - ../../compose/media-server/compose.notifiarr.yml
-  - ../../compose/media-server/compose.profilarr.yml
-  - ../../compose/media-server/compose.tracearr.yml
-  - ../../compose/media-server/compose.agregarr.yml
-  - ../../compose/media-server/compose.watchstate.yml
+  - compose/media-server/compose.plex.yml
+  - compose/media-server/compose.sonarr.yml
+  - compose/media-server/compose.radarr.yml
+  - compose/media-server/compose.prowlarr.yml
+  - compose/media-server/compose.sabnzbd.yml
+  - compose/media-server/compose.qbittorrent.yml
+  - compose/media-server/compose.bazarr.yml
+  - compose/media-server/compose.tautulli.yml
+  - compose/media-server/compose.seerr.yml
+  - compose/media-server/compose.jellyfin.yml
+  - compose/media-server/compose.handbrake.yml
+  - compose/media-server/compose.notifiarr.yml
+  - compose/media-server/compose.profilarr.yml
+  - compose/media-server/compose.tracearr.yml
+  - compose/media-server/compose.agregarr.yml
+  - compose/media-server/compose.watchstate.yml
