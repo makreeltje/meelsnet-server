@@ -32,11 +32,3 @@ services:
       timeout: 10s
       retries: 3
       start_period: 60s
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.frigate-rtr.tls=true"
-      - "traefik.http.routers.frigate-rtr.entrypoints=websecure"
-      - "traefik.http.routers.frigate-rtr.rule=Host(`frigate.$DOMAINNAME_1`)"
-      - "traefik.http.routers.frigate-rtr.middlewares=chain-authentik@file"
-      - "traefik.http.routers.frigate-rtr.service=frigate-svc"
-      - "traefik.http.services.frigate-svc.loadbalancer.server.port=5000"
