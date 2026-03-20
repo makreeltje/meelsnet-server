@@ -10,19 +10,11 @@ services:
       - $CONF_DIR/prowlarr/config:/config
       - $DOWNLOAD_DIR:/data
       - $DOWNLOAD_DIR:/downloads
-    expose:
-      - 9696
+    ports:
+      - 9696:9696
     healthcheck:
       test: [ "CMD", "curl", "-fsSo", "/dev/null", "http://localhost:9696/api/v1/system/status?apikey=$PROWLARR_API_KEY" ]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 30s
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.prowlarr-rtr.tls=true"
-      - "traefik.http.routers.prowlarr-rtr.entrypoints=websecure"
-      - "traefik.http.routers.prowlarr-rtr.rule=Host(`prowlarr.$DOMAINNAME_1`)"
-      - "traefik.http.routers.prowlarr-rtr.middlewares=chain-authentik@file"
-      - "traefik.http.routers.prowlarr-rtr.service=prowlarr-svc"
-      - "traefik.http.services.prowlarr-svc.loadbalancer.server.port=9696"

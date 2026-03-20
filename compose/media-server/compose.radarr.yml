@@ -11,27 +11,14 @@ services:
       - $MEDIA_DIR:/media
       - $DOWNLOAD_DIR:/data
       - $DOWNLOAD_DIR:/downloads
-    expose:
-      - 7878
+    ports:
+      - 7878:7878
     healthcheck:
-      test: [ "CMD", "curl", "-fsSo", "/dev/null", "http://localhost:7878/api/v3/system/status?apikey=$RADARR_API_KEY" ]
+      test: [ "CMD", "curl", "-fsSo", "/dev/null", "http://localhost:7878/api/v3/health?apiKey=$RADARR_API_KEY" ]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 30s
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.radarr-rtr-bypass.entrypoints=websecure"
-      - "traefik.http.routers.radarr-rtr-bypass.rule=Host(`movies.$DOMAINNAME_1`) && Header(`traefik-auth-bypass-key`, `$TRAEFIK_AUTH_BYPASS_KEY`)"
-      - "traefik.http.routers.radarr-rtr-bypass.priority=100"
-      - "traefik.http.routers.radarr-rtr.entrypoints=websecure"
-      - "traefik.http.routers.radarr-rtr.rule=Host(`radarr.$DOMAINNAME_1`) || Host(`movies.$DOMAINNAME_1`)"
-      - "traefik.http.routers.radarr-rtr.priority=99"
-      - "traefik.http.routers.radarr-rtr-bypass.middlewares=chain-no-auth@file"
-      - "traefik.http.routers.radarr-rtr.middlewares=chain-authentik@file"
-      - "traefik.http.routers.radarr-rtr.service=radarr-svc"
-      - "traefik.http.routers.radarr-rtr-bypass.service=radarr-svc"
-      - "traefik.http.services.radarr-svc.loadbalancer.server.port=7878"
 
   radarr-4k:
     extends:
@@ -45,24 +32,11 @@ services:
       - $MEDIA_DIR:/media
       - $DOWNLOAD_DIR:/data
       - $DOWNLOAD_DIR:/downloads
-    expose:
-      - 7878
+    ports:
+      - 7879:7878
     healthcheck:
-      test: [ "CMD", "curl", "-fsSo", "/dev/null", "http://localhost:7878/api/v3/system/status?apikey=$RADARR_API_KEY" ]
+      test: [ "CMD", "curl", "-fsSo", "/dev/null", "http://localhost:7878/api/v3/health?apiKey=$RADARR_4K_API_KEY" ]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 30s
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.radarr-4k-rtr-bypass.entrypoints=websecure"
-      - "traefik.http.routers.radarr-4k-rtr-bypass.rule=Host(`movies-4k.$DOMAINNAME_1`) && Header(`traefik-auth-bypass-key`, `$TRAEFIK_AUTH_BYPASS_KEY`)"
-      - "traefik.http.routers.radarr-4k-rtr-bypass.priority=100"
-      - "traefik.http.routers.radarr-4k-rtr.entrypoints=websecure"
-      - "traefik.http.routers.radarr-4k-rtr.rule=Host(`radarr-4k.$DOMAINNAME_1`) || Host(`movies-4k.$DOMAINNAME_1`)"
-      - "traefik.http.routers.radarr-4k-rtr.priority=99"
-      - "traefik.http.routers.radarr-4k-rtr-bypass.middlewares=chain-no-auth@file"
-      - "traefik.http.routers.radarr-4k-rtr.middlewares=chain-authentik@file"
-      - "traefik.http.routers.radarr-4k-rtr.service=radarr-4k-svc"
-      - "traefik.http.routers.radarr-4k-rtr-bypass.service=radarr-4k-svc"
-      - "traefik.http.services.radarr-4k-svc.loadbalancer.server.port=7878"

@@ -8,13 +8,5 @@ services:
     profiles: [ "media", "all" ]
     volumes:
       - $CONF_DIR/profilarr/config:/config
-    expose:
-      - 6868
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.profilarr-rtr.tls=true"
-      - "traefik.http.routers.profilarr-rtr.entrypoints=websecure"
-      - "traefik.http.routers.profilarr-rtr.rule=Host(`profilarr.$DOMAINNAME_1`)"
-      - "traefik.http.routers.profilarr-rtr.middlewares=chain-oauth@file"
-      - "traefik.http.routers.profilarr-rtr.service=profilarr-svc"
-      - "traefik.http.services.profilarr-svc.loadbalancer.server.port=6868"
+    ports:
+      - 6868:6868

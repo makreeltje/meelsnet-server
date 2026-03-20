@@ -12,19 +12,11 @@ services:
       LOG_LEVEL: debug
     volumes:
       - $CONF_DIR/seerr/config:/app/config
-    expose:
-      - 5055
+    ports:
+      - 5055:5055
     healthcheck:
       test: wget --no-verbose --tries=1 --spider http://localhost:5055/api/v1/status || exit 1
       start_period: 20s
       timeout: 3s
       interval: 15s
       retries: 3
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.seerr-rtr.tls=true"
-      - "traefik.http.routers.seerr-rtr.entrypoints=websecure"
-      - "traefik.http.routers.seerr-rtr.rule=Host(`request.$DOMAINNAME_1`)"
-      - "traefik.http.routers.seerr-rtr.middlewares=chain-no-auth@file"
-      - "traefik.http.routers.seerr-rtr.service=seerr-svc"
-      - "traefik.http.services.seerr-svc.loadbalancer.server.port=5055"
