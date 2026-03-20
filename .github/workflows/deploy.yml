@@ -165,6 +165,7 @@ jobs:
           VPN_USERNAME=${{ secrets.VPN_USERNAME }}
           VPN_PASSWORD=${{ secrets.VPN_PASSWORD }}
           VPN_PROVIDER=${{ secrets.VPN_PROVIDER }}
+          PLEX_CLAIM_TOKEN=${{ secrets.PLEX_CLAIM_TOKEN }}
           EOF
 
           # Write Docker secret files locally on the runner

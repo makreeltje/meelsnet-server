@@ -10,7 +10,7 @@ services:
       - $CONF_DIR/jellyfin/config:/config
       - $CONF_DIR/jellyfin/cache:/cache
       - $MEDIA_DIR:/media
-      - "$CLOUD_DIR/rick/files/Documents/Personal/3D prints:/media/3d-prints"
+      # - "$CLOUD_DIR/rick/files/Documents/Personal/3D prints:/media/3d-prints"
     ports:
       - 8096:8096/tcp
       - 7359:7359/udp
@@ -20,11 +20,3 @@ services:
       timeout: 10s
       retries: 3
       start_period: 30s
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.jellyfin-rtr.tls=true"
-      - "traefik.http.routers.jellyfin-rtr.entrypoints=websecure"
-      - "traefik.http.routers.jellyfin-rtr.rule=Host(`jellyfin.$DOMAINNAME_1`)"
-      - "traefik.http.routers.jellyfin-rtr.middlewares=chain-no-auth@file"
-      - "traefik.http.routers.jellyfin-rtr.service=jellyfin-svc"
-      - "traefik.http.services.jellyfin-svc.loadbalancer.server.port=8096"
