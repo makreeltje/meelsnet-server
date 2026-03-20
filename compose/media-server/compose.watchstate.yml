@@ -9,19 +9,11 @@ services:
     user: ${PUID:-1000}:${PGID:-1000}
     volumes:
       - $CONF_DIR/watchstate/config:/config
-    expose:
-      - 8080
+    ports:
+      - 8081:8080
     healthcheck:
-      test: [ "CMD", "wget", "-qO-", "http://localhost:8080/" ]
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/" ]
       interval: 30s
       timeout: 5s
       retries: 3
       start_period: 20s
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.watchstate-rtr.tls=true"
-      - "traefik.http.routers.watchstate-rtr.entrypoints=websecure"
-      - "traefik.http.routers.watchstate-rtr.rule=Host(`watchstate.$DOMAINNAME_1`)"
-      - "traefik.http.routers.watchstate-rtr.middlewares=chain-authentik@file"
-      - "traefik.http.routers.watchstate-rtr.service=watchstate-svc"
-      - "traefik.http.services.watchstate-svc.loadbalancer.server.port=8080"

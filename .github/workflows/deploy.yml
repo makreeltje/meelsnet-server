@@ -156,7 +156,9 @@ jobs:
           NOTIFIARR_API_KEY=${{ secrets.NOTIFIARR_API_KEY }}
           PROWLARR_API_KEY=${{ secrets.PROWLARR_API_KEY }}
           RADARR_API_KEY=${{ secrets.RADARR_API_KEY }}
+          RADARR_4K_API_KEY=${{ secrets.RADARR_4K_API_KEY }}
           SONARR_API_KEY=${{ secrets.SONARR_API_KEY }}
+          SONARR_4K_API_KEY=${{ secrets.SONARR_4K_API_KEY }}
           TAUTULLI_API_KEY=${{ secrets.TAUTULLI_API_KEY }}
           SABNZBD_API_KEY=${{ secrets.SABNZBD_API_KEY }}
           QBITTORRENT_USER=${{ secrets.QBITTORRENT_USER }}
@@ -165,6 +167,7 @@ jobs:
           VPN_USERNAME=${{ secrets.VPN_USERNAME }}
           VPN_PASSWORD=${{ secrets.VPN_PASSWORD }}
           VPN_PROVIDER=${{ secrets.VPN_PROVIDER }}
+          PLEX_CLAIM_TOKEN=${{ secrets.PLEX_CLAIM_TOKEN }}
           EOF
 
           # Write Docker secret files locally on the runner
