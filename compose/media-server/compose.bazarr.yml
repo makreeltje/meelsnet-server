@@ -10,24 +10,11 @@ services:
       - $CONF_DIR/bazarr/config:/config
       - $MEDIA_DIR/movies:/movies
       - $MEDIA_DIR/tv-shows:/tv
-    expose:
-      - 6767
+    ports:
+      - 6767:6767
     healthcheck:
-      test: [ "CMD", "curl", "-fsSo", "/dev/null", "http://localhost:6767/api/system/health" ]
+      test: [ "CMD", "curl", "-fsSo", "/dev/null", "http://localhost:6767/api/system/ping" ]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 30s
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.bazarr-rtr-bypass.entrypoints=websecure"
-      - "traefik.http.routers.bazarr-rtr-bypass.rule=Host(`subtitles.$DOMAINNAME_1`) && Header(`traefik-auth-bypass-key`, `$TRAEFIK_AUTH_BYPASS_KEY`)"
-      - "traefik.http.routers.bazarr-rtr-bypass.priority=100"
-      - "traefik.http.routers.bazarr-rtr.entrypoints=websecure"
-      - "traefik.http.routers.bazarr-rtr.rule=Host(`subtitles.$DOMAINNAME_1`)"
-      - "traefik.http.routers.bazarr-rtr.priority=99"
-      - "traefik.http.routers.bazarr-rtr-bypass.middlewares=chain-no-auth@file"
-      - "traefik.http.routers.bazarr-rtr.middlewares=chain-authentik@file"
-      - "traefik.http.routers.bazarr-rtr.service=bazarr-svc"
-      - "traefik.http.routers.bazarr-rtr-bypass.service=bazarr-svc"
-      - "traefik.http.services.bazarr-svc.loadbalancer.server.port=6767"

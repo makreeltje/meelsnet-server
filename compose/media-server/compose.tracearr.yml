@@ -13,19 +13,11 @@ services:
       - $CONF_DIR/tracearr/postgres:/data/postgres
       - $CONF_DIR/tracearr/redis:/data/redis
       - $CONF_DIR/tracearr/data:/data/tracearr
-    expose:
-      - 3000
+    ports:
+      - 3000:3000
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://127.0.0.1:3000/health" ]
       interval: 30s
       timeout: 10s
       start_period: 60s
       retries: 3
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.tracearr-rtr.tls=true"
-      - "traefik.http.routers.tracearr-rtr.entrypoints=websecure"
-      - "traefik.http.routers.tracearr-rtr.rule=Host(`tracearr.$DOMAINNAME_1`)"
-      - "traefik.http.routers.tracearr-rtr.middlewares=chain-authentik@file"
-      - "traefik.http.routers.tracearr-rtr.service=tracearr-svc"
-      - "traefik.http.services.tracearr-svc.loadbalancer.server.port=3000"
