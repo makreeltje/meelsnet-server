@@ -7,5 +7,4 @@ include:
   - compose/productivity/compose.immich.yml
   - compose/productivity/compose.paperless.yml
   - compose/productivity/compose.nextcloud.yml
-  - compose/productivity/compose.n8n.yml
   - compose/productivity/compose.backrest.yml
