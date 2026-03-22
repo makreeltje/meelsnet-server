@@ -9,19 +9,11 @@ services:
     volumes:
       - $CONF_DIR/zigbee2mqtt/data:/app/data
       - /run/udev:/run/udev:ro
-    expose:
-      - 8080
+    ports:
+      - 8080:8080
     healthcheck:
       test: [ "CMD", "wget", "-qO-", "http://localhost:8080/" ]
       interval: 30s
       timeout: 5s
       retries: 3
       start_period: 20s
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.zigbee2mqtt-rtr.tls=true"
-      - "traefik.http.routers.zigbee2mqtt-rtr.entrypoints=websecure"
-      - "traefik.http.routers.zigbee2mqtt-rtr.rule=Host(`z2m.$DOMAINNAME_1`)"
-      - "traefik.http.routers.zigbee2mqtt-rtr.middlewares=chain-authentik@file"
-      - "traefik.http.routers.zigbee2mqtt-rtr.service=zigbee2mqtt-svc"
-      - "traefik.http.services.zigbee2mqtt-svc.loadbalancer.server.port=8080"
