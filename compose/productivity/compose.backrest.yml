@@ -14,26 +14,13 @@ services:
       - $CONF_DIR/backrest/data:/data
       - $CONF_DIR/backrest/config:/config
       - $CONF_DIR/backrest/cache:/cache
-      - $DOCKER_DIR:/mnt/docker
-      - $CONF_DIR:/mnt/conf
-      - $CLOUD_DIR:/mnt/cloud
-      - $MEDIA_DIR:/mnt/media
-      - $DOWNLOAD_DIR:/mnt/download
-      - $DMS_DIR:/mnt/dms
-      - $PHOTOS_DIR:/mnt/photos
-    expose:
-      - 9898
+      - $DOCKER_DIR:/docker
+      - $MNT_DIR:/mnt
+    ports:
+      - 9898:9898
     healthcheck:
       test: [ "CMD", "wget", "-qO-", "http://localhost:9898/" ]
       interval: 60s
       timeout: 10s
       retries: 3
       start_period: 20s
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.backrest-rtr.tls=true"
-      - "traefik.http.routers.backrest-rtr.entrypoints=websecure"
-      - "traefik.http.routers.backrest-rtr.rule=Host(`backrest.$DOMAINNAME_1`) || Host(`backup.$DOMAINNAME_1`)"
-      - "traefik.http.routers.backrest-rtr.middlewares=chain-authentik@file"
-      - "traefik.http.routers.backrest-rtr.service=backrest-svc"
-      - "traefik.http.services.backrest-svc.loadbalancer.server.port=9898"

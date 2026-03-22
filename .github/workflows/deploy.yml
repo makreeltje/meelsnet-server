@@ -313,11 +313,10 @@ jobs:
           # Write .env locally on the runner
           cat > /tmp/lxc104.env << EOF
           DOCKER_DIR=~/docker
+          MNT_DIR=/mnt
           CONF_DIR=~/docker/appdata
-          NVR_DIR=/mnt/frigate
           DMS_DIR=/mnt/paperless
           PHOTOS_DIR=/mnt/photos
-          BACKUP_DIR=/mnt/backrest
           CLOUD_DIR=/mnt/cloud
           TZ=Europe/Amsterdam
           PUID=${{ secrets.PUID }}
