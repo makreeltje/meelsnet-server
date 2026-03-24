@@ -1,0 +1,14 @@
+[Unit]
+Description=GitOps Controller - Poll and deploy to LXCs
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/opt/gitops/gitops-controller.sh sync
+WorkingDirectory=/opt/gitops
+
+# Security hardening
+ProtectSystem=strict
+ReadWritePaths=/opt/gitops /var/log/gitops /tmp
+PrivateTmp=true
