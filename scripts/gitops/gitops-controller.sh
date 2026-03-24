@@ -2,8 +2,8 @@
 # =============================================================================
 # GitOps Controller for Meelsnet Server
 # =============================================================================
-# Pull-based deployment: polls GitHub for changes on main branch and deploys
-# only the affected LXC containers via Proxmox pct.
+# Deploys affected LXC containers via Proxmox pct when changes are detected.
+# Triggered by webhook (gitops-webhook.py) or manually via CLI.
 #
 # This replaces the push-based GitHub Actions workflow, removing the need for
 # GitHub to have any access to the server (Tailscale, SSH keys, secrets).
