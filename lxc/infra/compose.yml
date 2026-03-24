@@ -15,9 +15,9 @@ secrets:
     file: $DOCKER_DIR/secrets/cf_dns_api_token
 
 include:
-  - ../../compose/reverse-proxy/compose.traefik.yml
-  - ../../compose/reverse-proxy/compose.authentik.yml
-  - ../../compose/database/compose.postgres.yml
-  - ../../compose/database/compose.redis.yml
-  - ../../compose/database/compose.mongo.yml
-  - ../../compose/database/compose.adminer.yml
+  - compose/reverse-proxy/compose.traefik.yml
+  - compose/reverse-proxy/compose.authentik.yml
+  - compose/database/compose.postgres.yml
+  - compose/database/compose.redis.yml
+  - compose/database/compose.mongo.yml
+  - compose/database/compose.adminer.yml

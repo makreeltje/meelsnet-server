@@ -4,11 +4,11 @@ networks:
     driver: bridge
 
 include:
-  - ../../compose/monitoring/compose.exporters.yml
-  - ../../compose/monitoring/compose.grafana.yml
-  # - ../../compose/monitoring/compose.loki.yml
-  - ../../compose/monitoring/compose.prometheus.yml
-  - ../../compose/monitoring/compose.alertmanager.yml
-  - ../../compose/monitoring/compose.cadvisor.yml
-  - ../../compose/monitoring/compose.node-exporter.yml
-  # - ../../compose/monitoring/compose.promtail.yml
+  - compose/monitoring/compose.exporters.yml
+  - compose/monitoring/compose.grafana.yml
+  # - compose/monitoring/compose.loki.yml
+  - compose/monitoring/compose.prometheus.yml
+  - compose/monitoring/compose.alertmanager.yml
+  - compose/monitoring/compose.cadvisor.yml
+  - compose/monitoring/compose.node-exporter.yml
+  # - compose/monitoring/compose.promtail.yml
