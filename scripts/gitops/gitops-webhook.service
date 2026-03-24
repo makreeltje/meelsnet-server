@@ -1,0 +1,20 @@
+[Unit]
+Description=GitOps Webhook Listener - Receive GitHub push events
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /opt/gitops/gitops-webhook.py
+WorkingDirectory=/opt/gitops
+Restart=always
+RestartSec=5
+EnvironmentFile=/etc/gitops/config.env
+
+# Security hardening
+ProtectSystem=strict
+ReadWritePaths=/opt/gitops /var/log/gitops /tmp
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

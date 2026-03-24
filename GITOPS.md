@@ -1,12 +1,12 @@
 # GitOps Controller
 
-Pull-based deployment controller die GitHub pollt voor wijzigingen en automatisch de getroffen LXC containers deployt via Proxmox `pct`.
+Webhook-based deployment controller die luistert naar GitHub push events en automatisch de getroffen LXC containers deployt via Proxmox `pct`.
 
 ## Waarom?
 
 De oude GitHub Actions workflow (`deploy.yml`) is **push-based**: GitHub heeft via Tailscale OAuth + SSH directe toegang tot de Proxmox server. Als iemand toegang krijgt tot de GitHub repo, heeft diegene ook toegang tot de server.
 
-De GitOps controller draait **op de server zelf** en **haalt** wijzigingen op (pull-based). GitHub heeft geen enkele kennis van de server. Het enige dat nodig is, is een read-only deploy key op Proxmox.
+De GitOps controller draait **op Proxmox zelf** en ontvangt alleen een webhook notificatie. GitHub heeft geen SSH, geen Tailscale, en geen credentials. Het enige dat GitHub kent is een webhook URL met een gedeeld HMAC secret.
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -19,20 +19,20 @@ De GitOps controller draait **op de server zelf** en **haalt** wijzigingen op (p
 ┌─────────────────────────────────────────────────────────────┐
 │                          NU                                 │
 │                                                             │
-│  Proxmox ──git fetch (read-only)──> GitHub                  │
-│  Controller detecteert changes → deploy naar getroffen LXCs │
-│  (pull-based, GitHub weet niets van de server)              │
+│  GitHub ──webhook (HMAC signed)──> Proxmox webhook listener │
+│  Listener triggert controller → git pull → deploy naar LXCs │
+│  (GitHub kent alleen de webhook URL, geen server-toegang)   │
 └─────────────────────────────────────────────────────────────┘
 ```
 
 ## Hoe werkt het?
 
-1. Systemd timer triggert elke 2 minuten `gitops-controller.sh sync`
-2. Script doet `git fetch` en vergelijkt met de laatst gedeployde commit
-3. Bij wijzigingen: bepaalt welke files zijn gewijzigd
-4. Mapt gewijzigde files naar de juiste LXC container(s)
-5. Deployt alleen de getroffen LXC's (`pct push` + `docker compose up -d`)
-6. Slaat de gedeployde commit SHA op
+1. PR wordt gemerged naar `main` (handmatig of via Renovate auto-merge)
+2. GitHub stuurt een push webhook naar de Proxmox webhook listener
+3. Listener verifieert de HMAC-SHA256 signature en accepteert het event
+4. Controller doet `git fetch` + `git diff` om gewijzigde files te bepalen
+5. Mapt gewijzigde files naar de juiste LXC container(s)
+6. Deployt alleen de getroffen LXC's (`pct push` + `docker compose up -d`)
 
 ### Path → LXC mapping
 
@@ -60,6 +60,12 @@ scp -r scripts/gitops/ root@proxmox:/tmp/gitops-setup/
 bash /tmp/gitops-setup/setup.sh
 ```
 
+Het setup script:
+- Installeert de controller + webhook listener in `/opt/gitops/`
+- Maakt config aan in `/etc/gitops/config.env`
+- Genereert automatisch een webhook secret
+- Installeert de systemd service
+
 ### 2. Deploy key aanmaken (read-only)
 
 ```bash
@@ -80,7 +86,20 @@ Host github.com
 EOF
 ```
 
-### 4. .env bestanden op LXC's (eenmalig)
+### 4. GitHub webhook configureren
+
+Ga naar **Repo → Settings → Webhooks → Add webhook**:
+
+| Veld | Waarde |
+|---|---|
+| Payload URL | `https://<proxmox-ip-of-domein>:9000/webhook` |
+| Content type | `application/json` |
+| Secret | Kopieer uit `/etc/gitops/config.env` (`WEBHOOK_SECRET`) |
+| Events | **Just the push event** |
+
+> **Tip:** Als Proxmox niet direct bereikbaar is vanuit GitHub, kun je de webhook via Traefik routeren of Cloudflare Tunnel gebruiken.
+
+### 5. .env bestanden op LXC's (eenmalig)
 
 De `.env` bestanden met secrets staan nu direct op elke LXC (niet meer in GitHub). Als je ze nog niet hebt, maak ze eenmalig aan:
 
@@ -112,7 +131,7 @@ Docker secrets (`~/docker/secrets/`) moeten ook eenmalig op de juiste LXC staan:
 - **LXC 101**: `cf_dns_api_token`, `basic_auth_credentials`
 - **LXC 102**: `plex_claim_token`
 
-### 5. Eerste sync
+### 6. Eerste sync en starten
 
 ```bash
 # Test handmatig
@@ -121,11 +140,11 @@ Docker secrets (`~/docker/secrets/`) moeten ook eenmalig op de juiste LXC staan:
 # Check status
 /opt/gitops/gitops-controller.sh status
 
-# Start de timer
-systemctl start gitops-controller.timer
+# Start de webhook listener
+systemctl start gitops-webhook.service
 
-# Controleer dat de timer actief is
-systemctl list-timers gitops-controller.timer
+# Controleer dat de service draait
+systemctl status gitops-webhook.service
 ```
 
 ## Dagelijks gebruik
@@ -150,86 +169,65 @@ systemctl list-timers gitops-controller.timer
 ### Logs bekijken
 
 ```bash
+# Webhook logs
+tail -f /var/log/gitops/webhook.log
+
 # Controller logs
 tail -f /var/log/gitops/gitops.log
 
 # Systemd logs
-journalctl -u gitops-controller.service -f
+journalctl -u gitops-webhook.service -f
 ```
 
 ### Workflow: Renovate + auto-merge
 
 1. Renovate opent een PR met een nieuwe image versie
 2. PR wordt gemerged (handmatig of auto-merge voor patch/minor)
-3. Binnen 2 minuten detecteert de controller de change op `main`
-4. Alleen de getroffen LXC wordt gedeployed
-5. Status is zichtbaar via `gitops-controller.sh status`
+3. GitHub stuurt een webhook → controller deployt de getroffen LXC
+4. Status is zichtbaar via `gitops-controller.sh status`
 
 ## Wat kan opgeruimd worden na migratie
 
-Als je de GitOps controller gebruikt, zijn de volgende zaken in de GitHub repo **overbodig**:
+Als je de GitOps controller gebruikt, zijn de volgende zaken **overbodig**:
 
-### 1. GitHub Actions workflow verwijderen
-```
-.github/workflows/deploy.yml
-```
-De hele deploy workflow is vervangen door de controller.
+### 1. GitHub Actions deploy workflow
+
+Het bestand `.github/workflows/deploy.yml` is al vervangen door een validate-only workflow die alleen compose syntax checkt op PRs (geen secrets nodig).
 
 ### 2. GitHub Secrets verwijderen
 
-Alle secrets in GitHub repo settings (Settings → Secrets and variables → Actions) kunnen verwijderd worden:
+Alle secrets in GitHub repo settings (Settings → Secrets and variables → Actions):
 
-**Repository secrets:**
+**Repository/environment secrets:**
 - `TS_OAUTH_CLIENT_ID` / `TS_OAUTH_SECRET` (Tailscale)
 - `PROXMOX_SSH_KEY` / `PROXMOX_SSH_HOST` (SSH)
-- Alle per-environment secrets (prod-infra, prod-media, etc.)
+- Alle wachtwoorden, API keys, database credentials per environment
 
-Dit zijn alle wachtwoorden, API keys, en credentials die nu in GitHub staan. Na het verwijderen heeft GitHub geen enkele manier meer om bij je server te komen.
+Dit zijn alle credentials die nu in GitHub staan. Na het verwijderen heeft GitHub geen enkele manier meer om bij je server te komen.
 
 ### 3. GitHub Environments verwijderen
 
 De 7 deployment environments (Settings → Environments):
-- `prod-infra`
-- `prod-media`
-- `prod-home`
-- `prod-productivity`
-- `prod-network`
-- `prod-monitoring`
-- `prod-utilities`
+- `prod-infra`, `prod-media`, `prod-home`, `prod-productivity`, `prod-network`, `prod-monitoring`, `prod-utilities`
 
 ### 4. Tailscale OAuth client intrekken
 
 De Tailscale OAuth client die voor GitHub Actions CI was aangemaakt kan ingetrokken worden in de Tailscale admin console. De `tag:ci` ACL regel kan ook verwijderd worden.
 
-### 5. Optioneel: GitHub Actions validate workflow behouden
+## Endpoints
 
-Je kunt een **uitgeklede** workflow behouden die alleen compose syntax valideert op PRs (zonder deploy):
-
-```yaml
-name: Validate
-on:
-  pull_request:
-    paths: ['compose/**', 'lxc/**']
-jobs:
-  validate:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: |
-          cp .env.example .env
-          sed -i 's/=$/=dummy/g' .env
-          docker compose config --quiet
-```
-
-Dit vereist geen secrets en is puur een syntax check.
+| Endpoint | Methode | Beschrijving |
+|---|---|---|
+| `/webhook` | POST | GitHub webhook ontvanger |
+| `/health` | GET | Health check (voor monitoring) |
 
 ## Bestanden
 
 ```
 scripts/gitops/
-├── gitops-controller.sh     # Hoofd-script (draait op Proxmox)
-├── gitops-controller.service # systemd service unit
-├── gitops-controller.timer   # systemd timer (elke 2 min)
-├── config.env.example        # Configuratie template
-└── setup.sh                  # Installatie script voor Proxmox
+├── gitops-controller.sh      # Deploy logica (draait op Proxmox)
+├── gitops-webhook.py          # Webhook listener (Python, geen dependencies)
+├── gitops-webhook.service     # systemd service voor webhook listener
+├── config.env.example         # Configuratie template
+└── setup.sh                   # Installatie script voor Proxmox
 ```
