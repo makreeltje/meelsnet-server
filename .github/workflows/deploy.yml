@@ -58,7 +58,8 @@ jobs:
         run: |
           cp .env.example .env
           sed -i 's/=$/=dummy/g' .env
-          docker compose -f lxc/${{ matrix.lxc }}/compose.yml config --quiet \
+          cp lxc/${{ matrix.lxc }}/compose.yml compose.yml
+          docker compose config --quiet \
             && echo "${{ matrix.lxc }} compose config valid"
 
   check-images:
