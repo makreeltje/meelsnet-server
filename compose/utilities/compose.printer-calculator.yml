@@ -13,11 +13,3 @@ services:
       - $CONF_DIR/3d-printer-cost-calculator/uploads:/app/uploads
     ports:
       - 5000:5000
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.printer-calculator-rtr.tls=true"
-      - "traefik.http.routers.printer-calculator-rtr.entrypoints=websecure"
-      - "traefik.http.routers.printer-calculator-rtr.rule=Host(`calculator.$DOMAINNAME_1`)"
-      - "traefik.http.routers.printer-calculator-rtr.middlewares=chain-oauth@file"
-      - "traefik.http.routers.printer-calculator-rtr.service=printer-calculator-svc"
-      - "traefik.http.services.printer-calculator-svc.loadbalancer.server.port=5000"
