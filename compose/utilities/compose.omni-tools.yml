@@ -8,9 +8,3 @@ services:
     profiles: [ "utilities", "all" ]
     ports:
       - 80:80
-    healthcheck:
-      test: [ "CMD", "wget", "-qO-", "http://localhost:80/" ]
-      interval: 60s
-      timeout: 5s
-      retries: 3
-      start_period: 10s
