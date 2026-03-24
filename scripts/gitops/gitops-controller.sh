@@ -352,7 +352,12 @@ cmd_deploy() {
     fi
   done
 
-  set_last_deployed_sha "$remote_sha"
+  # Only update global state when deploying all LXCs, otherwise a targeted
+  # deploy would mark the commit as fully deployed while other LXCs may
+  # still need updating.
+  if [[ "$target" == "all" ]]; then
+    set_last_deployed_sha "$remote_sha"
+  fi
 }
 
 cmd_force_deploy() {
