@@ -1,4 +1,4 @@
-services:      
+services:
   chat-ui:
     container_name: chat-ui
     image: ghcr.io/huggingface/chat-ui-db:0.9.4
@@ -25,7 +25,7 @@ services:
       - "traefik.http.routers.chat-rtr.service=chat-svc"
       - "traefik.http.services.chat-svc.loadbalancer.server.port=3000"
 
-  
+
   ollama:
     container_name: ollama
     image: ollama/ollama:0.5.7
