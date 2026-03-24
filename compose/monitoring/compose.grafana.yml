@@ -6,6 +6,7 @@ services:
     container_name: grafana
     image: grafana/grafana:11.5.2
     profiles: [ "monitoring", "all" ]
+    user: $PUID:$PGID
     security_opt:
       - no-new-privileges:true
     environment:
@@ -14,19 +15,11 @@ services:
       - $CONF_DIR/grafana/data:/var/lib/grafana
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-    expose:
-      - 3000
+    ports:
+      - 3000:3000
     healthcheck:
       test: [ "CMD", "wget", "-qO-", "http://localhost:3000/api/health" ]
       interval: 30s
       timeout: 5s
       retries: 3
       start_period: 30s
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.grafana-rtr.tls=true"
-      - "traefik.http.routers.grafana-rtr.entrypoints=websecure"
-      - "traefik.http.routers.grafana-rtr.rule=Host(`grafana.$DOMAINNAME_1`)"
-      - "traefik.http.routers.grafana-rtr.middlewares=chain-oauth@file"
-      - "traefik.http.routers.grafana-rtr.service=grafana-svc"
-      - "traefik.http.services.grafana-svc.loadbalancer.server.port=3000"
