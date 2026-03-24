@@ -46,9 +46,10 @@ logging.basicConfig(
 log = logging.getLogger("gitops-webhook")
 
 # ---------------------------------------------------------------------------
-# Deploy lock (prevent concurrent deployments)
+# Deploy coordination (coalescing concurrent webhook events)
 # ---------------------------------------------------------------------------
 deploy_lock = threading.Lock()
+resync_pending = threading.Event()
 
 
 def verify_signature(payload: bytes, signature_header: str) -> bool:
@@ -80,31 +81,45 @@ def get_changed_files(payload: dict) -> list[str]:
 
 
 def trigger_deploy():
-    """Run the GitOps controller sync in the background."""
+    """Run the GitOps controller sync in the background.
+
+    If a sync is already running, the event is coalesced: a flag is set so
+    that the running sync loop re-syncs once more after finishing, picking up
+    whatever new commits arrived in the meantime.
+    """
     if not deploy_lock.acquire(blocking=False):
-        log.info("Deployment already in progress — skipping")
+        resync_pending.set()
+        log.info("Deployment already in progress — queued re-sync after current run")
         return
 
     def run():
         try:
-            log.info("Triggering gitops-controller sync...")
-            result = subprocess.run(
-                [CONTROLLER_PATH, "sync"],
-                capture_output=True,
-                text=True,
-                timeout=600,
-            )
-            if result.returncode == 0:
-                log.info("Deployment completed successfully")
-            else:
-                log.error("Deployment failed (exit %d): %s", result.returncode, result.stderr)
-            if result.stdout:
-                log.info("Controller output:\n%s", result.stdout)
+            while True:
+                resync_pending.clear()
+                log.info("Triggering gitops-controller sync...")
+                result = subprocess.run(
+                    [CONTROLLER_PATH, "sync"],
+                    capture_output=True,
+                    text=True,
+                    timeout=600,
+                )
+                if result.returncode == 0:
+                    log.info("Deployment completed successfully")
+                else:
+                    log.error("Deployment failed (exit %d): %s", result.returncode, result.stderr)
+                if result.stdout:
+                    log.info("Controller output:\n%s", result.stdout)
+
+                if resync_pending.is_set():
+                    log.info("Re-sync pending — running another cycle")
+                else:
+                    break
         except subprocess.TimeoutExpired:
             log.error("Deployment timed out after 600s")
         except Exception as e:
             log.error("Deployment error: %s", e)
         finally:
+            resync_pending.clear()
             deploy_lock.release()
 
     thread = threading.Thread(target=run, daemon=True)
