@@ -7,9 +7,6 @@ services:
     image: prom/prometheus:v2.55.1
     user: $PUID:$PGID
     profiles: [ "monitoring", "all" ]
-    depends_on:
-      - node-exporter
-      - cadvisor
     command:
       - --config.file=/etc/prometheus/prometheus.yml
       - --storage.tsdb.path=/prometheus
@@ -20,74 +17,11 @@ services:
     volumes:
       - $CONF_DIR/prometheus:/prometheus
       - $CONF_DIR/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-    expose:
-      - 9090
+    ports:
+      - 9090:9090
     healthcheck:
       test: [ "CMD", "wget", "-qO-", "http://localhost:9090/-/healthy" ]
       interval: 30s
       timeout: 5s
       retries: 3
       start_period: 30s
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.prometheus-rtr.tls=true"
-      - "traefik.http.routers.prometheus-rtr.entrypoints=websecure"
-      - "traefik.http.routers.prometheus-rtr.rule=Host(`prometheus.$DOMAINNAME_1`)"
-      - "traefik.http.routers.prometheus-rtr.middlewares=chain-oauth@file"
-      - "traefik.http.routers.prometheus-rtr.service=prometheus-svc"
-      - "traefik.http.services.prometheus-svc.loadbalancer.server.port=9090"
-
-  node-exporter:
-    extends:
-      file: ../fragments/common-service.yml
-      service: common
-    container_name: node-exporter
-    image: prom/node-exporter:v1.9.0
-    user: $PUID:$PGID
-    profiles: [ "monitoring", "all" ]
-    command:
-      - --path.procfs=/host/proc
-      - --path.rootfs=/rootfs
-      - --path.sysfs=/host/sys
-      - --collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)
-      - --collector.textfile.directory=/rootfs/var/lib/node_exporter/textfile_collector
-    volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /:/rootfs:ro
-    expose:
-      - 9100
-
-  cadvisor:
-    extends:
-      file: ../fragments/common-service.yml
-      service: common
-    container_name: cadvisor
-    image: gcr.io/cadvisor/cadvisor:v0.52.0
-    profiles: [ "monitoring", "all" ]
-    command:
-      - '--housekeeping_interval=15s'
-      - '--docker_only=true'
-      - '--disable_metrics=disk,network,tcp,udp,percpu,sched,process'
-    volumes:
-      - /:/rootfs:ro
-      - /var/run:/var/run:rw
-      - /sys:/sys:ro
-      - /var/lib/docker/:/var/lib/docker:ro
-    ports:
-      - 8083:8080
-
-  alertmanager:
-    extends:
-      file: ../fragments/common-service.yml
-      service: common
-    container_name: alertmanager
-    image: prom/alertmanager:v0.28.1
-    profiles: [ "monitoring", "all" ]
-    command:
-      - --config.file=/config/alertmanager.yml
-    volumes:
-      - $CONF_DIR/alertmanager/config:/config
-      - $CONF_DIR/alertmanager/data:/data
-    expose:
-      - 9093

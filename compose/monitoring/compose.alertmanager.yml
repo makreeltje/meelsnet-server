@@ -1,0 +1,15 @@
+services:
+  alertmanager:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
+    container_name: alertmanager
+    image: prom/alertmanager:v0.28.1
+    profiles: [ "monitoring", "all" ]
+    command:
+      - --config.file=/config/alertmanager.yml
+    volumes:
+      - $CONF_DIR/alertmanager/config:/config
+      - $CONF_DIR/alertmanager/data:/data
+    ports:
+      - 9093:9093
