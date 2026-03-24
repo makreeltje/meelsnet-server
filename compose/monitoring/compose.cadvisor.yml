@@ -1,0 +1,19 @@
+services:
+  cadvisor:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
+    container_name: cadvisor
+    image: gcr.io/cadvisor/cadvisor:v0.52.0
+    profiles: [ "monitoring", "all" ]
+    command:
+      - '--housekeeping_interval=15s'
+      - '--docker_only=true'
+      - '--disable_metrics=disk,network,tcp,udp,percpu,sched,process'
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    ports:
+      - 8080:8080

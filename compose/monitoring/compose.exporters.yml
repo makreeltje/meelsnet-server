@@ -10,7 +10,7 @@ services:
     command: [ "sonarr" ]
     environment:
       PORT: "9707"
-      URL: "http://sonarr:8989"
+      URL: "http://10.10.0.20:8989"
       APIKEY: $SONARR_API_KEY
     ports:
       - 9707:9707
@@ -23,7 +23,7 @@ services:
     command: [ "radarr" ]
     environment:
       PORT: "9708"
-      URL: http://radarr:7878
+      URL: http://10.10.0.20:7878
       APIKEY: $RADARR_API_KEY
     ports:
       - "9708:9708"
@@ -36,7 +36,7 @@ services:
     command: [ "prowlarr" ]
     environment:
       PORT: "9710"
-      URL: http://prowlarr:9696
+      URL: http://10.10.0.20:9696
       APIKEY: $PROWLARR_API_KEY
     ports:
       - "9710:9710"
@@ -49,7 +49,7 @@ services:
     command: [ "sabnzbd" ]
     environment:
       PORT: "9711"
-      URL: http://sabnzbd:8080
+      URL: http://10.10.0.20:8082
       APIKEY: $SABNZBD_API_KEY
     ports:
       - "9711:9711"
@@ -62,10 +62,12 @@ services:
     image: sapcc/mosquitto-exporter:0.8.0
     profiles: [ "monitoring", "all" ]
     command:
-      - --endpoint=tcp://mosquitto:1883
+      - --endpoint=tcp://10.10.0.30:1883
       - --user=$MOSQUITTO_USER
       - --pass=$MOSQUITTO_PASS
       - --client-id=mosquitto-exporter
+    ports:
+      - 9234:9234
 
   smartctl-exporter:
     extends:
