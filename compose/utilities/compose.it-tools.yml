@@ -1,10 +1,10 @@
 services:
-  omni-tools:
+  it-tools:
     extends:
       file: ../fragments/common-service.yml
       service: common
-    container_name: omni-tools
-    image: iib0011/omni-tools:0.5.0
+    container_name: it-tools
+    image: ghcr.io/corentinth/it-tools:2024.10.22-7ca5933
     profiles: [ "utilities", "all" ]
     ports:
-      - 80:80
+      - 8080:80
