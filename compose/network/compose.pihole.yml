@@ -4,6 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: pihole
+    user: $PUID:$PGID
     image: pihole/pihole:2025.07.1
     profiles: [ "network", "all" ]
     cap_add:
@@ -14,12 +15,11 @@ services:
       FTLCONF_dns_listeningMode: all
     volumes:
       - $CONF_DIR/pihole/data:/etc/pihole
-    expose:
-      - 80
     dns:
       - 1.1.1.1
       - 1.0.0.1
     ports:
+      - 80:80/tcp
       # DNS Ports
       - "53:53/tcp"
       - "53:53/udp"
@@ -29,11 +29,3 @@ services:
       timeout: 10s
       retries: 3
       start_period: 20s
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.pihole-rtr.tls=true"
-      - "traefik.http.routers.pihole-rtr.entrypoints=websecure"
-      - "traefik.http.routers.pihole-rtr.rule=Host(`pihole.$DOMAINNAME_1`)"
-      - "traefik.http.routers.pihole-rtr.middlewares=chain-oauth@file"
-      - "traefik.http.routers.pihole-rtr.service=pihole-svc"
-      - "traefik.http.services.pihole-svc.loadbalancer.server.port=80"
