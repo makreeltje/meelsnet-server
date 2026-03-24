@@ -23,6 +23,7 @@ DOCKER_BASE="${DOCKER_BASE:-/root/docker}"
 
 # Load config override if present
 CONFIG_FILE="/etc/gitops/config.env"
+# shellcheck source=/dev/null
 [[ -f "$CONFIG_FILE" ]] && source "$CONFIG_FILE"
 
 # -----------------------------------------------------------------------------
