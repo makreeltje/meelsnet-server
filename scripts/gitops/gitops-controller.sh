@@ -184,13 +184,17 @@ deploy_to_lxc() {
   rm -f "$tar_file"
 
   # Extract and deploy inside the LXC
+  # The LXC compose file uses relative include paths (e.g. compose/network/...)
+  # which Docker Compose resolves relative to the compose file's directory.
+  # We copy it to $DOCKER_BASE/compose.yml so includes resolve correctly.
   if ! pct exec "$lxc_id" -- bash -c "
     set -e
     tar -xzf /tmp/compose.tar.gz -C $DOCKER_BASE
     rm -f /tmp/compose.tar.gz
+    cp $DOCKER_BASE/lxc/$lxc_name/compose.yml $DOCKER_BASE/compose.yml
     cd $DOCKER_BASE
-    docker compose -f lxc/$lxc_name/compose.yml pull --quiet
-    docker compose -f lxc/$lxc_name/compose.yml up -d --remove-orphans
+    docker compose pull --quiet
+    docker compose up -d --remove-orphans
     docker image prune -f --filter 'until=24h'
   "; then
     log_error "Failed to deploy services in LXC $lxc_id ($lxc_name)"
@@ -211,13 +215,17 @@ validate_compose() {
   cd "$REPO_DIR"
 
   # Use a dummy .env for syntax validation
+  # Copy the LXC compose file to the repo root so relative include paths
+  # (e.g. compose/network/...) resolve correctly from the repo root.
   if [[ -f ".env.example" ]]; then
-    local tmp_env
+    local tmp_env tmp_compose
     tmp_env=$(mktemp)
+    tmp_compose=$(mktemp "$REPO_DIR/compose.validate.XXXXXX.yml")
     sed 's/=$/=dummy/g' .env.example > "$tmp_env"
-    docker compose --env-file "$tmp_env" -f "lxc/$lxc_name/compose.yml" config --quiet 2>/dev/null
+    cp "lxc/$lxc_name/compose.yml" "$tmp_compose"
+    docker compose --env-file "$tmp_env" -f "$tmp_compose" config --quiet 2>/dev/null
     local result=$?
-    rm -f "$tmp_env"
+    rm -f "$tmp_env" "$tmp_compose"
     return $result
   fi
   return 0
