@@ -189,12 +189,13 @@ deploy_to_lxc() {
   # We copy it to $DOCKER_BASE/compose.yml so includes resolve correctly.
   if ! pct exec "$lxc_id" -- bash -c "
     set -e
+    export HOME=/root
     tar -xzf /tmp/compose.tar.gz -C $DOCKER_BASE
     rm -f /tmp/compose.tar.gz
     cp $DOCKER_BASE/lxc/$lxc_name/compose.yml $DOCKER_BASE/compose.yml
     cd $DOCKER_BASE
-    docker compose pull --quiet
-    docker compose up -d --remove-orphans
+    docker compose --profile $lxc_name pull --quiet
+    docker compose --profile $lxc_name up -d --remove-orphans
     docker image prune -f --filter 'until=24h'
   "; then
     log_error "Failed to deploy services in LXC $lxc_id ($lxc_name)"
