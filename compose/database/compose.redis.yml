@@ -5,7 +5,7 @@ services:
       service: common
     container_name: redis
     image: redis:7.4-alpine
-    profiles: [ "database", "all" ]
+    profiles: [ "database", "infra", "all" ]
     volumes:
       - $CONF_DIR/redis/data:/data
     healthcheck:

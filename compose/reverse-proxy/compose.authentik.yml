@@ -5,7 +5,7 @@ services:
       service: common
     container_name: authentik
     image: ghcr.io/goauthentik/server:2025.8.1
-    profiles: [ "reverse-proxy", "all" ]
+    profiles: [ "reverse-proxy", "infra", "all" ]
     command: server
     depends_on:
       postgres:
@@ -45,7 +45,7 @@ services:
       service: common
     container_name: authentik-worker
     image: ghcr.io/goauthentik/server:2025.8.1
-    profiles: [ "reverse-proxy", "all" ]
+    profiles: [ "reverse-proxy", "infra", "all" ]
     user: root
     command: worker
     depends_on:
