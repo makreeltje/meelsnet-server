@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: frigate
-    image: ghcr.io/blakeblackshear/frigate:0.17.0
+    image: ghcr.io/blakeblackshear/frigate:0.17.1
     profiles: [ "home", "all" ]
     shm_size: 128mb
     devices:
