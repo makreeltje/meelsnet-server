@@ -12,4 +12,4 @@ services:
     volumes:
       - $CONF_DIR/3d-printer-cost-calculator/uploads:/app/uploads
     ports:
-      - 9999:5000
+      - 4569:5000
