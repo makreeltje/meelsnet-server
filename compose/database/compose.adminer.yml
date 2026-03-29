@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: adminer
-    image: adminer:4.17.1-standalone
+    image: adminer:5.4.2-standalone
     profiles: [ "database", "infra", "all" ]
     expose:
       - 8080
