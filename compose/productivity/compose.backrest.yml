@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: backrest
-    image: garethgeorge/backrest:v1.9.2
+    image: garethgeorge/backrest:v1.12.1
     profiles: [ "productivity", "all" ]
     environment:
       XDG_CACHE_HOME: /cache
