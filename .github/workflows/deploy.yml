@@ -48,6 +48,7 @@ jobs:
           # Create stub env_file targets referenced via $CONF_DIR
           source .env
           grep -rh 'env_file:' compose/ | sed 's/.*env_file:\s*//' | envsubst | sort -u | while read -r f; do
+            [ -n "$f" ] || continue
             mkdir -p "$(dirname "$f")"
             touch "$f"
           done
