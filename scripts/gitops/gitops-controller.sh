@@ -194,9 +194,10 @@ deploy_to_lxc() {
     rm -f /tmp/compose.tar.gz
     cp $DOCKER_BASE/lxc/$lxc_name/compose.yml $DOCKER_BASE/compose.yml
     cd $DOCKER_BASE
-    docker compose --profile all pull --quiet
-    docker compose --profile all up -d --remove-orphans
-    docker image prune -f --filter 'until=24h'
+    set -a; source .env 2>/dev/null || true; set +a
+    docker compose --profile all pull --quiet 2>&1
+    docker compose --profile all up -d --remove-orphans 2>&1
+    docker image prune -f --filter 'until=24h' 2>&1
   "; then
     log_error "Failed to deploy services in LXC $lxc_id ($lxc_name)"
     record_lxc_deploy "$lxc_id" "FAILED" "$sha"
