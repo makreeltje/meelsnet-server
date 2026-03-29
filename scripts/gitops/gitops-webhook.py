@@ -105,6 +105,8 @@ def trigger_deploy():
                 )
                 if result.returncode == 0:
                     log.info("Deployment completed successfully")
+                    if result.stderr:
+                        log.warning("Deployment warnings:\n%s", result.stderr.strip())
                 else:
                     log.error("Deployment failed (exit %d): %s", result.returncode, result.stderr)
                 if result.stdout:
