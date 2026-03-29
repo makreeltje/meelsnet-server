@@ -5,7 +5,7 @@ services:
       service: common
     container_name: mongo
     image: mongo:7.0.17
-    profiles: [ "database", "all" ]
+    profiles: [ "database", "infra", "all" ]
     environment:
       MONGO_INITDB_ROOT_USERNAME: $MONGO_DBUSER
       MONGO_INITDB_ROOT_PASSWORD: $MONGO_DBPASS

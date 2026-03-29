@@ -5,7 +5,7 @@ services:
       service: common
     container_name: postgres
     image: ghcr.io/immich-app/postgres:16-vectorchord0.4.2-pgvectors0.3.0
-    profiles: [ "database", "all" ]
+    profiles: [ "database", "infra", "all" ]
     environment:
       POSTGRES_PASSWORD: $PSQL_DBPASS
     volumes:
