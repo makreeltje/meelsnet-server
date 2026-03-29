@@ -289,7 +289,7 @@ sync() {
       log_info "LXC $LXC_ID ($LXC_NAME) affected by changes"
 
       if deploy_to_lxc "$LXC_ID" "$LXC_NAME" "$LXC_DIRS" "$remote_sha"; then
-        ((deployed_count++))
+        ((deployed_count++)) || true
       else
         any_failed=1
       fi
