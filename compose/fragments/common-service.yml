@@ -52,13 +52,3 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-
-  # Base for all exportarr Prometheus exporters
-  exportarr-base:
-    image: ghcr.io/onedr0p/exportarr:$EXPORTARR_VERSION
-    restart: unless-stopped
-    profiles: [ "monitoring", "all" ]
-    networks:
-      - t3_proxy
-    environment:
-      TZ: $TZ
