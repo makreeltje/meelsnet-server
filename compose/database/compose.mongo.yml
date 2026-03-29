@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: mongo
-    image: mongo:7.0.17
+    image: mongo:7.0.31
     profiles: [ "database", "infra", "all" ]
     environment:
       MONGO_INITDB_ROOT_USERNAME: $MONGO_DBUSER
