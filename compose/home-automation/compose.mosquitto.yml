@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: mosquitto
-    image: eclipse-mosquitto:2.0.21
+    image: eclipse-mosquitto:2.0.22
     profiles: [ "home", "all" ]
     volumes:
       - $CONF_DIR/mosquitto/config:/mosquitto/config
