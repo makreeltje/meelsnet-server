@@ -1,89 +1,124 @@
 # Meelsnet Server
 
-Docker Compose homelab draaiend op Proxmox met 7 LXC containers, 40+ services, en GitOps-based deployment.
+Docker Compose homelab draaiend op Proxmox met meerdere LXC-containers, gescheiden stacks per functie, en GitOps-based deployment.
 
 ## Architectuur
 
+Onderstaande plaat is gebaseerd op de actuele Proxmox/LXC- en Docker-structuur die nu draait, niet op een gok uit de README.
+
 ```mermaid
-graph TD
-  %% Infra op Proxmox
-  subgraph Proxmox[Proxmox VE]
-    direction LR
+flowchart TB
+  classDef prox fill:#111827,stroke:#374151,color:#f9fafb,stroke-width:2px
+  classDef lxc fill:#1f2937,stroke:#60a5fa,color:#f9fafb,stroke-width:1.5px
+  classDef svc fill:#0f172a,stroke:#94a3b8,color:#e2e8f0
+  classDef core fill:#0b3b2e,stroke:#34d399,color:#ecfdf5,stroke-width:1.5px
+  classDef media fill:#3b0764,stroke:#c084fc,color:#f5f3ff
+  classDef home fill:#3f1d0d,stroke:#fb923c,color:#fff7ed
+  classDef monitor fill:#082f49,stroke:#38bdf8,color:#e0f2fe
+  classDef aux fill:#3f3f46,stroke:#a1a1aa,color:#fafafa
 
-    subgraph LXC101[LXC 101 · Infra]
-      T[Traefik]
-      A[Authentik]
-      PG[Postgres]
-      R[Redis]
-      M[MongoDB]
-      D[Adminer]
+  Internet((Internet)):::aux
+  GH[GitHub Webhook / GitOps]:::aux
+  LAN[LAN 192.168.2.0/24]:::aux
+  SVCNET[Service network 10.10.0.0/24]:::aux
+
+  subgraph PVE[Proxmox host · srv-mn]
+    direction TB
+
+    subgraph CT101[LXC 101 · infra · 10.10.0.10]
+      direction TB
+      T[Traefik]:::core
+      AK[Authentik + worker]:::core
+      DB[(Postgres / Redis / MongoDB)]:::core
+      ADM[Adminer / Mongo Express]:::svc
     end
 
-    subgraph LXC102[LXC 102 · Media]
-      Plex[Plex]
-      J[Jellyfin]
-      Arr[Sonarr · Radarr · Prowlarr · Bazarr · Seerr]
-      DL[SABnzbd · qBittorrent]
-      Extras[Tautulli · Notifiarr · Profilarr · Tracearr · Agregarr · Watchstate]
+    subgraph CT102[LXC 102 · media · 10.10.0.20]
+      direction TB
+      PLEX[Plex / Jellyfin]:::media
+      ARR[Sonarr / Sonarr-4K<br/>Radarr / Radarr-4K<br/>Prowlarr / Bazarr]:::media
+      DL[SABnzbd / qBittorrent]:::media
+      MISC[Seerr / Tautulli / Notifiarr<br/>Profilarr / Tracearr / Agregarr / Watchstate]:::media
     end
 
-    subgraph LXC103[LXC 103 · Home Automation]
-      HA[Home Assistant]
-      Z2M[Zigbee2MQTT]
-      MQ[Mosquitto]
-      NR[Node-RED]
-      MA[Music Assistant]
-      HYP[Hyperion]
-      FR[Frigate]
+    subgraph CT103[LXC 103 · home · 10.10.0.30]
+      direction TB
+      HA[Home Assistant]:::home
+      MQTT[Mosquitto]:::home
+      ZB[Zigbee2MQTT]:::home
+      AUTO[Node-RED / Music Assistant<br/>Hyperion / Frigate]:::home
     end
 
-    subgraph LXC104[LXC 104 · Productivity]
-      IM[Immich]
-      PL[Paperless-NGX]
-      NC[Nextcloud]
-      BR[Backrest]
+    subgraph CT104[LXC 104 · productivity · 10.10.0.40]
+      direction TB
+      PROD[Immich / Paperless / Nextcloud<br/>Backrest / Firefly III]:::svc
     end
 
-    subgraph LXC105[LXC 105 · Network]
-      PH[Pi-hole]
-      UF[UniFi Controller]
+    subgraph CT105[LXC 105 · network · 10.10.0.50]
+      direction TB
+      NET[Pi-hole / UniFi Network Application]:::svc
     end
 
-    subgraph LXC106[LXC 106 · Monitoring]
-      PR[Prometheus]
-      GR[Grafana]
-      LK[Loki]
-      PT[Promtail]
-      EX[Exporters]
+    subgraph CT106[LXC 106 · monitoring · 10.10.0.60]
+      direction TB
+      MON[Prometheus / Grafana / Alertmanager / cAdvisor]:::monitor
+      EXP[Node / Smartctl / Mosquitto / Arr exporters]:::monitor
     end
 
-    subgraph LXC107[LXC 107 · Utilities]
-      OT[Omni-tools]
-      SP[Spoolman]
-      PC[Printer Calculator]
+    subgraph CT107[LXC 107 · utilities · 10.10.0.70]
+      direction TB
+      UTL[IT-Tools / Omni-Tools<br/>Spoolman / Printer Calculator]:::svc
     end
 
-    GIT["GitOps Controller<br/>(Webhook + Deploy)"]
+    subgraph CT108[LXC 108 · openclaw · 10.10.0.80]
+      direction TB
+      OC[OpenClaw / Lyra integration host]:::svc
+    end
+
+    subgraph CT109[LXC 109 · money · 10.10.0.90]
+      direction TB
+      MONEY[Finance stack]:::svc
+    end
   end
 
-  %% Sturing / Routing
-  GIT --> LXC101
-  GIT --> LXC102
-  GIT --> LXC103
-  GIT --> LXC104
-  GIT --> LXC105
-  GIT --> LXC106
-  GIT --> LXC107
+  Internet --> T
+  GH --> T
+  GH --> CT101
+  GH --> CT102
+  GH --> CT103
+  GH --> CT104
+  GH --> CT105
+  GH --> CT106
+  GH --> CT107
+  LAN --- PVE
+  SVCNET --- PVE
 
-  T -- reverse proxy --> LXC102
-  T -- reverse proxy --> LXC103
-  T -- reverse proxy --> LXC104
-  T -- reverse proxy --> LXC105
-  T -- reverse proxy --> LXC106
-  T -- reverse proxy --> LXC107
+  T --> CT102
+  T --> CT103
+  T --> CT104
+  T --> CT105
+  T --> CT106
+  T --> CT107
+  T --> CT108
+  T --> CT109
+
+  AK --> T
+  DB --> AK
+  DB --> CT104
+  DB --> CT105
+  MQTT --> ZB
+  MQTT --> HA
+  MQTT --> AUTO
+  MON --> EXP
+  EXP --> CT102
+  EXP --> CT103
+  EXP --> CT105
+
+  class PVE prox
+  class CT101,CT102,CT103,CT104,CT105,CT106,CT107,CT108,CT109 lxc
 ```
 
-Elke LXC container draait een eigen Docker daemon met zijn eigen subset van services. Alle services worden beheerd via Docker Compose.
+Hoofdlijn: Proxmox host met losse LXC-stacks per domein. `infra` levert ingress/auth/core-datastores, de overige containers draaien functionele stacks en `monitoring` leest mee over de rest heen.
 
 ## Services
 
@@ -138,6 +173,7 @@ Elke LXC container draait een eigen Docker daemon met zijn eigen subset van serv
 | [Paperless-NGX](compose/productivity/compose.paperless.yml) | Document management |
 | [Nextcloud](compose/productivity/compose.nextcloud.yml) | Cloud opslag / office |
 | [Backrest](compose/productivity/compose.backrest.yml) | Backup UI voor restic |
+| Firefly III | Persoonlijke financiën / administratie |
 
 ### LXC 105 — Network
 
@@ -152,14 +188,18 @@ Elke LXC container draait een eigen Docker daemon met zijn eigen subset van serv
 |---|---|
 | [Prometheus](compose/monitoring/compose.prometheus.yml) | Metrics verzameling |
 | [Grafana](compose/monitoring/compose.grafana.yml) | Dashboards / visualisatie |
-| [Loki](compose/monitoring/compose.loki.yml) | Log aggregatie |
-| [Promtail](compose/monitoring/compose.promtail.yml) | Log collector voor Loki |
-| [Exporters](compose/monitoring/compose.exporters.yml) | Prometheus exporters (Sonarr, Radarr, etc.) |
+| Alertmanager | Alert routing |
+| cAdvisor | Container metrics |
+| Node Exporter | Host metrics |
+| Smartctl Exporter | Disk / SMART metrics |
+| Mosquitto Exporter | MQTT metrics |
+| Arr Exporters | Prometheus exporters voor Sonarr, Radarr, Prowlarr en SABnzbd |
 
 ### LXC 107 — Utilities
 
 | Service | Beschrijving |
 |---|---|
+| IT-Tools | Kleine self-hosted utility toolbox |
 | [Omni-tools](compose/utilities/compose.omni-tools.yml) | File conversie tools |
 | [Spoolman](compose/utilities/compose.spoolman.yml) | 3D print filament tracker |
 | [Printer Calculator](compose/utilities/compose.printer-calculator.yml) | 3D print cost calculator |
@@ -212,7 +252,18 @@ Elke LXC container draait een eigen Docker daemon met zijn eigen subset van serv
 
 ### Compose structuur
 
-Elke service heeft zijn eigen compose file in `compose/<stack>/`. Services erven van base templates in `compose/fragments/common-service.yml`:
+Elke service heeft zijn eigen compose file in `compose/<stack>/`. De actieve productie-indeling op dit moment is:
+
+- `infra` → ingress, auth en gedeelde datastores
+- `media` → streaming, downloads en Arr-ecosysteem
+- `home` → Home Assistant, MQTT en domotica
+- `productivity` → documenten, foto's, cloud en finance
+- `network` → DNS en UniFi
+- `monitoring` → metrics, alerts en exporters
+- `utilities` → kleine losse tools
+- aparte LXC's voor `openclaw` en `money`
+
+Services erven van base templates in `compose/fragments/common-service.yml`:
 
 ```yaml
 # compose/media-server/compose.sonarr.yml
