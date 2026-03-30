@@ -26,7 +26,7 @@
     {
       "title": "LXC 102 · media",
       "ip": "10.10.0.20",
-      "subtitle": "Streaming, downloads en Arr-ecosysteem",
+      "subtitle": "Streaming",
       "accent": "purple",
       "services": [
         "Plex",
@@ -36,7 +36,7 @@
         "Agregarr",
         "Watchstate",
         "Bazarr",
-        "Tautulli",
+        "Tautulli"
       ],
       "footer": "+ 7 more"
     },
@@ -90,8 +90,7 @@
         "cAdvisor",
         "Node Exporter",
         "Smartctl Exporter",
-        "Mosquitto Exporter",
-        "Arr Exporters"
+        "Mosquitto Exporter"
       ]
     },
     {
@@ -112,7 +111,7 @@
       "subtitle": "Simple representation only",
       "accent": "slate",
       "services": [
-        "OpenClaw / Lyra"
+        "OpenClaw"
       ]
     },
     {
