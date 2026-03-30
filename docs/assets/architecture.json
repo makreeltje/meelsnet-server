@@ -1,6 +1,14 @@
 {
   "title": "Meelsnet Server · Homelab Architecture",
   "subtitle": "Actuele Proxmox/LXC-indeling met compacte stacksamenvatting per container.",
+  "hostSpecs": {
+    "host": "srv-mn",
+    "platform": "Proxmox VE",
+    "cpu": "6 cores",
+    "memory": "31 GiB RAM",
+    "boot": "1.8 TB NVMe",
+    "storage": "5× 18.2 TB HDD · md5 RAID5 · 72.8 TB"
+  },
   "networks": [
     { "label": "Proxmox host · srv-mn", "accent": "slate" },
     { "label": "vmbr0 · LAN · 192.168.2.0/24", "accent": "blue" },
@@ -10,6 +18,7 @@
     {
       "title": "LXC 101 · infra",
       "ip": "10.10.0.10",
+      "specs": "2 vCPU · 4 GB RAM · 1 TB disk",
       "subtitle": "Ingress, auth en shared datastores",
       "accent": "green",
       "services": [
@@ -26,6 +35,7 @@
     {
       "title": "LXC 102 · media",
       "ip": "10.10.0.20",
+      "specs": "6 vCPU · 10 GB RAM · 500 GB disk",
       "subtitle": "Streaming",
       "accent": "purple",
       "services": [
@@ -43,6 +53,7 @@
     {
       "title": "LXC 103 · home",
       "ip": "10.10.0.30",
+      "specs": "2 vCPU · 4 GB RAM · 100 GB disk",
       "subtitle": "Domotica, MQTT en local automation",
       "accent": "orange",
       "services": [
@@ -58,6 +69,7 @@
     {
       "title": "LXC 104 · productivity",
       "ip": "10.10.0.40",
+      "specs": "2 vCPU · 2 GB RAM · 100 GB disk",
       "subtitle": "Persoonlijke apps, documents, storage en finance",
       "accent": "blue",
       "services": [
@@ -71,6 +83,7 @@
     {
       "title": "LXC 105 · network",
       "ip": "10.10.0.50",
+      "specs": "1 vCPU · 2 GB RAM · 8 GB disk",
       "subtitle": "DNS en netwerkbeheer",
       "accent": "blue",
       "services": [
@@ -81,6 +94,7 @@
     {
       "title": "LXC 106 · monitoring",
       "ip": "10.10.0.60",
+      "specs": "2 vCPU · 3 GB RAM · 80 GB disk",
       "subtitle": "Metrics, dashboards, alerts en exporters",
       "accent": "cyan",
       "services": [
@@ -96,6 +110,7 @@
     {
       "title": "LXC 107 · utilities",
       "ip": "10.10.0.70",
+      "specs": "1 vCPU · 1 GB RAM · 8 GB disk",
       "subtitle": "Kleine losse tools en 3D-print utilities",
       "accent": "gray",
       "services": [
@@ -108,6 +123,7 @@
     {
       "title": "LXC 108 · openclaw",
       "ip": "10.10.0.80",
+      "specs": "4 vCPU · 4 GB RAM · 100 GB disk",
       "subtitle": "Simple representation only",
       "accent": "slate",
       "services": [
@@ -117,6 +133,7 @@
     {
       "title": "LXC 109 · money",
       "ip": "10.10.0.90",
+      "specs": "2 vCPU · 2 GB RAM · 100 GB disk",
       "subtitle": "Simple representation only",
       "accent": "slate",
       "services": [
