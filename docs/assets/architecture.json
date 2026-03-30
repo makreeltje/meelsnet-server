@@ -1,6 +1,6 @@
 {
   "title": "Meelsnet Server · Homelab Architecture",
-  "subtitle": "Actuele Proxmox/LXC-indeling met gescheiden stacks voor infra, media, home, productivity, network, monitoring en utilities.",
+  "subtitle": "Actuele Proxmox/LXC-indeling met compacte, onderhoudbare stackweergave voor de README.",
   "networks": [
     { "label": "Proxmox host · srv-mn", "accent": "slate" },
     { "label": "vmbr0 · LAN · 192.168.2.0/24", "accent": "blue" },
@@ -8,184 +8,93 @@
   ],
   "groups": [
     {
-      "id": "infra",
       "title": "LXC 101 · infra",
       "ip": "10.10.0.10",
       "subtitle": "Ingress, auth en shared datastores",
       "accent": "green",
-      "kind": "core",
-      "x": 90,
-      "y": 320,
-      "w": 505,
-      "h": 230,
-      "items": [
-        { "label": "Traefik", "variant": "primary" },
-        { "label": "Authentik", "variant": "primary" },
-        { "label": "Worker", "variant": "primary" },
-        { "label": "Postgres", "variant": "secondary" },
-        { "label": "Redis", "variant": "secondary" },
-        { "label": "MongoDB", "variant": "secondary" },
-        { "label": "Adminer", "variant": "tertiary" },
-        { "label": "Mongo Express", "variant": "tertiary" }
-      ]
+      "layout": "3col",
+      "items": ["Traefik", "Authentik", "Worker", "Postgres", "Redis", "MongoDB"],
+      "extras": ["Adminer", "Mongo Express"]
     },
     {
-      "id": "media",
       "title": "LXC 102 · media",
       "ip": "10.10.0.20",
       "subtitle": "Streaming, downloads en Arr-ecosysteem",
       "accent": "purple",
-      "kind": "feature",
-      "x": 625,
-      "y": 320,
-      "w": 505,
-      "h": 230,
-      "items": [
-        { "label": "Plex", "variant": "primary" },
-        { "label": "Jellyfin", "variant": "primary" },
-        { "label": "Seerr", "variant": "primary" },
-        { "label": "Sonarr", "variant": "secondary" },
-        { "label": "Radarr", "variant": "secondary" },
-        { "label": "Prowlarr", "variant": "secondary" },
-        { "label": "Bazarr", "variant": "tertiary" },
-        { "label": "Tautulli", "variant": "tertiary" },
-        { "label": "SABnzbd", "variant": "tertiary" },
-        { "label": "qBittorrent", "variant": "tertiary" },
-        { "label": "+ Notifiarr / Profilarr / Tracearr / Agregarr / Watchstate", "variant": "footnote" }
-      ]
+      "layout": "3col",
+      "items": ["Plex", "Jellyfin", "Seerr", "Sonarr", "Radarr", "Prowlarr"],
+      "extras": ["Bazarr", "Tautulli", "SABnzbd", "qBittorrent"],
+      "note": "+ Notifiarr / Profilarr / Tracearr / Agregarr / Watchstate"
     },
     {
-      "id": "home",
       "title": "LXC 103 · home",
       "ip": "10.10.0.30",
       "subtitle": "Domotica, MQTT en local automation",
       "accent": "orange",
-      "kind": "feature",
-      "x": 1160,
-      "y": 320,
-      "w": 505,
-      "h": 230,
-      "items": [
-        { "label": "Home Assistant", "variant": "primary" },
-        { "label": "Mosquitto", "variant": "primary" },
-        { "label": "Zigbee2MQTT", "variant": "primary" },
-        { "label": "Node-RED", "variant": "secondary" },
-        { "label": "Music Assistant", "variant": "secondary" },
-        { "label": "Hyperion", "variant": "secondary" },
-        { "label": "Frigate", "variant": "secondary" }
-      ]
+      "layout": "3col",
+      "items": ["Home Assistant", "Mosquitto", "Zigbee2MQTT", "Node-RED", "Music Assistant", "Hyperion"],
+      "extras": ["Frigate"]
     },
     {
-      "id": "productivity",
       "title": "LXC 104 · productivity",
       "ip": "10.10.0.40",
       "subtitle": "Persoonlijke apps, documents, storage en finance",
       "accent": "blue",
-      "kind": "feature",
-      "x": 90,
-      "y": 585,
-      "w": 505,
-      "h": 210,
-      "items": [
-        { "label": "Immich", "variant": "primary" },
-        { "label": "Paperless", "variant": "primary" },
-        { "label": "Nextcloud", "variant": "primary" },
-        { "label": "Backrest", "variant": "secondary" },
-        { "label": "Firefly III", "variant": "secondary" }
-      ]
+      "layout": "3col",
+      "items": ["Immich", "Paperless", "Nextcloud", "Backrest", "Firefly III"],
+      "extras": []
     },
     {
-      "id": "network",
       "title": "LXC 105 · network",
       "ip": "10.10.0.50",
       "subtitle": "DNS en netwerkbeheer",
       "accent": "blue",
-      "kind": "feature",
-      "x": 625,
-      "y": 585,
-      "w": 505,
-      "h": 210,
-      "items": [
-        { "label": "Pi-hole", "variant": "primary" },
-        { "label": "UniFi Network Application", "variant": "primary" }
-      ]
+      "layout": "2col-wide",
+      "items": ["Pi-hole", "UniFi Network Application"],
+      "extras": []
     },
     {
-      "id": "monitoring",
       "title": "LXC 106 · monitoring",
       "ip": "10.10.0.60",
       "subtitle": "Metrics, dashboards, alerts en exporters",
       "accent": "cyan",
-      "kind": "observability",
-      "x": 1160,
-      "y": 585,
-      "w": 505,
-      "h": 210,
-      "items": [
-        { "label": "Prometheus", "variant": "primary" },
-        { "label": "Grafana", "variant": "primary" },
-        { "label": "Alertmanager", "variant": "primary" },
-        { "label": "cAdvisor", "variant": "secondary" },
-        { "label": "Node Exporter", "variant": "secondary" },
-        { "label": "Smartctl Exporter", "variant": "secondary" },
-        { "label": "Mosquitto Exporter", "variant": "secondary" },
-        { "label": "Arr Exporters", "variant": "secondary" }
-      ]
+      "layout": "3col",
+      "items": ["Prometheus", "Grafana", "Alertmanager", "cAdvisor", "Node Exporter", "Smartctl Exporter"],
+      "extras": ["Mosquitto Exporter", "Arr Exporters"]
     },
     {
-      "id": "utilities",
       "title": "LXC 107 · utilities",
       "ip": "10.10.0.70",
       "subtitle": "Kleine losse tools en 3D-print utilities",
       "accent": "gray",
-      "kind": "feature",
-      "x": 90,
-      "y": 830,
-      "w": 505,
-      "h": 190,
-      "items": [
-        { "label": "IT-Tools", "variant": "primary" },
-        { "label": "Omni-Tools", "variant": "primary" },
-        { "label": "Spoolman", "variant": "secondary" },
-        { "label": "Printer Calculator", "variant": "secondary" }
-      ]
+      "layout": "3col",
+      "items": ["IT-Tools", "Omni-Tools", "Spoolman", "Printer Calculator"],
+      "extras": []
     },
     {
-      "id": "openclaw",
       "title": "LXC 108 · openclaw",
       "ip": "10.10.0.80",
       "subtitle": "Simple representation only",
       "accent": "slate",
-      "kind": "utility",
-      "x": 625,
-      "y": 830,
-      "w": 505,
-      "h": 190,
-      "items": [
-        { "label": "OpenClaw / Lyra", "variant": "primary" }
-      ]
+      "layout": "single",
+      "items": ["OpenClaw / Lyra"],
+      "extras": []
     },
     {
-      "id": "money",
       "title": "LXC 109 · money",
       "ip": "10.10.0.90",
       "subtitle": "Simple representation only",
       "accent": "slate",
-      "kind": "utility",
-      "x": 1160,
-      "y": 830,
-      "w": 505,
-      "h": 190,
-      "items": [
-        { "label": "Money", "variant": "primary" }
-      ]
+      "layout": "single",
+      "items": ["Money"],
+      "extras": []
     }
   ],
   "legend": [
     { "label": "Core infrastructure", "accent": "green" },
-    { "label": "Feature/application stacks", "accent": "blue" },
     { "label": "Media stack", "accent": "purple" },
     { "label": "Home automation", "accent": "orange" },
+    { "label": "Feature/application stacks", "accent": "blue" },
     { "label": "Monitoring / observability", "accent": "cyan" },
     { "label": "Simple / supporting stacks", "accent": "slate" }
   ]
