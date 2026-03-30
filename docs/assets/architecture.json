@@ -10,15 +10,24 @@
     "storage": "5× 20 TB HDD · RAID5 · 80 TB"
   },
   "networks": [
-    { "label": "Proxmox host · srv-mn", "accent": "slate" },
-    { "label": "vmbr0 · LAN · 192.168.2.0/24", "accent": "blue" },
-    { "label": "vmbr1 · Service net · 10.10.0.0/24", "accent": "purple" }
+    {
+      "label": "Proxmox host · srv-mn",
+      "accent": "slate"
+    },
+    {
+      "label": "vmbr0 · LAN · 192.168.2.0/24",
+      "accent": "blue"
+    },
+    {
+      "label": "vmbr1 · Service net · 10.10.0.0/24",
+      "accent": "purple"
+    }
   ],
   "groups": [
     {
       "title": "LXC 101 · infra",
       "ip": "10.10.0.10",
-      "specs": "2 vCPU · 4 GB RAM · 1 TB disk",
+      "specs": "2 vCPU · 4 GB RAM",
       "subtitle": "Ingress, auth en shared datastores",
       "accent": "green",
       "services": [
@@ -35,7 +44,7 @@
     {
       "title": "LXC 102 · media",
       "ip": "10.10.0.20",
-      "specs": "6 vCPU · 10 GB RAM · 500 GB disk",
+      "specs": "6 vCPU · 10 GB RAM",
       "subtitle": "Streaming",
       "accent": "purple",
       "services": [
@@ -53,7 +62,7 @@
     {
       "title": "LXC 103 · home",
       "ip": "10.10.0.30",
-      "specs": "2 vCPU · 4 GB RAM · 100 GB disk",
+      "specs": "2 vCPU · 4 GB RAM",
       "subtitle": "Domotica, MQTT en local automation",
       "accent": "orange",
       "services": [
@@ -69,7 +78,7 @@
     {
       "title": "LXC 104 · productivity",
       "ip": "10.10.0.40",
-      "specs": "2 vCPU · 2 GB RAM · 100 GB disk",
+      "specs": "2 vCPU · 2 GB RAM",
       "subtitle": "Persoonlijke apps, documents, storage en finance",
       "accent": "blue",
       "services": [
@@ -83,7 +92,7 @@
     {
       "title": "LXC 105 · network",
       "ip": "10.10.0.50",
-      "specs": "1 vCPU · 2 GB RAM · 8 GB disk",
+      "specs": "1 vCPU · 2 GB RAM",
       "subtitle": "DNS en netwerkbeheer",
       "accent": "blue",
       "services": [
@@ -94,7 +103,7 @@
     {
       "title": "LXC 106 · monitoring",
       "ip": "10.10.0.60",
-      "specs": "2 vCPU · 3 GB RAM · 80 GB disk",
+      "specs": "2 vCPU · 3 GB RAM",
       "subtitle": "Metrics, dashboards, alerts en exporters",
       "accent": "cyan",
       "services": [
@@ -110,7 +119,7 @@
     {
       "title": "LXC 107 · utilities",
       "ip": "10.10.0.70",
-      "specs": "1 vCPU · 1 GB RAM · 8 GB disk",
+      "specs": "1 vCPU · 1 GB RAM",
       "subtitle": "Kleine losse tools en 3D-print utilities",
       "accent": "gray",
       "services": [
@@ -123,7 +132,7 @@
     {
       "title": "LXC 108 · openclaw",
       "ip": "10.10.0.80",
-      "specs": "4 vCPU · 4 GB RAM · 100 GB disk",
+      "specs": "4 vCPU · 4 GB RAM",
       "subtitle": "Simple representation only",
       "accent": "slate",
       "services": [
@@ -133,7 +142,7 @@
     {
       "title": "LXC 109 · money",
       "ip": "10.10.0.90",
-      "specs": "2 vCPU · 2 GB RAM · 100 GB disk",
+      "specs": "2 vCPU · 2 GB RAM",
       "subtitle": "Simple representation only",
       "accent": "slate",
       "services": [
@@ -142,11 +151,29 @@
     }
   ],
   "legend": [
-    { "label": "Core infrastructure", "accent": "green" },
-    { "label": "Media stack", "accent": "purple" },
-    { "label": "Home automation", "accent": "orange" },
-    { "label": "Feature/application stacks", "accent": "blue" },
-    { "label": "Monitoring / observability", "accent": "cyan" },
-    { "label": "Simple / supporting stacks", "accent": "slate" }
+    {
+      "label": "Core infrastructure",
+      "accent": "green"
+    },
+    {
+      "label": "Media stack",
+      "accent": "purple"
+    },
+    {
+      "label": "Home automation",
+      "accent": "orange"
+    },
+    {
+      "label": "Feature/application stacks",
+      "accent": "blue"
+    },
+    {
+      "label": "Monitoring / observability",
+      "accent": "cyan"
+    },
+    {
+      "label": "Simple / supporting stacks",
+      "accent": "slate"
+    }
   ]
 }

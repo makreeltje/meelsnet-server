@@ -1,0 +1,49 @@
+name: Render architecture SVG
+
+on:
+  push:
+    branches:
+      - main
+      - feature/readme-architecture-diagram
+    paths:
+      - docs/assets/architecture.json
+      - scripts/render-architecture-svg.py
+      - .github/workflows/render-architecture.yml
+  pull_request:
+    paths:
+      - docs/assets/architecture.json
+      - scripts/render-architecture-svg.py
+      - .github/workflows/render-architecture.yml
+  workflow_dispatch:
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Render SVG
+        run: python3 scripts/render-architecture-svg.py
+
+      - name: Commit updated SVG
+        if: github.event_name == 'push'
+        run: |
+          if git diff --quiet docs/assets/architecture.svg; then
+            echo "No SVG changes"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/assets/architecture.svg
+          git commit -m "chore(diagram): regenerate architecture svg"
+          git push

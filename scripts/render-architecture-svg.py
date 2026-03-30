@@ -19,11 +19,11 @@ ACCENTS = {
 CARD_W = 504
 CARD_H = 272
 LEFT = 88
-TOP = 388
+TOP = 430
 GAP_X = 34
 GAP_Y = 34
 CANVAS_W = 1760
-CANVAS_H = 1320
+CANVAS_H = 1360
 HEADER_H = 58
 PANEL_Y = 126
 
@@ -81,7 +81,7 @@ def render_header(title, subtitle, networks, legend, host_specs):
   <rect width="{CANVAS_W}" height="{CANVAS_H}" fill="url(#bg)"/>
   <text x="56" y="64" class="title1">{esc(title)}</text>
   <text x="56" y="96" class="subtitle1">{esc(subtitle)}</text>
-  <rect x="36" y="{PANEL_Y}" width="1688" height="1158" rx="32" fill="rgba(15,23,42,0.58)" stroke="#334155" stroke-width="2.2" filter="url(#shadow)"/>
+  <rect x="36" y="{PANEL_Y}" width="1688" height="1198" rx="32" fill="rgba(15,23,42,0.58)" stroke="#334155" stroke-width="2.2" filter="url(#shadow)"/>
 ''']
 
     x = 56
@@ -94,7 +94,7 @@ def render_header(title, subtitle, networks, legend, host_specs):
         parts.append(f'<text x="{x + 16}" y="{y + 26}" class="meta">{esc(net["label"])}</text>')
         x += w + 18
 
-    lx, ly, lw, lh = 1180, 144, 512, 124
+    lx, ly, lw, lh = 1180, 144, 512, 100
     parts.append(f'<rect x="{lx}" y="{ly}" width="{lw}" height="{lh}" rx="20" fill="#0f172a" stroke="#334155" stroke-width="1.8"/>')
     parts.append(f'<text x="{lx + 18}" y="{ly + 28}" class="legendTitle">Legend</text>')
     for idx, item in enumerate(legend):
@@ -102,19 +102,20 @@ def render_header(title, subtitle, networks, legend, host_specs):
         col = idx % 2
         row = idx // 2
         px = lx + 18 + col * 242
-        py = ly + 50 + row * 28
+        py = ly + 48 + row * 24
         parts.append(f'<rect x="{px}" y="{py}" width="14" height="14" rx="4" fill="{accent["fill"]}" stroke="{accent["stroke"]}"/>')
         parts.append(f'<text x="{px + 24}" y="{py + 12}" class="legendText">{esc(item["label"])}</text>')
 
-    hx, hy, hw, hh = 56, 206, 1636, 146
+    hx, hy, hw, hh = 56, 262, 1636, 126
     parts.append(f'<rect x="{hx}" y="{hy}" width="{hw}" height="{hh}" rx="24" fill="#0f172a" stroke="#334155" stroke-width="1.8"/>')
     parts.append(f'<text x="{hx + 22}" y="{hy + 32}" class="hostTitle">Host summary · {esc(host_specs["host"])}</text>')
     parts.append(f'<text x="{hx + 22}" y="{hy + 58}" class="meta">{esc(host_specs["platform"])}</text>')
     host_items = [host_specs['cpu'], host_specs['memory'], host_specs['boot'], host_specs['storage']]
     item_x = [hx + 22, hx + 280, hx + 520, hx + 760]
-    for px, item in zip(item_x, host_items):
-        parts.append(f'<rect x="{px}" y="{hy + 84}" width="220" height="34" rx="12" fill="#172033" stroke="#475569"/>')
-        parts.append(f'<text x="{px + 14}" y="{hy + 106}" class="hostMeta">{esc(item)}</text>')
+    widths = [190, 190, 190, 320]
+    for px, item, w in zip(item_x, host_items, widths):
+        parts.append(f'<rect x="{px}" y="{hy + 78}" width="{w}" height="34" rx="12" fill="#172033" stroke="#475569"/>')
+        parts.append(f'<text x="{px + 14}" y="{hy + 100}" class="hostMeta">{esc(item)}</text>')
     return '\n'.join(parts)
 
 
@@ -142,7 +143,7 @@ def render_card(group, x, y):
         parts.append(f'<text x="{px + 14}" y="{hy + 22}" class="hero">{esc(txt)}</text>')
 
     parts.append(f'<text x="{x + 26}" y="{y + 204}" class="section">Supporting services</text>')
-    parts.append(f'<line x1="{x + 246}" y1="{y + 214}" x2="{x + 246}" y2="{y + CARD_H - 30}" stroke="#334155" stroke-width="1" opacity="0.9"/>')
+    parts.append(f'<line x1="{x + 246}" y1="{y + 214}" x2="{x + 246}" y2="{y + CARD_H - 54}" stroke="#334155" stroke-width="1" opacity="0.9"/>')
 
     left = supporting[::2][:2]
     right = supporting[1::2][:2]
@@ -159,8 +160,9 @@ def render_card(group, x, y):
 
     footer = group.get('footer')
     if footer:
-        parts.append(f'<rect x="{x + 26}" y="{y + CARD_H - 34}" width="110" height="20" rx="10" fill="{accent["muted"]}" stroke="{accent["stroke"]}" opacity="0.95"/>')
-        parts.append(f'<text x="{x + 40}" y="{y + CARD_H - 20}" class="footer">{esc(footer)}</text>')
+        fy = y + CARD_H - 34
+        parts.append(f'<rect x="{x + 26}" y="{fy}" width="110" height="20" rx="10" fill="{accent["muted"]}" stroke="{accent["stroke"]}" opacity="0.95"/>')
+        parts.append(f'<text x="{x + 40}" y="{fy + 14}" class="footer">{esc(footer)}</text>')
 
     parts.append('</g>')
     return '\n'.join(parts)
