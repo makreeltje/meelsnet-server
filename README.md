@@ -1,39 +1,24 @@
 # Meelsnet Server
 
-Docker Compose homelab draaiend op Proxmox met 7 LXC containers, 40+ services, en GitOps-based deployment.
+Docker Compose homelab draaiend op Proxmox met meerdere LXC-containers, gescheiden stacks per functie, en GitOps-based deployment.
 
 ## Architectuur
 
-```
-┌──────────────────────────────────────────────────────┐
-│                     Proxmox VE                       │
-│                                                      │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐            │
-│  │ LXC 101  │  │ LXC 102  │  │ LXC 103  │            │
-│  │  infra   │  │  media   │  │  home    │            │
-│  │ Traefik  │  │ Plex     │  │ HA       │            │
-│  │ Authentik│  │ Sonarr   │  │ Zigbee   │            │
-│  │ Postgres │  │ Radarr   │  │ Frigate  │            │
-│  │ Redis    │  │ ...      │  │ ...      │            │
-│  └──────────┘  └──────────┘  └──────────┘            │
-│                                                      │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐            │
-│  │ LXC 104  │  │ LXC 105  │  │ LXC 106  │            │
-│  │producti- │  │ network  │  │monitoring│            │
-│  │  vity    │  │ Pi-hole  │  │ Grafana  │            │
-│  │ Immich   │  │ UniFi    │  │Prometheus│            │
-│  │ Paperless│  │          │  │ Loki     │            │
-│  └──────────┘  └──────────┘  └──────────┘            │
-│                                                      │
-│  ┌──────────┐                                        │
-│  │ LXC 107  │     ┌─────────────────────┐            │
-│  │utilities │     │  GitOps Controller  │            │
-│  │ Spoolman │     │  Webhook + Deploy   │            │
-│  └──────────┘     └─────────────────────┘            │
-└──────────────────────────────────────────────────────┘
+Onderstaande plaat is gebaseerd op de actuele Proxmox/LXC- en Docker-structuur die nu draait. Geen live Mermaid, maar een statische SVG zodat GitHub het gewoon strak rendert.
+
+![Meelsnet homelab architecture](docs/assets/architecture.svg)
+
+Hoofdlijn: Proxmox host met losse LXC-stacks per domein. `infra` levert ingress/auth/core-datastores, de overige containers draaien functionele stacks en `monitoring` leest mee over de rest heen. Voor `10.10.0.80` en `10.10.0.90` is bewust alleen een simpele representatie opgenomen: OpenClaw respectievelijk Money.
+
+### Diagram onderhouden
+
+De SVG is gegenereerd vanuit `docs/assets/architecture.json` via:
+
+```bash
+scripts/render-architecture-svg.py
 ```
 
-Elke LXC container draait een eigen Docker daemon met zijn eigen subset van services. Alle services worden beheerd via Docker Compose.
+Dus later aanpassen = JSON wijzigen en opnieuw renderen. Geen handmatig gepruts in raw SVG.
 
 ## Services
 
@@ -88,6 +73,7 @@ Elke LXC container draait een eigen Docker daemon met zijn eigen subset van serv
 | [Paperless-NGX](compose/productivity/compose.paperless.yml) | Document management |
 | [Nextcloud](compose/productivity/compose.nextcloud.yml) | Cloud opslag / office |
 | [Backrest](compose/productivity/compose.backrest.yml) | Backup UI voor restic |
+| Firefly III | Persoonlijke financiën / administratie |
 
 ### LXC 105 — Network
 
@@ -102,14 +88,18 @@ Elke LXC container draait een eigen Docker daemon met zijn eigen subset van serv
 |---|---|
 | [Prometheus](compose/monitoring/compose.prometheus.yml) | Metrics verzameling |
 | [Grafana](compose/monitoring/compose.grafana.yml) | Dashboards / visualisatie |
-| [Loki](compose/monitoring/compose.loki.yml) | Log aggregatie |
-| [Promtail](compose/monitoring/compose.promtail.yml) | Log collector voor Loki |
-| [Exporters](compose/monitoring/compose.exporters.yml) | Prometheus exporters (Sonarr, Radarr, etc.) |
+| Alertmanager | Alert routing |
+| cAdvisor | Container metrics |
+| Node Exporter | Host metrics |
+| Smartctl Exporter | Disk / SMART metrics |
+| Mosquitto Exporter | MQTT metrics |
+| Arr Exporters | Prometheus exporters voor Sonarr, Radarr, Prowlarr en SABnzbd |
 
 ### LXC 107 — Utilities
 
 | Service | Beschrijving |
 |---|---|
+| IT-Tools | Kleine self-hosted utility toolbox |
 | [Omni-tools](compose/utilities/compose.omni-tools.yml) | File conversie tools |
 | [Spoolman](compose/utilities/compose.spoolman.yml) | 3D print filament tracker |
 | [Printer Calculator](compose/utilities/compose.printer-calculator.yml) | 3D print cost calculator |
@@ -162,7 +152,18 @@ Elke LXC container draait een eigen Docker daemon met zijn eigen subset van serv
 
 ### Compose structuur
 
-Elke service heeft zijn eigen compose file in `compose/<stack>/`. Services erven van base templates in `compose/fragments/common-service.yml`:
+Elke service heeft zijn eigen compose file in `compose/<stack>/`. De actieve productie-indeling op dit moment is:
+
+- `infra` → ingress, auth en gedeelde datastores
+- `media` → streaming, downloads en Arr-ecosysteem
+- `home` → Home Assistant, MQTT en domotica
+- `productivity` → documenten, foto's, cloud en finance
+- `network` → DNS en UniFi
+- `monitoring` → metrics, alerts en exporters
+- `utilities` → kleine losse tools
+- aparte LXC's voor `openclaw` en `money`
+
+Services erven van base templates in `compose/fragments/common-service.yml`:
 
 ```yaml
 # compose/media-server/compose.sonarr.yml
