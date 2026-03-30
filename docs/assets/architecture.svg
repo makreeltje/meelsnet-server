@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1320" viewBox="0 0 1800 1320" role="img" aria-labelledby="title desc">
+  <title id="title">Meelsnet Server · Homelab Architecture</title>
+  <desc id="desc">Actuele LXC/Docker indeling op Proxmox, met ingress, auth, stack-separatie en observability</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1220"/>
+      <stop offset="100%" stop-color="#111827"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#172033"/>
+      <stop offset="100%" stop-color="#101826"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#020617" flood-opacity="0.45"/>
+    </filter>
+    <style>
+      .title { font: 700 40px Inter,Segoe UI,Arial,sans-serif; fill: #f8fafc; }
+      .subtitle { font: 400 18px Inter,Segoe UI,Arial,sans-serif; fill: #94a3b8; }
+      .section { font: 700 20px Inter,Segoe UI,Arial,sans-serif; fill: #e2e8f0; }
+      .label { font: 700 17px Inter,Segoe UI,Arial,sans-serif; fill: #f8fafc; }
+      .meta { font: 400 13px Inter,Segoe UI,Arial,sans-serif; fill: #94a3b8; }
+      .small { font: 500 13px Inter,Segoe UI,Arial,sans-serif; fill: #cbd5e1; }
+      .chip { font: 600 13px Inter,Segoe UI,Arial,sans-serif; fill: #e2e8f0; }
+    </style>
+  </defs>
+  <rect width="1800" height="1320" fill="url(#bg)"/>
+  <text x="70" y="78" class="title">Meelsnet Server · Homelab Architecture</text>
+  <text x="70" y="110" class="subtitle">Actuele LXC/Docker indeling op Proxmox, met ingress, auth, stack-separatie en observability</text>
+  <rect x="50" y="145" width="1700" height="1125" rx="34" fill="rgba(15,23,42,0.55)" stroke="#334155" stroke-width="2.5" filter="url(#shadow)"/>
+  <text x="78" y="190" class="section">Proxmox host · srv-mn</text>
+  <text x="78" y="214" class="meta">vmbr0 = LAN 192.168.2.0/24 · vmbr1 = service network 10.10.0.0/24</text>
+
+<g><rect x="78" y="242" width="180" height="56" rx="16" fill="#0f172a" stroke="#60a5fa" stroke-width="2"/><text x="102" y="276" class="label">Internet / WAN</text></g>
+<g><rect x="280" y="242" width="210" height="56" rx="16" fill="#0f172a" stroke="#34d399" stroke-width="2"/><text x="304" y="276" class="label">GitHub / GitOps</text></g>
+<g><rect x="512" y="242" width="220" height="56" rx="16" fill="#0f172a" stroke="#60a5fa" stroke-width="2"/><text x="536" y="276" class="label">LAN · 192.168.2.0/24</text></g>
+<g><rect x="754" y="242" width="248" height="56" rx="16" fill="#0f172a" stroke="#c084fc" stroke-width="2"/><text x="778" y="276" class="label">Service net · 10.10.0.0/24</text></g>
+<g><rect x="78" y="340" width="500" height="248" rx="28" fill="url(#panel)" stroke="#34d399" stroke-width="2.3" filter="url(#shadow)"/>
+<text x="104" y="378" class="label">LXC 101 · infra · 10.10.0.10</text>
+<text x="104" y="402" class="meta">ingress, auth en shared datastores</text>
+<rect x="104" y="425" width="126" height="42" rx="12" fill="#0b3b2e" stroke="#34d399"/><text x="124" y="452" class="chip">Traefik</text>
+<rect x="246" y="425" width="160" height="42" rx="12" fill="#0b3b2e" stroke="#34d399"/><text x="266" y="452" class="chip">Authentik</text>
+<rect x="422" y="425" width="128" height="42" rx="12" fill="#0b3b2e" stroke="#34d399"/><text x="442" y="452" class="chip">Worker</text>
+<rect x="104" y="487" width="144" height="42" rx="12" fill="#132033" stroke="#60a5fa"/><text x="124" y="514" class="chip">Postgres</text>
+<rect x="264" y="487" width="112" height="42" rx="12" fill="#132033" stroke="#60a5fa"/><text x="284" y="514" class="chip">Redis</text>
+<rect x="392" y="487" width="120" height="42" rx="12" fill="#132033" stroke="#60a5fa"/><text x="412" y="514" class="chip">MongoDB</text>
+<rect x="104" y="549" width="190" height="24" rx="10" fill="#111827" stroke="#475569"/><text x="124" y="566" class="small">Adminer · Mongo Express</text>
+</g>
+<g><rect x="610" y="340" width="550" height="248" rx="28" fill="url(#panel)" stroke="#c084fc" stroke-width="2.3" filter="url(#shadow)"/>
+<text x="636" y="378" class="label">LXC 102 · media · 10.10.0.20</text>
+<text x="636" y="402" class="meta">streaming, downloads en Arr-ecosysteem</text>
+<rect x="636" y="425" width="160" height="42" rx="12" fill="#3b0764" stroke="#c084fc"/><text x="656" y="452" class="chip">Plex</text>
+<rect x="812" y="425" width="160" height="42" rx="12" fill="#3b0764" stroke="#c084fc"/><text x="832" y="452" class="chip">Jellyfin</text>
+<rect x="988" y="425" width="146" height="42" rx="12" fill="#3b0764" stroke="#c084fc"/><text x="1008" y="452" class="chip">Seerr</text>
+<rect x="636" y="487" width="164" height="42" rx="12" fill="#132033" stroke="#60a5fa"/><text x="656" y="514" class="chip">Sonarr</text>
+<rect x="816" y="487" width="164" height="42" rx="12" fill="#132033" stroke="#60a5fa"/><text x="836" y="514" class="chip">Radarr</text>
+<rect x="996" y="487" width="138" height="42" rx="12" fill="#132033" stroke="#60a5fa"/><text x="1016" y="514" class="chip">Prowlarr</text>
+<rect x="636" y="549" width="154" height="24" rx="10" fill="#111827" stroke="#475569"/><text x="656" y="566" class="small">Bazarr · Tautulli</text>
+<rect x="804" y="549" width="184" height="24" rx="10" fill="#111827" stroke="#475569"/><text x="824" y="566" class="small">SABnzbd · qBittorrent</text>
+<rect x="1002" y="549" width="132" height="24" rx="10" fill="#111827" stroke="#475569"/><text x="1022" y="566" class="small">+ extras</text>
+</g>
+<g><rect x="1192" y="340" width="480" height="248" rx="28" fill="url(#panel)" stroke="#fb923c" stroke-width="2.3" filter="url(#shadow)"/>
+<text x="1218" y="378" class="label">LXC 103 · home · 10.10.0.30</text>
+<text x="1218" y="402" class="meta">domotica, MQTT en local automation</text>
+<rect x="1218" y="425" width="178" height="42" rx="12" fill="#3f1d0d" stroke="#fb923c"/><text x="1238" y="452" class="chip">Home Assistant</text>
+<rect x="1414" y="425" width="120" height="42" rx="12" fill="#3f1d0d" stroke="#fb923c"/><text x="1434" y="452" class="chip">MQTT</text>
+<rect x="1550" y="425" width="96" height="42" rx="12" fill="#3f1d0d" stroke="#fb923c"/><text x="1570" y="452" class="chip">Z2M</text>
+<rect x="1218" y="487" width="428" height="42" rx="12" fill="#132033" stroke="#60a5fa"/><text x="1238" y="514" class="chip">Node-RED · Music Assistant · Hyperion · Frigate</text>
+</g>
+<g><rect x="78" y="628" width="500" height="214" rx="28" fill="url(#panel)" stroke="#60a5fa" stroke-width="2.3" filter="url(#shadow)"/>
+<text x="104" y="666" class="label">LXC 104 · productivity · 10.10.0.40</text>
+<text x="104" y="690" class="meta">persoonlijke apps, storage en finance</text>
+<rect x="104" y="714" width="120" height="42" rx="12" fill="#132033" stroke="#60a5fa"/><text x="124" y="741" class="chip">Immich</text>
+<rect x="240" y="714" width="138" height="42" rx="12" fill="#132033" stroke="#60a5fa"/><text x="260" y="741" class="chip">Paperless</text>
+<rect x="394" y="714" width="138" height="42" rx="12" fill="#132033" stroke="#60a5fa"/><text x="414" y="741" class="chip">Nextcloud</text>
+<rect x="104" y="776" width="132" height="24" rx="10" fill="#111827" stroke="#475569"/><text x="124" y="793" class="small">Backrest</text>
+<rect x="250" y="776" width="128" height="24" rx="10" fill="#111827" stroke="#475569"/><text x="270" y="793" class="small">Firefly III</text>
+</g>
+<g><rect x="610" y="628" width="320" height="214" rx="28" fill="url(#panel)" stroke="#60a5fa" stroke-width="2.3" filter="url(#shadow)"/>
+<text x="636" y="666" class="label">LXC 105 · network · 10.10.0.50</text>
+<text x="636" y="690" class="meta">DNS en netwerkbeheer</text>
+<rect x="636" y="714" width="116" height="42" rx="12" fill="#132033" stroke="#60a5fa"/><text x="656" y="741" class="chip">Pi-hole</text>
+<rect x="768" y="714" width="136" height="42" rx="12" fill="#132033" stroke="#60a5fa"/><text x="788" y="741" class="chip">UniFi</text>
+</g>
+<g><rect x="962" y="628" width="458" height="214" rx="28" fill="url(#panel)" stroke="#38bdf8" stroke-width="2.3" filter="url(#shadow)"/>
+<text x="988" y="666" class="label">LXC 106 · monitoring · 10.10.0.60</text>
+<text x="988" y="690" class="meta">metrics, alerts en exporters</text>
+<rect x="988" y="714" width="148" height="42" rx="12" fill="#082f49" stroke="#38bdf8"/><text x="1008" y="741" class="chip">Prometheus</text>
+<rect x="1152" y="714" width="128" height="42" rx="12" fill="#082f49" stroke="#38bdf8"/><text x="1172" y="741" class="chip">Grafana</text>
+<rect x="1296" y="714" width="98" height="42" rx="12" fill="#082f49" stroke="#38bdf8"/><text x="1316" y="741" class="chip">Alerts</text>
+<rect x="988" y="776" width="404" height="24" rx="10" fill="#111827" stroke="#475569"/><text x="1008" y="793" class="small">cAdvisor · Node Exporter · Smartctl · Mosquitto · Arr exporters</text>
+</g>
+<g><rect x="1452" y="628" width="220" height="214" rx="28" fill="url(#panel)" stroke="#a1a1aa" stroke-width="2.3" filter="url(#shadow)"/>
+<text x="1478" y="666" class="label">LXC 107 · utilities</text>
+<text x="1478" y="690" class="meta">10.10.0.70</text>
+<rect x="1478" y="714" width="168" height="24" rx="10" fill="#111827" stroke="#475569"/><text x="1498" y="731" class="small">IT-Tools · Omni-Tools</text>
+<rect x="1478" y="750" width="168" height="24" rx="10" fill="#111827" stroke="#475569"/><text x="1498" y="767" class="small">Spoolman · Printer Calc</text>
+</g>
+<g><rect x="78" y="882" width="360" height="182" rx="28" fill="url(#panel)" stroke="#a1a1aa" stroke-width="2.3" filter="url(#shadow)"/>
+<text x="104" y="920" class="label">LXC 108 · openclaw · 10.10.0.80</text>
+<text x="104" y="944" class="meta">simple view, geen diepe inspectie</text>
+<rect x="104" y="970" width="228" height="42" rx="12" fill="#132033" stroke="#60a5fa"/><text x="124" y="997" class="chip">OpenClaw / Lyra</text>
+</g>
+<g><rect x="470" y="882" width="360" height="182" rx="28" fill="url(#panel)" stroke="#a1a1aa" stroke-width="2.3" filter="url(#shadow)"/>
+<text x="496" y="920" class="label">LXC 109 · money · 10.10.0.90</text>
+<text x="496" y="944" class="meta">simple view, geen diepe inspectie</text>
+<rect x="496" y="970" width="188" height="42" rx="12" fill="#132033" stroke="#60a5fa"/><text x="516" y="997" class="chip">Money stack</text>
+</g>
+
+  <g>
+    <rect x="920" y="902" width="752" height="162" rx="24" fill="#0f172a" stroke="#334155" stroke-width="2"/>
+    <text x="948" y="938" class="label">Legend</text>
+    <rect x="948" y="960" width="18" height="18" rx="5" fill="#0b3b2e" stroke="#34d399"/><text x="980" y="974" class="small">core infra / ingress / auth</text>
+    <rect x="948" y="992" width="18" height="18" rx="5" fill="#3b0764" stroke="#c084fc"/><text x="980" y="1006" class="small">media stack</text>
+    <rect x="948" y="1024" width="18" height="18" rx="5" fill="#3f1d0d" stroke="#fb923c"/><text x="980" y="1038" class="small">home automation / MQTT</text>
+    <rect x="1250" y="960" width="18" height="18" rx="5" fill="#082f49" stroke="#38bdf8"/><text x="1282" y="974" class="small">monitoring / exporters</text>
+    <text x="1250" y="1007" class="small">Diagram intentionally simplified: only key paths are shown.</text>
+  </g>
+
+</svg>
