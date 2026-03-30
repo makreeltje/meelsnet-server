@@ -2,56 +2,52 @@
   <title id="title">Meelsnet Server · Homelab Architecture (dark)</title>
   <desc id="desc">Actuele Proxmox/LXC-indeling met compacte stacksamenvatting per container.</desc>
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#0b1220"/>
-      <stop offset="100%" stop-color="#111827"/>
-    </linearGradient>
     <linearGradient id="panel" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#182236"/>
-      <stop offset="100%" stop-color="#121a2b"/>
+      <stop offset="0%" stop-color="#161b22"/>
+      <stop offset="100%" stop-color="#11161d"/>
     </linearGradient>
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#020617" flood-opacity="0.28"/>
+      <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#000000" flood-opacity="0.18"/>
     </filter>
     <style>
-      .title1 { font: 700 40px Inter,Segoe UI,Arial,sans-serif; fill: #f8fafc; }
-      .subtitle1 { font: 400 18px Inter,Segoe UI,Arial,sans-serif; fill: #94a3b8; }
-      .title2 { font: 700 18px Inter,Segoe UI,Arial,sans-serif; fill: #f8fafc; }
-      .meta { font: 400 14px Inter,Segoe UI,Arial,sans-serif; fill: #a8b3c7; }
-      .specs { font: 600 12px Inter,Segoe UI,Arial,sans-serif; fill: #cbd5e1; }
-      .ip { font: 700 14px Inter,Segoe UI,Arial,sans-serif; fill: #dbe4ee; }
-      .service { font: 600 13px Inter,Segoe UI,Arial,sans-serif; fill: #e2e8f0; }
-      .serviceMuted { font: 600 13px Inter,Segoe UI,Arial,sans-serif; fill: #cbd5e1; }
-      .legendTitle { font: 700 16px Inter,Segoe UI,Arial,sans-serif; fill: #f8fafc; }
-      .legendText { font: 600 13px Inter,Segoe UI,Arial,sans-serif; fill: #e2e8f0; }
-      .hostTitle { font: 700 18px Inter,Segoe UI,Arial,sans-serif; fill: #f8fafc; }
-      .hostMeta { font: 600 13px Inter,Segoe UI,Arial,sans-serif; fill: #e2e8f0; }
-      .footer { font: 500 12px Inter,Segoe UI,Arial,sans-serif; fill: #a8b3c7; }
+      .title1 { font: 700 40px Inter,Segoe UI,Arial,sans-serif; fill: #f0f6fc; }
+      .subtitle1 { font: 400 18px Inter,Segoe UI,Arial,sans-serif; fill: #8b949e; }
+      .title2 { font: 700 18px Inter,Segoe UI,Arial,sans-serif; fill: #f0f6fc; }
+      .meta { font: 400 14px Inter,Segoe UI,Arial,sans-serif; fill: #8b949e; }
+      .specs { font: 600 12px Inter,Segoe UI,Arial,sans-serif; fill: #c9d1d9; }
+      .ip { font: 700 14px Inter,Segoe UI,Arial,sans-serif; fill: #f0f6fc; }
+      .service { font: 600 13px Inter,Segoe UI,Arial,sans-serif; fill: #e6edf3; }
+      .serviceMuted { font: 600 13px Inter,Segoe UI,Arial,sans-serif; fill: #c9d1d9; }
+      .legendTitle { font: 700 16px Inter,Segoe UI,Arial,sans-serif; fill: #f0f6fc; }
+      .legendText { font: 600 13px Inter,Segoe UI,Arial,sans-serif; fill: #e6edf3; }
+      .hostTitle { font: 700 18px Inter,Segoe UI,Arial,sans-serif; fill: #f0f6fc; }
+      .hostMeta { font: 600 13px Inter,Segoe UI,Arial,sans-serif; fill: #e6edf3; }
+      .footer { font: 500 12px Inter,Segoe UI,Arial,sans-serif; fill: #8b949e; }
     </style>
   </defs>
-  <rect width="1760" height="1170" fill="url(#bg)"/>
+  <rect width="1760" height="1170" fill="#0d1117"/>
   <text x="56" y="64" class="title1">Meelsnet Server · Homelab Architecture</text>
   <text x="56" y="96" class="subtitle1">Actuele Proxmox/LXC-indeling met compacte stacksamenvatting per container.</text>
-  <rect x="36" y="126" width="1688" height="1008" rx="32" fill="rgba(15,23,42,0.58)" stroke="#334155" stroke-width="2.2" filter="url(#shadow)"/>
+  <rect x="36" y="126" width="1688" height="1008" rx="32" fill="rgba(22,27,34,0.92)" stroke="#30363d" stroke-width="2.2" filter="url(#shadow)"/>
 
-<rect x="56" y="144" width="250" height="42" rx="14" fill="#111827" stroke="#94a3b8" stroke-width="1.8"/>
+<rect x="56" y="144" width="250" height="42" rx="14" fill="#0d1117" stroke="#94a3b8" stroke-width="1.8"/>
 <text x="72" y="170" class="meta">Proxmox host · srv-mn</text>
-<rect x="324" y="144" width="280" height="42" rx="14" fill="#111827" stroke="#60a5fa" stroke-width="1.8"/>
+<rect x="324" y="144" width="280" height="42" rx="14" fill="#0d1117" stroke="#60a5fa" stroke-width="1.8"/>
 <text x="340" y="170" class="meta">vmbr0 · LAN · 192.168.2.0/24</text>
-<rect x="622" y="144" width="300" height="42" rx="14" fill="#111827" stroke="#c084fc" stroke-width="1.8"/>
+<rect x="622" y="144" width="300" height="42" rx="14" fill="#0d1117" stroke="#c084fc" stroke-width="1.8"/>
 <text x="638" y="170" class="meta">vmbr1 · Service net · 10.10.0.0/24</text>
-<rect x="88" y="206" width="1084" height="126" rx="24" fill="#0f172a" stroke="#334155" stroke-width="1.8"/>
+<rect x="88" y="206" width="1084" height="126" rx="24" fill="#161b22" stroke="#30363d" stroke-width="1.8"/>
 <text x="110" y="238" class="hostTitle">Host summary · srv-mn</text>
 <text x="110" y="264" class="meta">Proxmox VE</text>
-<rect x="110" y="282" width="190" height="32" rx="11" fill="#172033" stroke="#475569"/>
+<rect x="110" y="282" width="190" height="32" rx="11" fill="#0d1117" stroke="#30363d"/>
 <text x="124" y="303" class="hostMeta">6 cores</text>
-<rect x="334" y="282" width="190" height="32" rx="11" fill="#172033" stroke="#475569"/>
+<rect x="334" y="282" width="190" height="32" rx="11" fill="#0d1117" stroke="#30363d"/>
 <text x="348" y="303" class="hostMeta">32 GiB RAM</text>
-<rect x="558" y="282" width="190" height="32" rx="11" fill="#172033" stroke="#475569"/>
+<rect x="558" y="282" width="190" height="32" rx="11" fill="#0d1117" stroke="#30363d"/>
 <text x="572" y="303" class="hostMeta">2 TB NVMe</text>
-<rect x="782" y="282" width="368" height="32" rx="11" fill="#172033" stroke="#475569"/>
+<rect x="782" y="282" width="368" height="32" rx="11" fill="#0d1117" stroke="#30363d"/>
 <text x="796" y="303" class="hostMeta">5× 20 TB HDD · RAID5 · 80 TB</text>
-<rect x="1206" y="206" width="462" height="126" rx="24" fill="#0f172a" stroke="#334155" stroke-width="1.8"/>
+<rect x="1206" y="206" width="462" height="126" rx="24" fill="#161b22" stroke="#30363d" stroke-width="1.8"/>
 <text x="1224" y="238" class="legendTitle">Legend</text>
 <rect x="1224" y="256" width="14" height="14" rx="4" fill="#0f3d2e" stroke="#34d399"/>
 <text x="1248" y="268" class="legendText">Core infrastructure</text>
