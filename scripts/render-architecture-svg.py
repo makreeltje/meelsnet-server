@@ -17,13 +17,13 @@ ACCENTS = {
 }
 
 CARD_W = 504
-CARD_H = 250
+CARD_H = 272
 LEFT = 88
-TOP = 320
+TOP = 388
 GAP_X = 34
 GAP_Y = 34
 CANVAS_W = 1760
-CANVAS_H = 1236
+CANVAS_H = 1320
 HEADER_H = 58
 PANEL_Y = 126
 
@@ -44,7 +44,7 @@ def split_services(services):
     return hero, supporting
 
 
-def render_header(title, subtitle, networks, legend):
+def render_header(title, subtitle, networks, legend, host_specs):
     parts = [f'''<svg xmlns="http://www.w3.org/2000/svg" width="{CANVAS_W}" height="{CANVAS_H}" viewBox="0 0 {CANVAS_W} {CANVAS_H}" role="img" aria-labelledby="title desc">
   <title id="title">{esc(title)}</title>
   <desc id="desc">{esc(subtitle)}</desc>
@@ -66,6 +66,7 @@ def render_header(title, subtitle, networks, legend):
       .title2 {{ font: 700 18px Inter,Segoe UI,Arial,sans-serif; fill: #f8fafc; }}
       .meta {{ font: 400 14px Inter,Segoe UI,Arial,sans-serif; fill: #a8b3c7; }}
       .ip {{ font: 700 14px Inter,Segoe UI,Arial,sans-serif; fill: #dbe4ee; }}
+      .specs {{ font: 600 12px Inter,Segoe UI,Arial,sans-serif; fill: #cbd5e1; }}
       .hero {{ font: 600 13px Inter,Segoe UI,Arial,sans-serif; fill: #f8fafc; }}
       .svc {{ font: 600 13px Inter,Segoe UI,Arial,sans-serif; fill: #dbe4ee; }}
       .bullet {{ font: 700 13px Inter,Segoe UI,Arial,sans-serif; fill: #cbd5e1; }}
@@ -73,12 +74,14 @@ def render_header(title, subtitle, networks, legend):
       .legendTitle {{ font: 700 16px Inter,Segoe UI,Arial,sans-serif; fill: #f8fafc; }}
       .legendText {{ font: 600 13px Inter,Segoe UI,Arial,sans-serif; fill: #e2e8f0; }}
       .footer {{ font: 500 12px Inter,Segoe UI,Arial,sans-serif; fill: #94a3b8; }}
+      .hostTitle {{ font: 700 18px Inter,Segoe UI,Arial,sans-serif; fill: #f8fafc; }}
+      .hostMeta {{ font: 600 13px Inter,Segoe UI,Arial,sans-serif; fill: #dbe4ee; }}
     </style>
   </defs>
   <rect width="{CANVAS_W}" height="{CANVAS_H}" fill="url(#bg)"/>
   <text x="56" y="64" class="title1">{esc(title)}</text>
   <text x="56" y="96" class="subtitle1">{esc(subtitle)}</text>
-  <rect x="36" y="{PANEL_Y}" width="1688" height="1074" rx="32" fill="rgba(15,23,42,0.58)" stroke="#334155" stroke-width="2.2" filter="url(#shadow)"/>
+  <rect x="36" y="{PANEL_Y}" width="1688" height="1158" rx="32" fill="rgba(15,23,42,0.58)" stroke="#334155" stroke-width="2.2" filter="url(#shadow)"/>
 ''']
 
     x = 56
@@ -102,6 +105,16 @@ def render_header(title, subtitle, networks, legend):
         py = ly + 50 + row * 28
         parts.append(f'<rect x="{px}" y="{py}" width="14" height="14" rx="4" fill="{accent["fill"]}" stroke="{accent["stroke"]}"/>')
         parts.append(f'<text x="{px + 24}" y="{py + 12}" class="legendText">{esc(item["label"])}</text>')
+
+    hx, hy, hw, hh = 56, 206, 1636, 146
+    parts.append(f'<rect x="{hx}" y="{hy}" width="{hw}" height="{hh}" rx="24" fill="#0f172a" stroke="#334155" stroke-width="1.8"/>')
+    parts.append(f'<text x="{hx + 22}" y="{hy + 32}" class="hostTitle">Host summary · {esc(host_specs["host"])}</text>')
+    parts.append(f'<text x="{hx + 22}" y="{hy + 58}" class="meta">{esc(host_specs["platform"])}</text>')
+    host_items = [host_specs['cpu'], host_specs['memory'], host_specs['boot'], host_specs['storage']]
+    item_x = [hx + 22, hx + 280, hx + 520, hx + 760]
+    for px, item in zip(item_x, host_items):
+        parts.append(f'<rect x="{px}" y="{hy + 84}" width="220" height="34" rx="12" fill="#172033" stroke="#475569"/>')
+        parts.append(f'<text x="{px + 14}" y="{hy + 106}" class="hostMeta">{esc(item)}</text>')
     return '\n'.join(parts)
 
 
@@ -114,12 +127,13 @@ def render_card(group, x, y):
         f'<path d="M {x+28} {y} H {x+CARD_W-28} Q {x+CARD_W} {y} {x+CARD_W} {y+28} V {y+HEADER_H} H {x} V {y+28} Q {x} {y} {x+28} {y} Z" fill="{accent["fill"]}"/>',
         f'<text x="{x + 26}" y="{y + 34}" class="title2">{esc(group["title"])}</text>',
         f'<text x="{x + CARD_W - 26}" y="{y + 34}" class="ip" text-anchor="end">{esc(group["ip"])}</text>',
-        f'<text x="{x + 26}" y="{y + 86}" class="meta">{esc(group["subtitle"])}</text>',
-        f'<text x="{x + 26}" y="{y + 114}" class="section">Primary services</text>'
+        f'<text x="{x + 26}" y="{y + 84}" class="specs">{esc(group.get("specs", ""))}</text>',
+        f'<text x="{x + 26}" y="{y + 106}" class="meta">{esc(group["subtitle"])}</text>',
+        f'<text x="{x + 26}" y="{y + 132}" class="section">Primary services</text>'
     ]
 
     hx = x + 26
-    hy = y + 126
+    hy = y + 144
     hero_widths = [142, 142, 142]
     for idx, label in enumerate(hero):
         px = hx + idx * 154
@@ -127,13 +141,13 @@ def render_card(group, x, y):
         parts.append(f'<rect x="{px}" y="{hy}" width="{hero_widths[idx]}" height="34" rx="11" fill="{accent["soft"]}" stroke="{accent["stroke"]}"/>')
         parts.append(f'<text x="{px + 14}" y="{hy + 22}" class="hero">{esc(txt)}</text>')
 
-    parts.append(f'<text x="{x + 26}" y="{y + 184}" class="section">Supporting services</text>')
-    parts.append(f'<line x1="{x + 246}" y1="{y + 194}" x2="{x + 246}" y2="{y + CARD_H - 24}" stroke="#334155" stroke-width="1" opacity="0.9"/>')
+    parts.append(f'<text x="{x + 26}" y="{y + 204}" class="section">Supporting services</text>')
+    parts.append(f'<line x1="{x + 246}" y1="{y + 214}" x2="{x + 246}" y2="{y + CARD_H - 30}" stroke="#334155" stroke-width="1" opacity="0.9"/>')
 
     left = supporting[::2][:2]
     right = supporting[1::2][:2]
-    start_y = y + 210
-    step = 22
+    start_y = y + 230
+    step = 20
     for idx, label in enumerate(left):
         yy = start_y + idx * step
         parts.append(f'<text x="{x + 28}" y="{yy}" class="bullet">•</text>')
@@ -145,7 +159,8 @@ def render_card(group, x, y):
 
     footer = group.get('footer')
     if footer:
-        parts.append(f'<text x="{x + 26}" y="{y + CARD_H - 16}" class="footer">{esc(footer)}</text>')
+        parts.append(f'<rect x="{x + 26}" y="{y + CARD_H - 34}" width="110" height="20" rx="10" fill="{accent["muted"]}" stroke="{accent["stroke"]}" opacity="0.95"/>')
+        parts.append(f'<text x="{x + 40}" y="{y + CARD_H - 20}" class="footer">{esc(footer)}</text>')
 
     parts.append('</g>')
     return '\n'.join(parts)
@@ -153,7 +168,7 @@ def render_card(group, x, y):
 
 def main():
     data = json.loads(DATA.read_text())
-    parts = [render_header(data['title'], data['subtitle'], data['networks'], data['legend'])]
+    parts = [render_header(data['title'], data['subtitle'], data['networks'], data['legend'], data['hostSpecs'])]
     for idx, group in enumerate(data['groups']):
         row = idx // 3
         col = idx % 3
