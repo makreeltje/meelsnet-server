@@ -63,7 +63,7 @@ graph TD
       PC[Printer Calculator]
     end
 
-    GIT[GitOps Controller\n(Webhook + Deploy)]
+    GIT["GitOps Controller<br/>(Webhook + Deploy)"]
   end
 
   %% Sturing / Routing
