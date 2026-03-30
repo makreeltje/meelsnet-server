@@ -4,33 +4,83 @@ Docker Compose homelab draaiend op Proxmox met 7 LXC containers, 40+ services, e
 
 ## Architectuur
 
-```
-┌──────────────────────────────────────────────────────┐
-│                     Proxmox VE                       │
-│                                                      │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐            │
-│  │ LXC 101  │  │ LXC 102  │  │ LXC 103  │            │
-│  │  infra   │  │  media   │  │  home    │            │
-│  │ Traefik  │  │ Plex     │  │ HA       │            │
-│  │ Authentik│  │ Sonarr   │  │ Zigbee   │            │
-│  │ Postgres │  │ Radarr   │  │ Frigate  │            │
-│  │ Redis    │  │ ...      │  │ ...      │            │
-│  └──────────┘  └──────────┘  └──────────┘            │
-│                                                      │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐            │
-│  │ LXC 104  │  │ LXC 105  │  │ LXC 106  │            │
-│  │producti- │  │ network  │  │monitoring│            │
-│  │  vity    │  │ Pi-hole  │  │ Grafana  │            │
-│  │ Immich   │  │ UniFi    │  │Prometheus│            │
-│  │ Paperless│  │          │  │ Loki     │            │
-│  └──────────┘  └──────────┘  └──────────┘            │
-│                                                      │
-│  ┌──────────┐                                        │
-│  │ LXC 107  │     ┌─────────────────────┐            │
-│  │utilities │     │  GitOps Controller  │            │
-│  │ Spoolman │     │  Webhook + Deploy   │            │
-│  └──────────┘     └─────────────────────┘            │
-└──────────────────────────────────────────────────────┘
+```mermaid
+graph TD
+  %% Infra op Proxmox
+  subgraph Proxmox[Proxmox VE]
+    direction LR
+
+    subgraph LXC101[LXC 101 · Infra]
+      T[Traefik]
+      A[Authentik]
+      PG[Postgres]
+      R[Redis]
+      M[MongoDB]
+      D[Adminer]
+    end
+
+    subgraph LXC102[LXC 102 · Media]
+      Plex[Plex]
+      J[Jellyfin]
+      Arr[Sonarr · Radarr · Prowlarr · Bazarr · Seerr]
+      DL[SABnzbd · qBittorrent]
+      Extras[Tautulli · Notifiarr · Profilarr · Tracearr · Agregarr · Watchstate]
+    end
+
+    subgraph LXC103[LXC 103 · Home Automation]
+      HA[Home Assistant]
+      Z2M[Zigbee2MQTT]
+      MQ[Mosquitto]
+      NR[Node-RED]
+      MA[Music Assistant]
+      HYP[Hyperion]
+      FR[Frigate]
+    end
+
+    subgraph LXC104[LXC 104 · Productivity]
+      IM[Immich]
+      PL[Paperless-NGX]
+      NC[Nextcloud]
+      BR[Backrest]
+    end
+
+    subgraph LXC105[LXC 105 · Network]
+      PH[Pi-hole]
+      UF[UniFi Controller]
+    end
+
+    subgraph LXC106[LXC 106 · Monitoring]
+      PR[Prometheus]
+      GR[Grafana]
+      LK[Loki]
+      PT[Promtail]
+      EX[Exporters]
+    end
+
+    subgraph LXC107[LXC 107 · Utilities]
+      OT[Omni-tools]
+      SP[Spoolman]
+      PC[Printer Calculator]
+    end
+
+    GIT[GitOps Controller\n(Webhook + Deploy)]
+  end
+
+  %% Sturing / Routing
+  GIT --> LXC101
+  GIT --> LXC102
+  GIT --> LXC103
+  GIT --> LXC104
+  GIT --> LXC105
+  GIT --> LXC106
+  GIT --> LXC107
+
+  T -- reverse proxy --> LXC102
+  T -- reverse proxy --> LXC103
+  T -- reverse proxy --> LXC104
+  T -- reverse proxy --> LXC105
+  T -- reverse proxy --> LXC106
+  T -- reverse proxy --> LXC107
 ```
 
 Elke LXC container draait een eigen Docker daemon met zijn eigen subset van services. Alle services worden beheerd via Docker Compose.
