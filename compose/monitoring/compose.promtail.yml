@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: promtail
-    image: grafana/promtail:3.5.3
+    image: grafana/promtail:3.6.8
     profiles: [ "monitoring", "all" ]
     command: -config.file=/mnt/config/promtail-config.yaml
     links:
