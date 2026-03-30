@@ -31,7 +31,7 @@ GRID_W = CARD_W * 3 + GAP_X * 2
 
 THEMES = {
     'dark': {
-        'bg': '#0d1117',
+        'bg': '#202830',
         'panel1': '#161b22',
         'panel2': '#11161d',
         'outer_fill': 'rgba(22,27,34,0.92)',
@@ -50,7 +50,7 @@ THEMES = {
         'shadow': '0.18'
     },
     'light': {
-        'bg': '#ffffff',
+        'bg': '#f7f8fa',
         'panel1': '#ffffff',
         'panel2': '#f6f8fa',
         'outer_fill': 'rgba(255,255,255,0.98)',

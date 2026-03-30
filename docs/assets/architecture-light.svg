@@ -25,7 +25,7 @@
       .footer { font: 500 12px Inter,Segoe UI,Arial,sans-serif; fill: #57606a; }
     </style>
   </defs>
-  <rect width="1760" height="1170" fill="#ffffff"/>
+  <rect width="1760" height="1170" fill="#f7f8fa"/>
   <text x="56" y="64" class="title1">Meelsnet Server · Homelab Architecture</text>
   <text x="56" y="96" class="subtitle1">Actuele Proxmox/LXC-indeling met compacte stacksamenvatting per container.</text>
   <rect x="36" y="126" width="1688" height="1008" rx="32" fill="rgba(255,255,255,0.98)" stroke="#d0d7de" stroke-width="2.2" filter="url(#shadow)"/>
