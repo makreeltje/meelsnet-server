@@ -31,16 +31,14 @@
       "services": [
         "Plex",
         "Jellyfin",
-        "Seerr",
-        "Sonarr",
-        "Radarr",
-        "Prowlarr",
+        "Notifiarr",
+        "Tracearr",
+        "Agregarr",
+        "Watchstate",
         "Bazarr",
         "Tautulli",
-        "SABnzbd",
-        "qBittorrent"
       ],
-      "footer": "+ Notifiarr · Profilarr · Tracearr · Agregarr · Watchstate"
+      "footer": "+ 7 more"
     },
     {
       "title": "LXC 103 · home",
