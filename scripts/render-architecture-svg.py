@@ -17,66 +17,33 @@ ACCENTS = {
 }
 
 CARD_W = 504
-CARD_H = 228
+CARD_H = 232
 TOP = 320
 LEFT = 88
 GAP_X = 34
 GAP_Y = 34
 HEADER_H = 56
-COLS = 3
 INNER_PAD = 26
 CHIP_H = 36
-CHIP_GAP = 12
-EXTRA_H = 34
-NOTE_H = 18
+CHIP_GAP_X = 14
+CHIP_GAP_Y = 14
 CANVAS_W = 1760
-CANVAS_H = 1170
+CANVAS_H = 1176
+COL3_W = 138
+COL2_W = 196
+SINGLE_W = 198
+EXTRA_W = 146
+EXTRA_W_WIDE = 168
 
 
 def esc(text: str) -> str:
     return (text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;'))
 
 
-def chip_w(label: str, wide=False):
-    base = 16 + len(label) * 7.4
-    if wide:
-        return min(320, max(150, int(base)))
-    return min(190, max(132, int(base)))
-
-
-def layout_positions(layout, items, extras):
-    positions = []
-    x0 = INNER_PAD
-    y = 104
-
-    if layout == 'single':
-        positions.append(('primary', items[0], x0, y, 180))
-        return positions
-
-    if layout == '2col-wide':
-        x = x0
-        for i, label in enumerate(items):
-            w = chip_w(label, wide=True)
-            positions.append(('primary', label, x, y, w))
-            x += w + CHIP_GAP
-        return positions
-
-    x_positions = [x0, x0 + 150, x0 + 300]
-    for idx, label in enumerate(items):
-        row = idx // COLS
-        col = idx % COLS
-        positions.append(('primary', label, x_positions[col], y + row * (CHIP_H + 14), 118 if len(label) < 10 else 132))
-
-    extra_y = y + ((len(items) + COLS - 1) // COLS) * (CHIP_H + 14) + 6
-    x = x0
-    for label in extras:
-        w = chip_w(label)
-        if x + w > CARD_W - INNER_PAD:
-            extra_y += EXTRA_H
-            x = x0
-        positions.append(('extra', label, x, extra_y, w))
-        x += w + CHIP_GAP
-    return positions
+def fit_label(label: str, max_chars: int) -> str:
+    if len(label) <= max_chars:
+        return label
+    return label[: max_chars - 1].rstrip() + '…'
 
 
 def render_chip(x, y, w, label, fill, stroke, text_cls='chip', h=CHIP_H, rx=12):
@@ -86,19 +53,52 @@ def render_chip(x, y, w, label, fill, stroke, text_cls='chip', h=CHIP_H, rx=12):
     )
 
 
+def layout_positions(group):
+    layout = group['layout']
+    items = group['items']
+    extras = group.get('extras', [])
+    positions = []
+
+    y1 = 104
+    y2 = y1 + CHIP_H + CHIP_GAP_Y
+    y3 = y2 + CHIP_H + CHIP_GAP_Y
+
+    if layout == 'single':
+        positions.append(('primary', fit_label(items[0], 18), INNER_PAD, y1, SINGLE_W))
+        return positions
+
+    if layout == '2col-wide':
+        x_positions = [INNER_PAD, INNER_PAD + COL2_W + CHIP_GAP_X]
+        for idx, label in enumerate(items[:2]):
+            positions.append(('primary', fit_label(label, 24), x_positions[idx], y1, COL2_W))
+        return positions
+
+    x_positions = [INNER_PAD, INNER_PAD + COL3_W + CHIP_GAP_X, INNER_PAD + (COL3_W + CHIP_GAP_X) * 2]
+    for idx, label in enumerate(items[:6]):
+        row = 0 if idx < 3 else 1
+        col = idx % 3
+        y = y1 if row == 0 else y2
+        positions.append(('primary', fit_label(label, 16), x_positions[col], y, COL3_W))
+
+    extra_x = INNER_PAD
+    for idx, label in enumerate(extras[:4]):
+        positions.append(('extra', fit_label(label, 18), extra_x, y3, EXTRA_W_WIDE if len(label) > 14 else EXTRA_W))
+        extra_x += (EXTRA_W_WIDE if len(label) > 14 else EXTRA_W) + CHIP_GAP_X
+    return positions
+
+
 def card(group, x, y):
     accent = ACCENTS[group['accent']]
     parts = [
-        f'<g>',
+        '<g>',
         f'<rect x="{x}" y="{y}" width="{CARD_W}" height="{CARD_H}" rx="28" fill="url(#panel)" stroke="{accent["stroke"]}" stroke-width="2.4" filter="url(#shadow)"/>',
-        f'<rect x="{x}" y="{y}" width="{CARD_W}" height="{HEADER_H}" rx="28" fill="{accent["fill"]}"/>',
-        f'<rect x="{x}" y="{y + HEADER_H - 18}" width="{CARD_W}" height="18" fill="{accent["fill"]}"/>',
+        f'<path d="M {x+28} {y} H {x+CARD_W-28} Q {x+CARD_W} {y} {x+CARD_W} {y+28} V {y+HEADER_H} H {x} V {y+28} Q {x} {y} {x+28} {y} Z" fill="{accent["fill"]}"/>',
         f'<text x="{x + 26}" y="{y + 34}" class="title2">{esc(group["title"])}</text>',
         f'<text x="{x + CARD_W - 26}" y="{y + 34}" class="ip" text-anchor="end">{esc(group["ip"])}</text>',
         f'<text x="{x + 26}" y="{y + 86}" class="meta">{esc(group["subtitle"])}</text>'
     ]
 
-    for kind, label, dx, dy, w in layout_positions(group['layout'], group['items'], group['extras']):
+    for kind, label, dx, dy, w in layout_positions(group):
         if kind == 'primary':
             fill = accent['soft']
             stroke = accent['stroke']
@@ -107,8 +107,9 @@ def card(group, x, y):
             stroke = '#42536b'
         parts.append(render_chip(x + dx, y + dy, w, label, fill, stroke))
 
-    if group.get('note'):
-        parts.append(f'<text x="{x + 26}" y="{y + CARD_H - 20}" class="note">{esc(group["note"])}</text>')
+    note = group.get('note')
+    if note:
+        parts.append(f'<text x="{x + 26}" y="{y + CARD_H - 18}" class="note">{esc(note)}</text>')
 
     parts.append('</g>')
     return '\n'.join(parts)
@@ -145,7 +146,7 @@ def header(title, subtitle, networks, legend):
   <rect width="{CANVAS_W}" height="{CANVAS_H}" fill="url(#bg)"/>
   <text x="56" y="64" class="title1">{esc(title)}</text>
   <text x="56" y="96" class="subtitle1">{esc(subtitle)}</text>
-  <rect x="36" y="126" width="1688" height="1000" rx="32" fill="rgba(15,23,42,0.58)" stroke="#334155" stroke-width="2.2" filter="url(#shadow)"/>
+  <rect x="36" y="126" width="1688" height="1008" rx="32" fill="rgba(15,23,42,0.58)" stroke="#334155" stroke-width="2.2" filter="url(#shadow)"/>
 ''']
 
     x = 56
