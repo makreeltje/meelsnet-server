@@ -44,7 +44,7 @@ Onderstaande plaat is gebaseerd op de actuele Proxmox/LXC- en Docker-structuur d
 ### LXC 103 — Home Automation
 
 | Service | Beschrijving |
-|---|---|---|
+|---|---|
 | [Home Assistant](compose/home-automation/compose.home-assistant.yml) | Domotica platform |
 | [Zigbee2MQTT](compose/home-automation/compose.zigbee2mqtt.yml) | Zigbee bridge |
 | [Mosquitto](compose/home-automation/compose.mosquitto.yml) | MQTT broker |
