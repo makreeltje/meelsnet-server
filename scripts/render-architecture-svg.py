@@ -17,13 +17,13 @@ ACCENTS = {
 }
 
 CARD_W = 504
-CARD_H = 272
+CARD_H = 276
 LEFT = 88
 TOP = 430
 GAP_X = 34
 GAP_Y = 34
 CANVAS_W = 1760
-CANVAS_H = 1360
+CANVAS_H = 1368
 HEADER_H = 58
 PANEL_Y = 126
 
@@ -40,7 +40,7 @@ def truncate(text: str, max_chars: int) -> str:
 
 def split_services(services):
     hero = services[:3]
-    supporting = services[3:]
+    supporting = services[3:7]
     return hero, supporting
 
 
@@ -73,7 +73,7 @@ def render_header(title, subtitle, networks, legend, host_specs):
       .section {{ font: 700 12px Inter,Segoe UI,Arial,sans-serif; fill: #94a3b8; letter-spacing: 0.08em; text-transform: uppercase; }}
       .legendTitle {{ font: 700 16px Inter,Segoe UI,Arial,sans-serif; fill: #f8fafc; }}
       .legendText {{ font: 600 13px Inter,Segoe UI,Arial,sans-serif; fill: #e2e8f0; }}
-      .footer {{ font: 500 12px Inter,Segoe UI,Arial,sans-serif; fill: #94a3b8; }}
+      .footer {{ font: 600 12px Inter,Segoe UI,Arial,sans-serif; fill: #dbe4ee; }}
       .hostTitle {{ font: 700 18px Inter,Segoe UI,Arial,sans-serif; fill: #f8fafc; }}
       .hostMeta {{ font: 600 13px Inter,Segoe UI,Arial,sans-serif; fill: #dbe4ee; }}
     </style>
@@ -81,7 +81,7 @@ def render_header(title, subtitle, networks, legend, host_specs):
   <rect width="{CANVAS_W}" height="{CANVAS_H}" fill="url(#bg)"/>
   <text x="56" y="64" class="title1">{esc(title)}</text>
   <text x="56" y="96" class="subtitle1">{esc(subtitle)}</text>
-  <rect x="36" y="{PANEL_Y}" width="1688" height="1198" rx="32" fill="rgba(15,23,42,0.58)" stroke="#334155" stroke-width="2.2" filter="url(#shadow)"/>
+  <rect x="36" y="{PANEL_Y}" width="1688" height="1206" rx="32" fill="rgba(15,23,42,0.58)" stroke="#334155" stroke-width="2.2" filter="url(#shadow)"/>
 ''']
 
     x = 56
@@ -122,6 +122,10 @@ def render_header(title, subtitle, networks, legend, host_specs):
 def render_card(group, x, y):
     accent = ACCENTS[group['accent']]
     hero, supporting = split_services(group['services'])
+    left = supporting[::2][:2]
+    right = supporting[1::2][:2]
+    has_footer = bool(group.get('footer'))
+
     parts = [
         '<g>',
         f'<rect x="{x}" y="{y}" width="{CARD_W}" height="{CARD_H}" rx="28" fill="url(#panel)" stroke="{accent["stroke"]}" stroke-width="2.3" filter="url(#shadow)"/>',
@@ -143,10 +147,8 @@ def render_card(group, x, y):
         parts.append(f'<text x="{px + 14}" y="{hy + 22}" class="hero">{esc(txt)}</text>')
 
     parts.append(f'<text x="{x + 26}" y="{y + 204}" class="section">Supporting services</text>')
-    parts.append(f'<line x1="{x + 246}" y1="{y + 214}" x2="{x + 246}" y2="{y + CARD_H - 54}" stroke="#334155" stroke-width="1" opacity="0.9"/>')
+    parts.append(f'<line x1="{x + 246}" y1="{y + 214}" x2="{x + 246}" y2="{y + 252}" stroke="#334155" stroke-width="1" opacity="0.9"/>')
 
-    left = supporting[::2][:2]
-    right = supporting[1::2][:2]
     start_y = y + 230
     step = 20
     for idx, label in enumerate(left):
@@ -158,11 +160,11 @@ def render_card(group, x, y):
         parts.append(f'<text x="{x + 266}" y="{yy}" class="bullet">•</text>')
         parts.append(f'<text x="{x + 282}" y="{yy}" class="svc">{esc(truncate(label, 20))}</text>')
 
-    footer = group.get('footer')
-    if footer:
-        fy = y + CARD_H - 34
-        parts.append(f'<rect x="{x + 26}" y="{fy}" width="110" height="20" rx="10" fill="{accent["muted"]}" stroke="{accent["stroke"]}" opacity="0.95"/>')
-        parts.append(f'<text x="{x + 40}" y="{fy + 14}" class="footer">{esc(footer)}</text>')
+    footer_y = y + CARD_H - 34
+    parts.append(f'<line x1="{x + 26}" y1="{footer_y - 8}" x2="{x + CARD_W - 26}" y2="{footer_y - 8}" stroke="#2b3a4f" stroke-width="1" opacity="0.9"/>')
+    if has_footer:
+        parts.append(f'<rect x="{x + 26}" y="{footer_y}" width="110" height="20" rx="10" fill="{accent["muted"]}" stroke="{accent["stroke"]}" opacity="0.95"/>')
+        parts.append(f'<text x="{x + 40}" y="{footer_y + 14}" class="footer">{esc(group["footer"])}</text>')
 
     parts.append('</g>')
     return '\n'.join(parts)
