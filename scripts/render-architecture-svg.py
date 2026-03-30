@@ -31,44 +31,42 @@ GRID_W = CARD_W * 3 + GAP_X * 2
 
 THEMES = {
     'dark': {
-        'bg1': '#0b1220',
-        'bg2': '#111827',
-        'panel1': '#182236',
-        'panel2': '#121a2b',
-        'outer_fill': 'rgba(15,23,42,0.58)',
-        'outer_stroke': '#334155',
+        'bg': '#0d1117',
+        'panel1': '#161b22',
+        'panel2': '#11161d',
+        'outer_fill': 'rgba(22,27,34,0.92)',
+        'outer_stroke': '#30363d',
         'card_stroke': None,
-        'text_main': '#f8fafc',
-        'text_sub': '#94a3b8',
-        'text_meta': '#a8b3c7',
-        'text_specs': '#cbd5e1',
-        'text_service': '#e2e8f0',
-        'text_service_muted': '#cbd5e1',
-        'text_ip': '#dbe4ee',
-        'panel_fill': '#0f172a',
-        'subpanel_fill': '#172033',
-        'subpanel_stroke': '#475569',
-        'shadow': '0.28'
+        'text_main': '#f0f6fc',
+        'text_sub': '#8b949e',
+        'text_meta': '#8b949e',
+        'text_specs': '#c9d1d9',
+        'text_service': '#e6edf3',
+        'text_service_muted': '#c9d1d9',
+        'text_ip': '#f0f6fc',
+        'panel_fill': '#161b22',
+        'subpanel_fill': '#0d1117',
+        'subpanel_stroke': '#30363d',
+        'shadow': '0.18'
     },
     'light': {
-        'bg1': '#f8fafc',
-        'bg2': '#e2e8f0',
+        'bg': '#ffffff',
         'panel1': '#ffffff',
-        'panel2': '#f8fafc',
-        'outer_fill': 'rgba(255,255,255,0.92)',
-        'outer_stroke': '#cbd5e1',
-        'card_stroke': '#cbd5e1',
-        'text_main': '#0f172a',
-        'text_sub': '#475569',
-        'text_meta': '#64748b',
-        'text_specs': '#475569',
-        'text_service': '#0f172a',
-        'text_service_muted': '#334155',
-        'text_ip': '#1e293b',
+        'panel2': '#f6f8fa',
+        'outer_fill': 'rgba(255,255,255,0.98)',
+        'outer_stroke': '#d0d7de',
+        'card_stroke': '#d0d7de',
+        'text_main': '#24292f',
+        'text_sub': '#57606a',
+        'text_meta': '#57606a',
+        'text_specs': '#57606a',
+        'text_service': '#24292f',
+        'text_service_muted': '#57606a',
+        'text_ip': '#24292f',
         'panel_fill': '#ffffff',
-        'subpanel_fill': '#f8fafc',
-        'subpanel_stroke': '#cbd5e1',
-        'shadow': '0.12'
+        'subpanel_fill': '#f6f8fa',
+        'subpanel_stroke': '#d0d7de',
+        'shadow': '0.08'
     }
 }
 
@@ -89,16 +87,12 @@ def render_top(title, subtitle, networks, legend, host_specs, theme_name):
   <title id="title">{esc(title)} ({theme_name})</title>
   <desc id="desc">{esc(subtitle)}</desc>
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="{theme['bg1']}"/>
-      <stop offset="100%" stop-color="{theme['bg2']}"/>
-    </linearGradient>
     <linearGradient id="panel" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="{theme['panel1']}"/>
       <stop offset="100%" stop-color="{theme['panel2']}"/>
     </linearGradient>
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#020617" flood-opacity="{theme['shadow']}"/>
+      <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#000000" flood-opacity="{theme['shadow']}"/>
     </filter>
     <style>
       .title1 {{ font: 700 40px Inter,Segoe UI,Arial,sans-serif; fill: {theme['text_main']}; }}
@@ -116,7 +110,7 @@ def render_top(title, subtitle, networks, legend, host_specs, theme_name):
       .footer {{ font: 500 12px Inter,Segoe UI,Arial,sans-serif; fill: {theme['text_meta']}; }}
     </style>
   </defs>
-  <rect width="{CANVAS_W}" height="{CANVAS_H}" fill="url(#bg)"/>
+  <rect width="{CANVAS_W}" height="{CANVAS_H}" fill="{theme['bg']}"/>
   <text x="56" y="64" class="title1">{esc(title)}</text>
   <text x="56" y="96" class="subtitle1">{esc(subtitle)}</text>
   <rect x="36" y="{PANEL_Y}" width="1688" height="1008" rx="32" fill="{theme['outer_fill']}" stroke="{theme['outer_stroke']}" stroke-width="2.2" filter="url(#shadow)"/>
@@ -128,7 +122,7 @@ def render_top(title, subtitle, networks, legend, host_specs, theme_name):
     for i, net in enumerate(networks):
         accent = ACCENTS[net['accent']]
         stroke = accent['stroke'] if theme_name == 'dark' else accent['light_stroke']
-        fill = '#111827' if theme_name == 'dark' else '#ffffff'
+        fill = '#0d1117' if theme_name == 'dark' else '#ffffff'
         w = widths[i]
         parts.append(f'<rect x="{nx}" y="{ny}" width="{w}" height="42" rx="14" fill="{fill}" stroke="{stroke}" stroke-width="1.8"/>')
         parts.append(f'<text x="{nx + 16}" y="{ny + 26}" class="meta">{esc(net["label"])}</text>')

@@ -2,37 +2,33 @@
   <title id="title">Meelsnet Server · Homelab Architecture (light)</title>
   <desc id="desc">Actuele Proxmox/LXC-indeling met compacte stacksamenvatting per container.</desc>
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#f8fafc"/>
-      <stop offset="100%" stop-color="#e2e8f0"/>
-    </linearGradient>
     <linearGradient id="panel" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#ffffff"/>
-      <stop offset="100%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#f6f8fa"/>
     </linearGradient>
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#020617" flood-opacity="0.12"/>
+      <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#000000" flood-opacity="0.08"/>
     </filter>
     <style>
-      .title1 { font: 700 40px Inter,Segoe UI,Arial,sans-serif; fill: #0f172a; }
-      .subtitle1 { font: 400 18px Inter,Segoe UI,Arial,sans-serif; fill: #475569; }
-      .title2 { font: 700 18px Inter,Segoe UI,Arial,sans-serif; fill: #0f172a; }
-      .meta { font: 400 14px Inter,Segoe UI,Arial,sans-serif; fill: #64748b; }
-      .specs { font: 600 12px Inter,Segoe UI,Arial,sans-serif; fill: #475569; }
-      .ip { font: 700 14px Inter,Segoe UI,Arial,sans-serif; fill: #1e293b; }
-      .service { font: 600 13px Inter,Segoe UI,Arial,sans-serif; fill: #0f172a; }
-      .serviceMuted { font: 600 13px Inter,Segoe UI,Arial,sans-serif; fill: #334155; }
-      .legendTitle { font: 700 16px Inter,Segoe UI,Arial,sans-serif; fill: #0f172a; }
-      .legendText { font: 600 13px Inter,Segoe UI,Arial,sans-serif; fill: #0f172a; }
-      .hostTitle { font: 700 18px Inter,Segoe UI,Arial,sans-serif; fill: #0f172a; }
-      .hostMeta { font: 600 13px Inter,Segoe UI,Arial,sans-serif; fill: #0f172a; }
-      .footer { font: 500 12px Inter,Segoe UI,Arial,sans-serif; fill: #64748b; }
+      .title1 { font: 700 40px Inter,Segoe UI,Arial,sans-serif; fill: #24292f; }
+      .subtitle1 { font: 400 18px Inter,Segoe UI,Arial,sans-serif; fill: #57606a; }
+      .title2 { font: 700 18px Inter,Segoe UI,Arial,sans-serif; fill: #24292f; }
+      .meta { font: 400 14px Inter,Segoe UI,Arial,sans-serif; fill: #57606a; }
+      .specs { font: 600 12px Inter,Segoe UI,Arial,sans-serif; fill: #57606a; }
+      .ip { font: 700 14px Inter,Segoe UI,Arial,sans-serif; fill: #24292f; }
+      .service { font: 600 13px Inter,Segoe UI,Arial,sans-serif; fill: #24292f; }
+      .serviceMuted { font: 600 13px Inter,Segoe UI,Arial,sans-serif; fill: #57606a; }
+      .legendTitle { font: 700 16px Inter,Segoe UI,Arial,sans-serif; fill: #24292f; }
+      .legendText { font: 600 13px Inter,Segoe UI,Arial,sans-serif; fill: #24292f; }
+      .hostTitle { font: 700 18px Inter,Segoe UI,Arial,sans-serif; fill: #24292f; }
+      .hostMeta { font: 600 13px Inter,Segoe UI,Arial,sans-serif; fill: #24292f; }
+      .footer { font: 500 12px Inter,Segoe UI,Arial,sans-serif; fill: #57606a; }
     </style>
   </defs>
-  <rect width="1760" height="1170" fill="url(#bg)"/>
+  <rect width="1760" height="1170" fill="#ffffff"/>
   <text x="56" y="64" class="title1">Meelsnet Server · Homelab Architecture</text>
   <text x="56" y="96" class="subtitle1">Actuele Proxmox/LXC-indeling met compacte stacksamenvatting per container.</text>
-  <rect x="36" y="126" width="1688" height="1008" rx="32" fill="rgba(255,255,255,0.92)" stroke="#cbd5e1" stroke-width="2.2" filter="url(#shadow)"/>
+  <rect x="36" y="126" width="1688" height="1008" rx="32" fill="rgba(255,255,255,0.98)" stroke="#d0d7de" stroke-width="2.2" filter="url(#shadow)"/>
 
 <rect x="56" y="144" width="250" height="42" rx="14" fill="#ffffff" stroke="#64748b" stroke-width="1.8"/>
 <text x="72" y="170" class="meta">Proxmox host · srv-mn</text>
@@ -40,18 +36,18 @@
 <text x="340" y="170" class="meta">vmbr0 · LAN · 192.168.2.0/24</text>
 <rect x="622" y="144" width="300" height="42" rx="14" fill="#ffffff" stroke="#a855f7" stroke-width="1.8"/>
 <text x="638" y="170" class="meta">vmbr1 · Service net · 10.10.0.0/24</text>
-<rect x="88" y="206" width="1084" height="126" rx="24" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.8"/>
+<rect x="88" y="206" width="1084" height="126" rx="24" fill="#ffffff" stroke="#d0d7de" stroke-width="1.8"/>
 <text x="110" y="238" class="hostTitle">Host summary · srv-mn</text>
 <text x="110" y="264" class="meta">Proxmox VE</text>
-<rect x="110" y="282" width="190" height="32" rx="11" fill="#f8fafc" stroke="#cbd5e1"/>
+<rect x="110" y="282" width="190" height="32" rx="11" fill="#f6f8fa" stroke="#d0d7de"/>
 <text x="124" y="303" class="hostMeta">6 cores</text>
-<rect x="334" y="282" width="190" height="32" rx="11" fill="#f8fafc" stroke="#cbd5e1"/>
+<rect x="334" y="282" width="190" height="32" rx="11" fill="#f6f8fa" stroke="#d0d7de"/>
 <text x="348" y="303" class="hostMeta">32 GiB RAM</text>
-<rect x="558" y="282" width="190" height="32" rx="11" fill="#f8fafc" stroke="#cbd5e1"/>
+<rect x="558" y="282" width="190" height="32" rx="11" fill="#f6f8fa" stroke="#d0d7de"/>
 <text x="572" y="303" class="hostMeta">2 TB NVMe</text>
-<rect x="782" y="282" width="368" height="32" rx="11" fill="#f8fafc" stroke="#cbd5e1"/>
+<rect x="782" y="282" width="368" height="32" rx="11" fill="#f6f8fa" stroke="#d0d7de"/>
 <text x="796" y="303" class="hostMeta">5× 20 TB HDD · RAID5 · 80 TB</text>
-<rect x="1206" y="206" width="462" height="126" rx="24" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.8"/>
+<rect x="1206" y="206" width="462" height="126" rx="24" fill="#ffffff" stroke="#d0d7de" stroke-width="1.8"/>
 <text x="1224" y="238" class="legendTitle">Legend</text>
 <rect x="1224" y="256" width="14" height="14" rx="4" fill="#dcfce7" stroke="#22c55e"/>
 <text x="1248" y="268" class="legendText">Core infrastructure</text>
@@ -65,7 +61,7 @@
 <text x="1248" y="316" class="legendText">Monitoring / observability</text>
 <rect x="1434" y="304" width="14" height="14" rx="4" fill="#e2e8f0" stroke="#64748b"/>
 <text x="1458" y="316" class="legendText">Simple / supporting stacks</text><g>
-<rect x="88" y="396" width="504" height="212" rx="22" fill="url(#panel)" stroke="#cbd5e1" stroke-width="2.0" filter="url(#shadow)"/>
+<rect x="88" y="396" width="504" height="212" rx="22" fill="url(#panel)" stroke="#d0d7de" stroke-width="2.0" filter="url(#shadow)"/>
 <path d="M 110 396 H 570 Q 592 396 592 418 V 450 H 88 V 418 Q 88 396 110 396 Z" fill="#dcfce7" stroke="#22c55e" stroke-width="0"/>
 <text x="110" y="429" class="title2">LXC 101 · infra</text>
 <text x="570" y="429" class="ip" text-anchor="end">10.10.0.10</text>
@@ -80,7 +76,7 @@
 <text x="362" y="558" class="serviceMuted">Adminer</text>
 <text x="362" y="576" class="serviceMuted">Mongo Express</text>
 </g><g>
-<rect x="626" y="396" width="504" height="212" rx="22" fill="url(#panel)" stroke="#cbd5e1" stroke-width="2.0" filter="url(#shadow)"/>
+<rect x="626" y="396" width="504" height="212" rx="22" fill="url(#panel)" stroke="#d0d7de" stroke-width="2.0" filter="url(#shadow)"/>
 <path d="M 648 396 H 1108 Q 1130 396 1130 418 V 450 H 626 V 418 Q 626 396 648 396 Z" fill="#f3e8ff" stroke="#a855f7" stroke-width="0"/>
 <text x="648" y="429" class="title2">LXC 102 · media</text>
 <text x="1108" y="429" class="ip" text-anchor="end">10.10.0.20</text>
@@ -96,7 +92,7 @@
 <text x="900" y="576" class="serviceMuted">Tautulli</text>
 <text x="648" y="590" class="footer">+ 7 more</text>
 </g><g>
-<rect x="1164" y="396" width="504" height="212" rx="22" fill="url(#panel)" stroke="#cbd5e1" stroke-width="2.0" filter="url(#shadow)"/>
+<rect x="1164" y="396" width="504" height="212" rx="22" fill="url(#panel)" stroke="#d0d7de" stroke-width="2.0" filter="url(#shadow)"/>
 <path d="M 1186 396 H 1646 Q 1668 396 1668 418 V 450 H 1164 V 418 Q 1164 396 1186 396 Z" fill="#ffedd5" stroke="#f97316" stroke-width="0"/>
 <text x="1186" y="429" class="title2">LXC 103 · home</text>
 <text x="1646" y="429" class="ip" text-anchor="end">10.10.0.30</text>
@@ -110,7 +106,7 @@
 <text x="1438" y="540" class="service">Hyperion</text>
 <text x="1438" y="558" class="serviceMuted">Frigate</text>
 </g><g>
-<rect x="88" y="638" width="504" height="212" rx="22" fill="url(#panel)" stroke="#cbd5e1" stroke-width="2.0" filter="url(#shadow)"/>
+<rect x="88" y="638" width="504" height="212" rx="22" fill="url(#panel)" stroke="#d0d7de" stroke-width="2.0" filter="url(#shadow)"/>
 <path d="M 110 638 H 570 Q 592 638 592 660 V 692 H 88 V 660 Q 88 638 110 638 Z" fill="#dbeafe" stroke="#3b82f6" stroke-width="0"/>
 <text x="110" y="671" class="title2">LXC 104 · productivity</text>
 <text x="570" y="671" class="ip" text-anchor="end">10.10.0.40</text>
@@ -122,7 +118,7 @@
 <text x="110" y="818" class="serviceMuted">Backrest</text>
 <text x="362" y="764" class="service">Firefly III</text>
 </g><g>
-<rect x="626" y="638" width="504" height="212" rx="22" fill="url(#panel)" stroke="#cbd5e1" stroke-width="2.0" filter="url(#shadow)"/>
+<rect x="626" y="638" width="504" height="212" rx="22" fill="url(#panel)" stroke="#d0d7de" stroke-width="2.0" filter="url(#shadow)"/>
 <path d="M 648 638 H 1108 Q 1130 638 1130 660 V 692 H 626 V 660 Q 626 638 648 638 Z" fill="#dbeafe" stroke="#3b82f6" stroke-width="0"/>
 <text x="648" y="671" class="title2">LXC 105 · network</text>
 <text x="1108" y="671" class="ip" text-anchor="end">10.10.0.50</text>
@@ -131,7 +127,7 @@
 <text x="648" y="764" class="service">Pi-hole</text>
 <text x="648" y="782" class="service">UniFi Network Applicati…</text>
 </g><g>
-<rect x="1164" y="638" width="504" height="212" rx="22" fill="url(#panel)" stroke="#cbd5e1" stroke-width="2.0" filter="url(#shadow)"/>
+<rect x="1164" y="638" width="504" height="212" rx="22" fill="url(#panel)" stroke="#d0d7de" stroke-width="2.0" filter="url(#shadow)"/>
 <path d="M 1186 638 H 1646 Q 1668 638 1668 660 V 692 H 1164 V 660 Q 1164 638 1186 638 Z" fill="#cffafe" stroke="#06b6d4" stroke-width="0"/>
 <text x="1186" y="671" class="title2">LXC 106 · monitoring</text>
 <text x="1646" y="671" class="ip" text-anchor="end">10.10.0.60</text>
@@ -145,7 +141,7 @@
 <text x="1438" y="782" class="service">Smartctl Exporter</text>
 <text x="1438" y="800" class="serviceMuted">Mosquitto Exporter</text>
 </g><g>
-<rect x="88" y="880" width="504" height="212" rx="22" fill="url(#panel)" stroke="#cbd5e1" stroke-width="2.0" filter="url(#shadow)"/>
+<rect x="88" y="880" width="504" height="212" rx="22" fill="url(#panel)" stroke="#d0d7de" stroke-width="2.0" filter="url(#shadow)"/>
 <path d="M 110 880 H 570 Q 592 880 592 902 V 934 H 88 V 902 Q 88 880 110 880 Z" fill="#f4f4f5" stroke="#71717a" stroke-width="0"/>
 <text x="110" y="913" class="title2">LXC 107 · utilities</text>
 <text x="570" y="913" class="ip" text-anchor="end">10.10.0.70</text>
@@ -156,7 +152,7 @@
 <text x="110" y="1042" class="serviceMuted">Spoolman</text>
 <text x="110" y="1060" class="serviceMuted">Printer Calculator</text>
 </g><g>
-<rect x="626" y="880" width="504" height="212" rx="22" fill="url(#panel)" stroke="#cbd5e1" stroke-width="2.0" filter="url(#shadow)"/>
+<rect x="626" y="880" width="504" height="212" rx="22" fill="url(#panel)" stroke="#d0d7de" stroke-width="2.0" filter="url(#shadow)"/>
 <path d="M 648 880 H 1108 Q 1130 880 1130 902 V 934 H 626 V 902 Q 626 880 648 880 Z" fill="#e2e8f0" stroke="#64748b" stroke-width="0"/>
 <text x="648" y="913" class="title2">LXC 108 · openclaw</text>
 <text x="1108" y="913" class="ip" text-anchor="end">10.10.0.80</text>
@@ -164,7 +160,7 @@
 <text x="648" y="978" class="meta">Simple representation only</text>
 <text x="648" y="1006" class="service">OpenClaw</text>
 </g><g>
-<rect x="1164" y="880" width="504" height="212" rx="22" fill="url(#panel)" stroke="#cbd5e1" stroke-width="2.0" filter="url(#shadow)"/>
+<rect x="1164" y="880" width="504" height="212" rx="22" fill="url(#panel)" stroke="#d0d7de" stroke-width="2.0" filter="url(#shadow)"/>
 <path d="M 1186 880 H 1646 Q 1668 880 1668 902 V 934 H 1164 V 902 Q 1164 880 1186 880 Z" fill="#e2e8f0" stroke="#64748b" stroke-width="0"/>
 <text x="1186" y="913" class="title2">LXC 109 · money</text>
 <text x="1646" y="913" class="ip" text-anchor="end">10.10.0.90</text>
