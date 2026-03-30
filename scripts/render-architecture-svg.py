@@ -19,13 +19,13 @@ ACCENTS = {
 
 CARD_W = 504
 CARD_H = 212
-LEFT = 88
-TOP = 396
+LEFT = 52
+TOP = 360
 GAP_X = 34
 GAP_Y = 30
-CANVAS_W = 1760
-CANVAS_H = 1170
-PANEL_Y = 126
+CANVAS_W = 1688
+CANVAS_H = 1098
+PANEL_Y = 92
 HEADER_H = 54
 GRID_W = CARD_W * 3 + GAP_X * 2
 
@@ -111,13 +111,13 @@ def render_top(title, subtitle, networks, legend, host_specs, theme_name):
     </style>
   </defs>
   <rect width="{CANVAS_W}" height="{CANVAS_H}" fill="{theme['bg']}"/>
-  <text x="56" y="64" class="title1">{esc(title)}</text>
-  <text x="56" y="96" class="subtitle1">{esc(subtitle)}</text>
-  <rect x="36" y="{PANEL_Y}" width="1688" height="1008" rx="32" fill="{theme['outer_fill']}" stroke="{theme['outer_stroke']}" stroke-width="2.2" filter="url(#shadow)"/>
+  <text x="28" y="48" class="title1">{esc(title)}</text>
+  <text x="28" y="76" class="subtitle1">{esc(subtitle)}</text>
+  <rect x="16" y="{PANEL_Y}" width="1656" height="990" rx="28" fill="{theme['outer_fill']}" stroke="{theme['outer_stroke']}" stroke-width="2.0" filter="url(#shadow)"/>
 ''']
 
-    nx = 56
-    ny = 144
+    nx = 28
+    ny = 108
     widths = [250, 280, 300]
     for i, net in enumerate(networks):
         accent = ACCENTS[net['accent']]
