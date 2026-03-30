@@ -50,7 +50,7 @@ THEMES = {
         'shadow': '0.18'
     },
     'light': {
-        'bg': '#f7f8fa',
+        'bg': '#ffffff',
         'panel1': '#ffffff',
         'panel2': '#f6f8fa',
         'outer_fill': 'rgba(255,255,255,0.98)',
