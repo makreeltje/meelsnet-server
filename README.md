@@ -8,8 +8,6 @@ Onderstaande plaat is gebaseerd op de actuele Proxmox/LXC- en Docker-structuur d
 
 ![Meelsnet homelab architecture](docs/assets/architecture.svg)
 
-Hoofdlijn: Proxmox host met losse LXC-stacks per domein. `infra` levert ingress/auth/core-datastores, de overige containers draaien functionele stacks en `monitoring` leest mee over de rest heen. Voor `10.10.0.80` en `10.10.0.90` is bewust alleen een simpele representatie opgenomen: OpenClaw respectievelijk Money.
-
 ### Diagram onderhouden
 
 De SVG is gegenereerd vanuit `docs/assets/architecture.json` via:
