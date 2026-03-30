@@ -19,13 +19,14 @@ ACCENTS = {
 CARD_W = 504
 CARD_H = 212
 LEFT = 88
-TOP = 430
+TOP = 396
 GAP_X = 34
 GAP_Y = 30
 CANVAS_W = 1760
-CANVAS_H = 1208
+CANVAS_H = 1170
 PANEL_Y = 126
 HEADER_H = 54
+GRID_W = CARD_W * 3 + GAP_X * 2
 
 
 def esc(text: str) -> str:
@@ -73,7 +74,7 @@ def render_top(title, subtitle, networks, legend, host_specs):
   <rect width="{CANVAS_W}" height="{CANVAS_H}" fill="url(#bg)"/>
   <text x="56" y="64" class="title1">{esc(title)}</text>
   <text x="56" y="96" class="subtitle1">{esc(subtitle)}</text>
-  <rect x="36" y="{PANEL_Y}" width="1688" height="1046" rx="32" fill="rgba(15,23,42,0.58)" stroke="#334155" stroke-width="2.2" filter="url(#shadow)"/>
+  <rect x="36" y="{PANEL_Y}" width="1688" height="1008" rx="32" fill="rgba(15,23,42,0.58)" stroke="#334155" stroke-width="2.2" filter="url(#shadow)"/>
 ''']
 
     nx = 56
@@ -86,25 +87,30 @@ def render_top(title, subtitle, networks, legend, host_specs):
         parts.append(f'<text x="{nx + 16}" y="{ny + 26}" class="meta">{esc(net["label"])}</text>')
         nx += w + 18
 
-    hx, hy, hw, hh = 56, 206, 1080, 126
-    parts.append(f'<rect x="{hx}" y="{hy}" width="{hw}" height="{hh}" rx="24" fill="#0f172a" stroke="#334155" stroke-width="1.8"/>')
+    total_w = GRID_W
+    host_w = 1084
+    legend_w = total_w - host_w - GAP_X
+    hx, hy, hh = LEFT, 206, 126
+    lx, ly, lh = LEFT + host_w + GAP_X, 206, 126
+
+    parts.append(f'<rect x="{hx}" y="{hy}" width="{host_w}" height="{hh}" rx="24" fill="#0f172a" stroke="#334155" stroke-width="1.8"/>')
     parts.append(f'<text x="{hx + 22}" y="{hy + 32}" class="hostTitle">Host summary · {esc(host_specs["host"])}</text>')
     parts.append(f'<text x="{hx + 22}" y="{hy + 58}" class="meta">{esc(host_specs["platform"])}</text>')
     host_items = [host_specs['cpu'], host_specs['memory'], host_specs['boot'], host_specs['storage']]
     item_x = [hx + 22, hx + 246, hx + 470, hx + 694]
-    widths = [190, 190, 190, 360]
-    for px, item, w in zip(item_x, host_items, widths):
+    item_w = [190, 190, 190, 368]
+    for px, item, w in zip(item_x, host_items, item_w):
         parts.append(f'<rect x="{px}" y="{hy + 76}" width="{w}" height="32" rx="11" fill="#172033" stroke="#475569"/>')
         parts.append(f'<text x="{px + 14}" y="{hy + 97}" class="hostMeta">{esc(item)}</text>')
 
-    lx, ly, lw, lh = 1164, 206, 528, 126
-    parts.append(f'<rect x="{lx}" y="{ly}" width="{lw}" height="{lh}" rx="24" fill="#0f172a" stroke="#334155" stroke-width="1.8"/>')
+    parts.append(f'<rect x="{lx}" y="{ly}" width="{legend_w}" height="{lh}" rx="24" fill="#0f172a" stroke="#334155" stroke-width="1.8"/>')
     parts.append(f'<text x="{lx + 18}" y="{ly + 32}" class="legendTitle">Legend</text>')
+    col_gap = 210
     for idx, item in enumerate(legend):
         accent = ACCENTS[item['accent']]
         col = idx % 2
         row = idx // 2
-        px = lx + 18 + col * 248
+        px = lx + 18 + col * col_gap
         py = ly + 50 + row * 24
         parts.append(f'<rect x="{px}" y="{py}" width="14" height="14" rx="4" fill="{accent["fill"]}" stroke="{accent["stroke"]}"/>')
         parts.append(f'<text x="{px + 24}" y="{py + 12}" class="legendText">{esc(item["label"])}</text>')
