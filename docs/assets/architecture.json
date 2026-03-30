@@ -5,9 +5,9 @@
     "host": "srv-mn",
     "platform": "Proxmox VE",
     "cpu": "6 cores",
-    "memory": "31 GiB RAM",
-    "boot": "1.8 TB NVMe",
-    "storage": "5× 18.2 TB HDD · md5 RAID5 · 72.8 TB"
+    "memory": "32 GiB RAM",
+    "boot": "2 TB NVMe",
+    "storage": "5× 20 TB HDD · RAID5 · 80 TB"
   },
   "networks": [
     { "label": "Proxmox host · srv-mn", "accent": "slate" },
