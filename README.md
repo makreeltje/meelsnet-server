@@ -4,7 +4,7 @@ Docker Compose homelab draaiend op Proxmox met meerdere LXC-containers, gescheid
 
 ## Architectuur
 
-Onderstaande plaat is gebaseerd op de actuele Proxmox/LXC- en Docker-structuur die nu draait. Geen live Mermaid, maar een statische SVG zodat GitHub het gewoon strak rendert.
+Onderstaande plaat is gebaseerd op de actuele Proxmox/LXC- en Docker-structuur die nu draait.
 
 ![Meelsnet homelab architecture](docs/assets/architecture.svg)
 
