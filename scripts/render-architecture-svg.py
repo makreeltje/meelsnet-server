@@ -7,36 +7,44 @@ DATA = ROOT / 'docs' / 'assets' / 'architecture.json'
 OUT = ROOT / 'docs' / 'assets' / 'architecture.svg'
 
 ACCENTS = {
-    'green': {'stroke': '#34d399', 'fill': '#0f3d2e'},
-    'purple': {'stroke': '#c084fc', 'fill': '#4c1384'},
-    'orange': {'stroke': '#fb923c', 'fill': '#6a3415'},
-    'blue': {'stroke': '#60a5fa', 'fill': '#22356f'},
-    'cyan': {'stroke': '#38bdf8', 'fill': '#155e86'},
-    'gray': {'stroke': '#a1a1aa', 'fill': '#52525b'},
-    'slate': {'stroke': '#94a3b8', 'fill': '#334155'},
+    'green': {'stroke': '#34d399', 'fill': '#0f3d2e', 'soft': '#123528', 'muted': '#153b30'},
+    'purple': {'stroke': '#c084fc', 'fill': '#4c1384', 'soft': '#34135f', 'muted': '#30184e'},
+    'orange': {'stroke': '#fb923c', 'fill': '#6a3415', 'soft': '#4c2410', 'muted': '#4b2a15'},
+    'blue': {'stroke': '#60a5fa', 'fill': '#22356f', 'soft': '#1b2c59', 'muted': '#1d3150'},
+    'cyan': {'stroke': '#38bdf8', 'fill': '#155e86', 'soft': '#124868', 'muted': '#173f56'},
+    'gray': {'stroke': '#a1a1aa', 'fill': '#52525b', 'soft': '#3f3f46', 'muted': '#3a3a40'},
+    'slate': {'stroke': '#94a3b8', 'fill': '#334155', 'soft': '#263445', 'muted': '#293647'},
 }
 
 CARD_W = 504
-CARD_H = 244
+CARD_H = 250
 LEFT = 88
 TOP = 320
 GAP_X = 34
 GAP_Y = 34
 CANVAS_W = 1760
-CANVAS_H = 1210
+CANVAS_H = 1236
+HEADER_H = 58
+PANEL_Y = 126
 
 
 def esc(text: str) -> str:
     return text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
 
 
-def split_cols(items):
-    left = items[::2]
-    right = items[1::2]
-    return left, right
+def truncate(text: str, max_chars: int) -> str:
+    if len(text) <= max_chars:
+        return text
+    return text[: max_chars - 1].rstrip() + '…'
 
 
-def header(title, subtitle, networks, legend):
+def split_services(services):
+    hero = services[:3]
+    supporting = services[3:]
+    return hero, supporting
+
+
+def render_header(title, subtitle, networks, legend):
     parts = [f'''<svg xmlns="http://www.w3.org/2000/svg" width="{CANVAS_W}" height="{CANVAS_H}" viewBox="0 0 {CANVAS_W} {CANVAS_H}" role="img" aria-labelledby="title desc">
   <title id="title">{esc(title)}</title>
   <desc id="desc">{esc(subtitle)}</desc>
@@ -58,8 +66,10 @@ def header(title, subtitle, networks, legend):
       .title2 {{ font: 700 18px Inter,Segoe UI,Arial,sans-serif; fill: #f8fafc; }}
       .meta {{ font: 400 14px Inter,Segoe UI,Arial,sans-serif; fill: #a8b3c7; }}
       .ip {{ font: 700 14px Inter,Segoe UI,Arial,sans-serif; fill: #dbe4ee; }}
-      .svc {{ font: 600 13px Inter,Segoe UI,Arial,sans-serif; fill: #e2e8f0; }}
+      .hero {{ font: 600 13px Inter,Segoe UI,Arial,sans-serif; fill: #f8fafc; }}
+      .svc {{ font: 600 13px Inter,Segoe UI,Arial,sans-serif; fill: #dbe4ee; }}
       .bullet {{ font: 700 13px Inter,Segoe UI,Arial,sans-serif; fill: #cbd5e1; }}
+      .section {{ font: 700 12px Inter,Segoe UI,Arial,sans-serif; fill: #94a3b8; letter-spacing: 0.08em; text-transform: uppercase; }}
       .legendTitle {{ font: 700 16px Inter,Segoe UI,Arial,sans-serif; fill: #f8fafc; }}
       .legendText {{ font: 600 13px Inter,Segoe UI,Arial,sans-serif; fill: #e2e8f0; }}
       .footer {{ font: 500 12px Inter,Segoe UI,Arial,sans-serif; fill: #94a3b8; }}
@@ -68,7 +78,7 @@ def header(title, subtitle, networks, legend):
   <rect width="{CANVAS_W}" height="{CANVAS_H}" fill="url(#bg)"/>
   <text x="56" y="64" class="title1">{esc(title)}</text>
   <text x="56" y="96" class="subtitle1">{esc(subtitle)}</text>
-  <rect x="36" y="126" width="1688" height="1040" rx="32" fill="rgba(15,23,42,0.58)" stroke="#334155" stroke-width="2.2" filter="url(#shadow)"/>
+  <rect x="36" y="{PANEL_Y}" width="1688" height="1074" rx="32" fill="rgba(15,23,42,0.58)" stroke="#334155" stroke-width="2.2" filter="url(#shadow)"/>
 ''']
 
     x = 56
@@ -95,34 +105,47 @@ def header(title, subtitle, networks, legend):
     return '\n'.join(parts)
 
 
-def card(group, x, y):
+def render_card(group, x, y):
     accent = ACCENTS[group['accent']]
-    left, right = split_cols(group['services'])
-
+    hero, supporting = split_services(group['services'])
     parts = [
         '<g>',
-        f'<rect x="{x}" y="{y}" width="{CARD_W}" height="{CARD_H}" rx="28" fill="url(#panel)" stroke="{accent["stroke"]}" stroke-width="2.4" filter="url(#shadow)"/>',
-        f'<path d="M {x+28} {y} H {x+CARD_W-28} Q {x+CARD_W} {y} {x+CARD_W} {y+28} V {y+58} H {x} V {y+28} Q {x} {y} {x+28} {y} Z" fill="{accent["fill"]}"/>',
+        f'<rect x="{x}" y="{y}" width="{CARD_W}" height="{CARD_H}" rx="28" fill="url(#panel)" stroke="{accent["stroke"]}" stroke-width="2.3" filter="url(#shadow)"/>',
+        f'<path d="M {x+28} {y} H {x+CARD_W-28} Q {x+CARD_W} {y} {x+CARD_W} {y+28} V {y+HEADER_H} H {x} V {y+28} Q {x} {y} {x+28} {y} Z" fill="{accent["fill"]}"/>',
         f'<text x="{x + 26}" y="{y + 34}" class="title2">{esc(group["title"])}</text>',
         f'<text x="{x + CARD_W - 26}" y="{y + 34}" class="ip" text-anchor="end">{esc(group["ip"])}</text>',
         f'<text x="{x + 26}" y="{y + 86}" class="meta">{esc(group["subtitle"])}</text>',
-        f'<line x1="{x + 246}" y1="{y + 106}" x2="{x + 246}" y2="{y + CARD_H - 26}" stroke="#334155" stroke-width="1" opacity="0.9"/>'
+        f'<text x="{x + 26}" y="{y + 114}" class="section">Primary services</text>'
     ]
 
-    start_y = y + 126
-    step = 26
-    for idx, label in enumerate(left[:4]):
+    hx = x + 26
+    hy = y + 126
+    hero_widths = [142, 142, 142]
+    for idx, label in enumerate(hero):
+        px = hx + idx * 154
+        txt = truncate(label, 16)
+        parts.append(f'<rect x="{px}" y="{hy}" width="{hero_widths[idx]}" height="34" rx="11" fill="{accent["soft"]}" stroke="{accent["stroke"]}"/>')
+        parts.append(f'<text x="{px + 14}" y="{hy + 22}" class="hero">{esc(txt)}</text>')
+
+    parts.append(f'<text x="{x + 26}" y="{y + 184}" class="section">Supporting services</text>')
+    parts.append(f'<line x1="{x + 246}" y1="{y + 194}" x2="{x + 246}" y2="{y + CARD_H - 24}" stroke="#334155" stroke-width="1" opacity="0.9"/>')
+
+    left = supporting[::2][:2]
+    right = supporting[1::2][:2]
+    start_y = y + 210
+    step = 22
+    for idx, label in enumerate(left):
         yy = start_y + idx * step
         parts.append(f'<text x="{x + 28}" y="{yy}" class="bullet">•</text>')
-        parts.append(f'<text x="{x + 44}" y="{yy}" class="svc">{esc(label)}</text>')
-    for idx, label in enumerate(right[:4]):
+        parts.append(f'<text x="{x + 44}" y="{yy}" class="svc">{esc(truncate(label, 20))}</text>')
+    for idx, label in enumerate(right):
         yy = start_y + idx * step
         parts.append(f'<text x="{x + 266}" y="{yy}" class="bullet">•</text>')
-        parts.append(f'<text x="{x + 282}" y="{yy}" class="svc">{esc(label)}</text>')
+        parts.append(f'<text x="{x + 282}" y="{yy}" class="svc">{esc(truncate(label, 20))}</text>')
 
     footer = group.get('footer')
     if footer:
-        parts.append(f'<text x="{x + 26}" y="{y + CARD_H - 18}" class="footer">{esc(footer)}</text>')
+        parts.append(f'<text x="{x + 26}" y="{y + CARD_H - 16}" class="footer">{esc(footer)}</text>')
 
     parts.append('</g>')
     return '\n'.join(parts)
@@ -130,13 +153,13 @@ def card(group, x, y):
 
 def main():
     data = json.loads(DATA.read_text())
-    parts = [header(data['title'], data['subtitle'], data['networks'], data['legend'])]
+    parts = [render_header(data['title'], data['subtitle'], data['networks'], data['legend'])]
     for idx, group in enumerate(data['groups']):
         row = idx // 3
         col = idx % 3
         x = LEFT + col * (CARD_W + GAP_X)
-        y = TOP + row * (CARD_H + 34)
-        parts.append(card(group, x, y))
+        y = TOP + row * (CARD_H + GAP_Y)
+        parts.append(render_card(group, x, y))
     parts.append('</svg>\n')
     OUT.write_text('\n'.join(parts))
     print(f'Wrote {OUT}')
