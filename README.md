@@ -8,16 +8,6 @@ Onderstaande plaat is gebaseerd op de actuele Proxmox/LXC- en Docker-structuur d
 
 ![Meelsnet homelab architecture](docs/assets/architecture.svg)
 
-### Diagram onderhouden
-
-De SVG is gegenereerd vanuit `docs/assets/architecture.json` via:
-
-```bash
-scripts/render-architecture-svg.py
-```
-
-Dus later aanpassen = JSON wijzigen en opnieuw renderen. Geen handmatig gepruts in raw SVG.
-
 ## Services
 
 ### LXC 101 — Infra
