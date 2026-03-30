@@ -4,95 +4,10 @@ Docker Compose homelab draaiend op Proxmox met meerdere LXC-containers, gescheid
 
 ## Architectuur
 
-Onderstaande plaat is gebaseerd op de actuele Proxmox/LXC- en Docker-structuur die nu draait. Geen live Mermaid, maar een statische SVG zodat GitHub het gewoon strak rendert.
+Onderstaande plaat is gebaseerd op de actuele Proxmox/LXC- en Docker-structuur die nu draait.
 
-![Meelsnet homelab architecture](docs/assets/architecture.svg)
-
-Hoofdlijn: Proxmox host met losse LXC-stacks per domein. `infra` levert ingress/auth/core-datastores, de overige containers draaien functionele stacks en `monitoring` leest mee over de rest heen. Voor `10.10.0.80` en `10.10.0.90` is bewust alleen een simpele representatie opgenomen: OpenClaw respectievelijk Money.
-
-## Services
-
-### LXC 101 — Infra
-
-| Service | Beschrijving |
-|---|---|
-| [Traefik](compose/reverse-proxy/compose.traefik.yml) | Reverse proxy + Let's Encrypt via Cloudflare DNS |
-| [Authentik](compose/reverse-proxy/compose.authentik.yml) | Identity provider / SSO |
-| [PostgreSQL](compose/database/compose.postgres.yml) | Gedeelde database |
-| [Redis](compose/database/compose.redis.yml) | Cache / message broker |
-| [MongoDB](compose/database/compose.mongo.yml) | Document database (UniFi) |
-| [Adminer](compose/database/compose.adminer.yml) | Database admin UI |
-
-### LXC 102 — Media
-
-| Service | Beschrijving |
-|---|---|
-| [Plex](compose/media-server/compose.plex.yml) | Media server |
-| [Jellyfin](compose/media-server/compose.jellyfin.yml) | Media server (open source) |
-| [Sonarr](compose/media-server/compose.sonarr.yml) | TV series management |
-| [Radarr](compose/media-server/compose.radarr.yml) | Film management |
-| [Prowlarr](compose/media-server/compose.prowlarr.yml) | Indexer manager |
-| [SABnzbd](compose/media-server/compose.sabnzbd.yml) | Usenet downloader | 
-| [qBittorrent](compose/media-server/compose.qbittorrent.yml) | Torrent client (met VPN) |
-| [Bazarr](compose/media-server/compose.bazarr.yml) | Ondertiteling |
-| [Tautulli](compose/media-server/compose.tautulli.yml) | Plex monitoring |
-| [Seerr](compose/media-server/compose.seerr.yml) | Media requests |
-| [Notifiarr](compose/media-server/compose.notifiarr.yml) | Notificaties |
-| [Profilarr](compose/media-server/compose.profilarr.yml) | Profiel sync voor Sonarr/Radarr |
-| [Tracearr](compose/media-server/compose.tracearr.yml) | Arr monitoring |
-| [Agregarr](compose/media-server/compose.agregarr.yml) | Arr aggregatie |
-| [Watchstate](compose/media-server/compose.watchstate.yml) | Watch state sync |
-
-### LXC 103 — Home Automation
-
-| Service | Beschrijving |
-|---|---|---|
-| [Home Assistant](compose/home-automation/compose.home-assistant.yml) | Domotica platform |
-| [Zigbee2MQTT](compose/home-automation/compose.zigbee2mqtt.yml) | Zigbee bridge |
-| [Mosquitto](compose/home-automation/compose.mosquitto.yml) | MQTT broker |
-| [Node-RED](compose/home-automation/compose.nodered.yml) | Flow-based automation |
-| [Music Assistant](compose/home-automation/compose.music-assistant.yml) | Multi-room audio |
-| [Hyperion](compose/home-automation/compose.hyperion.yml) | Ambilight / LED control |
-| [Frigate](compose/home-automation/compose.frigate.yml) | NVR met AI detectie |
-
-### LXC 104 — Productivity
-
-| Service | Beschrijving |
-|---|---|
-| [Immich](compose/productivity/compose.immich.yml) | Foto/video management |
-| [Paperless-NGX](compose/productivity/compose.paperless.yml) | Document management |
-| [Nextcloud](compose/productivity/compose.nextcloud.yml) | Cloud opslag / office |
-| [Backrest](compose/productivity/compose.backrest.yml) | Backup UI voor restic |
-| Firefly III | Persoonlijke financiën / administratie |
-
-### LXC 105 — Network
-
-| Service | Beschrijving | Port |
-|---|---|---|
-| [Pi-hole](compose/network/compose.pihole.yml) | DNS ad-blocker | 53, 80 |
-| [UniFi Controller](compose/network/compose.unifi.yml) | Netwerk management | 8443 |
-
-### LXC 106 — Monitoring
-
-| Service | Beschrijving |
-|---|---|
-| [Prometheus](compose/monitoring/compose.prometheus.yml) | Metrics verzameling |
-| [Grafana](compose/monitoring/compose.grafana.yml) | Dashboards / visualisatie |
-| Alertmanager | Alert routing |
-| cAdvisor | Container metrics |
-| Node Exporter | Host metrics |
-| Smartctl Exporter | Disk / SMART metrics |
-| Mosquitto Exporter | MQTT metrics |
-| Arr Exporters | Prometheus exporters voor Sonarr, Radarr, Prowlarr en SABnzbd |
-
-### LXC 107 — Utilities
-
-| Service | Beschrijving |
-|---|---|
-| IT-Tools | Kleine self-hosted utility toolbox |
-| [Omni-tools](compose/utilities/compose.omni-tools.yml) | File conversie tools |
-| [Spoolman](compose/utilities/compose.spoolman.yml) | 3D print filament tracker |
-| [Printer Calculator](compose/utilities/compose.printer-calculator.yml) | 3D print cost calculator |
+![Meelsnet homelab architecture (light)](docs/assets/architecture-light.svg#gh-light-mode-only)
+![Meelsnet homelab architecture (dark)](docs/assets/architecture-dark.svg#gh-dark-mode-only)
 
 ## Directorystructuur
 
