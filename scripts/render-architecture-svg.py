@@ -125,8 +125,7 @@ def render_card(group, x, y):
     parts = [
         '<g>',
         f'<rect x="{x}" y="{y}" width="{CARD_W}" height="{CARD_H}" rx="22" fill="url(#panel)" stroke="{accent["stroke"]}" stroke-width="2.0" filter="url(#shadow)"/>',
-        f'<rect x="{x}" y="{y}" width="{CARD_W}" height="{HEADER_H}" rx="22" fill="{accent["fill"]}"/>',
-        f'<rect x="{x}" y="{y + HEADER_H - 16}" width="{CARD_W}" height="16" fill="{accent["fill"]}"/>',
+        f'<path d="M {x+22} {y} H {x+CARD_W-22} Q {x+CARD_W} {y} {x+CARD_W} {y+22} V {y+HEADER_H} H {x} V {y+22} Q {x} {y} {x+22} {y} Z" fill="{accent["fill"]}"/>',
         f'<text x="{x + 22}" y="{y + 33}" class="title2">{esc(group["title"])}</text>',
         f'<text x="{x + CARD_W - 22}" y="{y + 33}" class="ip" text-anchor="end">{esc(group["ip"])}</text>',
         f'<text x="{x + 22}" y="{y + 78}" class="specs">{esc(group.get("specs", ""))}</text>',

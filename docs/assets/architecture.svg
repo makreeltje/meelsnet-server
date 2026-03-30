@@ -67,8 +67,7 @@
 <text x="1458" y="316" class="legendText">Simple / supporting stacks</text>
 <g>
 <rect x="88" y="396" width="504" height="212" rx="22" fill="url(#panel)" stroke="#34d399" stroke-width="2.0" filter="url(#shadow)"/>
-<rect x="88" y="396" width="504" height="54" rx="22" fill="#0f3d2e"/>
-<rect x="88" y="434" width="504" height="16" fill="#0f3d2e"/>
+<path d="M 110 396 H 570 Q 592 396 592 418 V 450 H 88 V 418 Q 88 396 110 396 Z" fill="#0f3d2e"/>
 <text x="110" y="429" class="title2">LXC 101 · infra</text>
 <text x="570" y="429" class="ip" text-anchor="end">10.10.0.10</text>
 <text x="110" y="474" class="specs">2 vCPU · 4 GB RAM</text>
@@ -84,8 +83,7 @@
 </g>
 <g>
 <rect x="626" y="396" width="504" height="212" rx="22" fill="url(#panel)" stroke="#c084fc" stroke-width="2.0" filter="url(#shadow)"/>
-<rect x="626" y="396" width="504" height="54" rx="22" fill="#4c1384"/>
-<rect x="626" y="434" width="504" height="16" fill="#4c1384"/>
+<path d="M 648 396 H 1108 Q 1130 396 1130 418 V 450 H 626 V 418 Q 626 396 648 396 Z" fill="#4c1384"/>
 <text x="648" y="429" class="title2">LXC 102 · media</text>
 <text x="1108" y="429" class="ip" text-anchor="end">10.10.0.20</text>
 <text x="648" y="474" class="specs">6 vCPU · 10 GB RAM</text>
@@ -102,8 +100,7 @@
 </g>
 <g>
 <rect x="1164" y="396" width="504" height="212" rx="22" fill="url(#panel)" stroke="#fb923c" stroke-width="2.0" filter="url(#shadow)"/>
-<rect x="1164" y="396" width="504" height="54" rx="22" fill="#6a3415"/>
-<rect x="1164" y="434" width="504" height="16" fill="#6a3415"/>
+<path d="M 1186 396 H 1646 Q 1668 396 1668 418 V 450 H 1164 V 418 Q 1164 396 1186 396 Z" fill="#6a3415"/>
 <text x="1186" y="429" class="title2">LXC 103 · home</text>
 <text x="1646" y="429" class="ip" text-anchor="end">10.10.0.30</text>
 <text x="1186" y="474" class="specs">2 vCPU · 4 GB RAM</text>
@@ -118,8 +115,7 @@
 </g>
 <g>
 <rect x="88" y="638" width="504" height="212" rx="22" fill="url(#panel)" stroke="#60a5fa" stroke-width="2.0" filter="url(#shadow)"/>
-<rect x="88" y="638" width="504" height="54" rx="22" fill="#22356f"/>
-<rect x="88" y="676" width="504" height="16" fill="#22356f"/>
+<path d="M 110 638 H 570 Q 592 638 592 660 V 692 H 88 V 660 Q 88 638 110 638 Z" fill="#22356f"/>
 <text x="110" y="671" class="title2">LXC 104 · productivity</text>
 <text x="570" y="671" class="ip" text-anchor="end">10.10.0.40</text>
 <text x="110" y="716" class="specs">2 vCPU · 2 GB RAM</text>
@@ -132,8 +128,7 @@
 </g>
 <g>
 <rect x="626" y="638" width="504" height="212" rx="22" fill="url(#panel)" stroke="#60a5fa" stroke-width="2.0" filter="url(#shadow)"/>
-<rect x="626" y="638" width="504" height="54" rx="22" fill="#22356f"/>
-<rect x="626" y="676" width="504" height="16" fill="#22356f"/>
+<path d="M 648 638 H 1108 Q 1130 638 1130 660 V 692 H 626 V 660 Q 626 638 648 638 Z" fill="#22356f"/>
 <text x="648" y="671" class="title2">LXC 105 · network</text>
 <text x="1108" y="671" class="ip" text-anchor="end">10.10.0.50</text>
 <text x="648" y="716" class="specs">1 vCPU · 2 GB RAM</text>
@@ -143,8 +138,7 @@
 </g>
 <g>
 <rect x="1164" y="638" width="504" height="212" rx="22" fill="url(#panel)" stroke="#38bdf8" stroke-width="2.0" filter="url(#shadow)"/>
-<rect x="1164" y="638" width="504" height="54" rx="22" fill="#155e86"/>
-<rect x="1164" y="676" width="504" height="16" fill="#155e86"/>
+<path d="M 1186 638 H 1646 Q 1668 638 1668 660 V 692 H 1164 V 660 Q 1164 638 1186 638 Z" fill="#155e86"/>
 <text x="1186" y="671" class="title2">LXC 106 · monitoring</text>
 <text x="1646" y="671" class="ip" text-anchor="end">10.10.0.60</text>
 <text x="1186" y="716" class="specs">2 vCPU · 3 GB RAM</text>
@@ -159,8 +153,7 @@
 </g>
 <g>
 <rect x="88" y="880" width="504" height="212" rx="22" fill="url(#panel)" stroke="#a1a1aa" stroke-width="2.0" filter="url(#shadow)"/>
-<rect x="88" y="880" width="504" height="54" rx="22" fill="#52525b"/>
-<rect x="88" y="918" width="504" height="16" fill="#52525b"/>
+<path d="M 110 880 H 570 Q 592 880 592 902 V 934 H 88 V 902 Q 88 880 110 880 Z" fill="#52525b"/>
 <text x="110" y="913" class="title2">LXC 107 · utilities</text>
 <text x="570" y="913" class="ip" text-anchor="end">10.10.0.70</text>
 <text x="110" y="958" class="specs">1 vCPU · 1 GB RAM</text>
@@ -172,8 +165,7 @@
 </g>
 <g>
 <rect x="626" y="880" width="504" height="212" rx="22" fill="url(#panel)" stroke="#94a3b8" stroke-width="2.0" filter="url(#shadow)"/>
-<rect x="626" y="880" width="504" height="54" rx="22" fill="#334155"/>
-<rect x="626" y="918" width="504" height="16" fill="#334155"/>
+<path d="M 648 880 H 1108 Q 1130 880 1130 902 V 934 H 626 V 902 Q 626 880 648 880 Z" fill="#334155"/>
 <text x="648" y="913" class="title2">LXC 108 · openclaw</text>
 <text x="1108" y="913" class="ip" text-anchor="end">10.10.0.80</text>
 <text x="648" y="958" class="specs">4 vCPU · 4 GB RAM</text>
@@ -182,8 +174,7 @@
 </g>
 <g>
 <rect x="1164" y="880" width="504" height="212" rx="22" fill="url(#panel)" stroke="#94a3b8" stroke-width="2.0" filter="url(#shadow)"/>
-<rect x="1164" y="880" width="504" height="54" rx="22" fill="#334155"/>
-<rect x="1164" y="918" width="504" height="16" fill="#334155"/>
+<path d="M 1186 880 H 1646 Q 1668 880 1668 902 V 934 H 1164 V 902 Q 1164 880 1186 880 Z" fill="#334155"/>
 <text x="1186" y="913" class="title2">LXC 109 · money</text>
 <text x="1646" y="913" class="ip" text-anchor="end">10.10.0.90</text>
 <text x="1186" y="958" class="specs">2 vCPU · 2 GB RAM</text>
