@@ -6,7 +6,8 @@ Docker Compose homelab draaiend op Proxmox met meerdere LXC-containers, gescheid
 
 Onderstaande plaat is gebaseerd op de actuele Proxmox/LXC- en Docker-structuur die nu draait.
 
-![Meelsnet homelab architecture](docs/assets/architecture.svg)
+![Meelsnet homelab architecture (light)](docs/assets/architecture-light.svg#gh-light-mode-only)
+![Meelsnet homelab architecture (dark)](docs/assets/architecture-dark.svg#gh-dark-mode-only)
 
 ## Services
 
