@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1760" height="1170" viewBox="0 0 1760 1170" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1688" height="1098" viewBox="0 0 1688 1098" role="img" aria-labelledby="title desc">
   <title id="title">Meelsnet Server · Homelab Architecture (dark)</title>
   <desc id="desc">Actuele Proxmox/LXC-indeling met compacte stacksamenvatting per container.</desc>
   <defs>
@@ -25,146 +25,146 @@
       .footer { font: 500 12px Inter,Segoe UI,Arial,sans-serif; fill: #8b949e; }
     </style>
   </defs>
-  <rect width="1760" height="1170" fill="#202830"/>
-  <text x="56" y="64" class="title1">Meelsnet Server · Homelab Architecture</text>
-  <text x="56" y="96" class="subtitle1">Actuele Proxmox/LXC-indeling met compacte stacksamenvatting per container.</text>
-  <rect x="36" y="126" width="1688" height="1008" rx="32" fill="rgba(22,27,34,0.92)" stroke="#30363d" stroke-width="2.2" filter="url(#shadow)"/>
+  <rect width="1688" height="1098" fill="#202830"/>
+  <text x="28" y="48" class="title1">Meelsnet Server · Homelab Architecture</text>
+  <text x="28" y="76" class="subtitle1">Actuele Proxmox/LXC-indeling met compacte stacksamenvatting per container.</text>
+  <rect x="16" y="92" width="1656" height="990" rx="28" fill="rgba(22,27,34,0.92)" stroke="#30363d" stroke-width="2.0" filter="url(#shadow)"/>
 
-<rect x="56" y="144" width="250" height="42" rx="14" fill="#0d1117" stroke="#94a3b8" stroke-width="1.8"/>
-<text x="72" y="170" class="meta">Proxmox host · srv-mn</text>
-<rect x="324" y="144" width="280" height="42" rx="14" fill="#0d1117" stroke="#60a5fa" stroke-width="1.8"/>
-<text x="340" y="170" class="meta">vmbr0 · LAN · 192.168.2.0/24</text>
-<rect x="622" y="144" width="300" height="42" rx="14" fill="#0d1117" stroke="#c084fc" stroke-width="1.8"/>
-<text x="638" y="170" class="meta">vmbr1 · Service net · 10.10.0.0/24</text>
-<rect x="88" y="206" width="1084" height="126" rx="24" fill="#161b22" stroke="#30363d" stroke-width="1.8"/>
-<text x="110" y="238" class="hostTitle">Host summary · srv-mn</text>
-<text x="110" y="264" class="meta">Proxmox VE</text>
-<rect x="110" y="282" width="190" height="32" rx="11" fill="#0d1117" stroke="#30363d"/>
-<text x="124" y="303" class="hostMeta">6 cores</text>
-<rect x="334" y="282" width="190" height="32" rx="11" fill="#0d1117" stroke="#30363d"/>
-<text x="348" y="303" class="hostMeta">32 GiB RAM</text>
-<rect x="558" y="282" width="190" height="32" rx="11" fill="#0d1117" stroke="#30363d"/>
-<text x="572" y="303" class="hostMeta">2 TB NVMe</text>
-<rect x="782" y="282" width="368" height="32" rx="11" fill="#0d1117" stroke="#30363d"/>
-<text x="796" y="303" class="hostMeta">5× 20 TB HDD · RAID5 · 80 TB</text>
-<rect x="1206" y="206" width="462" height="126" rx="24" fill="#161b22" stroke="#30363d" stroke-width="1.8"/>
-<text x="1224" y="238" class="legendTitle">Legend</text>
-<rect x="1224" y="256" width="14" height="14" rx="4" fill="#0f3d2e" stroke="#34d399"/>
-<text x="1248" y="268" class="legendText">Core infrastructure</text>
-<rect x="1434" y="256" width="14" height="14" rx="4" fill="#4c1384" stroke="#c084fc"/>
-<text x="1458" y="268" class="legendText">Media stack</text>
-<rect x="1224" y="280" width="14" height="14" rx="4" fill="#6a3415" stroke="#fb923c"/>
-<text x="1248" y="292" class="legendText">Home automation</text>
-<rect x="1434" y="280" width="14" height="14" rx="4" fill="#22356f" stroke="#60a5fa"/>
-<text x="1458" y="292" class="legendText">Feature/application stacks</text>
-<rect x="1224" y="304" width="14" height="14" rx="4" fill="#155e86" stroke="#38bdf8"/>
-<text x="1248" y="316" class="legendText">Monitoring / observability</text>
-<rect x="1434" y="304" width="14" height="14" rx="4" fill="#334155" stroke="#94a3b8"/>
-<text x="1458" y="316" class="legendText">Simple / supporting stacks</text><g>
-<rect x="88" y="396" width="504" height="212" rx="22" fill="url(#panel)" stroke="#34d399" stroke-width="2.0" filter="url(#shadow)"/>
-<path d="M 110 396 H 570 Q 592 396 592 418 V 450 H 88 V 418 Q 88 396 110 396 Z" fill="#0f3d2e" stroke="#34d399" stroke-width="0"/>
-<text x="110" y="429" class="title2">LXC 101 · infra</text>
-<text x="570" y="429" class="ip" text-anchor="end">10.10.0.10</text>
-<text x="110" y="474" class="specs">2 vCPU · 4 GB RAM</text>
-<text x="110" y="494" class="meta">Ingress, auth en shared datastores</text>
-<text x="110" y="522" class="service">Traefik</text>
-<text x="110" y="540" class="service">Authentik</text>
-<text x="110" y="558" class="serviceMuted">Worker</text>
-<text x="110" y="576" class="serviceMuted">Postgres</text>
-<text x="362" y="522" class="service">Redis</text>
-<text x="362" y="540" class="service">MongoDB</text>
-<text x="362" y="558" class="serviceMuted">Adminer</text>
-<text x="362" y="576" class="serviceMuted">Mongo Express</text>
+<rect x="28" y="108" width="250" height="42" rx="14" fill="#0d1117" stroke="#94a3b8" stroke-width="1.8"/>
+<text x="44" y="134" class="meta">Proxmox host · srv-mn</text>
+<rect x="296" y="108" width="280" height="42" rx="14" fill="#0d1117" stroke="#60a5fa" stroke-width="1.8"/>
+<text x="312" y="134" class="meta">vmbr0 · LAN · 192.168.2.0/24</text>
+<rect x="594" y="108" width="300" height="42" rx="14" fill="#0d1117" stroke="#c084fc" stroke-width="1.8"/>
+<text x="610" y="134" class="meta">vmbr1 · Service net · 10.10.0.0/24</text>
+<rect x="52" y="206" width="1084" height="126" rx="24" fill="#161b22" stroke="#30363d" stroke-width="1.8"/>
+<text x="74" y="238" class="hostTitle">Host summary · srv-mn</text>
+<text x="74" y="264" class="meta">Proxmox VE</text>
+<rect x="74" y="282" width="190" height="32" rx="11" fill="#0d1117" stroke="#30363d"/>
+<text x="88" y="303" class="hostMeta">6 cores</text>
+<rect x="298" y="282" width="190" height="32" rx="11" fill="#0d1117" stroke="#30363d"/>
+<text x="312" y="303" class="hostMeta">32 GiB RAM</text>
+<rect x="522" y="282" width="190" height="32" rx="11" fill="#0d1117" stroke="#30363d"/>
+<text x="536" y="303" class="hostMeta">2 TB NVMe</text>
+<rect x="746" y="282" width="368" height="32" rx="11" fill="#0d1117" stroke="#30363d"/>
+<text x="760" y="303" class="hostMeta">5× 20 TB HDD · RAID5 · 80 TB</text>
+<rect x="1170" y="206" width="462" height="126" rx="24" fill="#161b22" stroke="#30363d" stroke-width="1.8"/>
+<text x="1188" y="238" class="legendTitle">Legend</text>
+<rect x="1188" y="256" width="14" height="14" rx="4" fill="#0f3d2e" stroke="#34d399"/>
+<text x="1212" y="268" class="legendText">Core infrastructure</text>
+<rect x="1398" y="256" width="14" height="14" rx="4" fill="#4c1384" stroke="#c084fc"/>
+<text x="1422" y="268" class="legendText">Media stack</text>
+<rect x="1188" y="280" width="14" height="14" rx="4" fill="#6a3415" stroke="#fb923c"/>
+<text x="1212" y="292" class="legendText">Home automation</text>
+<rect x="1398" y="280" width="14" height="14" rx="4" fill="#22356f" stroke="#60a5fa"/>
+<text x="1422" y="292" class="legendText">Feature/application stacks</text>
+<rect x="1188" y="304" width="14" height="14" rx="4" fill="#155e86" stroke="#38bdf8"/>
+<text x="1212" y="316" class="legendText">Monitoring / observability</text>
+<rect x="1398" y="304" width="14" height="14" rx="4" fill="#334155" stroke="#94a3b8"/>
+<text x="1422" y="316" class="legendText">Simple / supporting stacks</text><g>
+<rect x="52" y="360" width="504" height="212" rx="22" fill="url(#panel)" stroke="#34d399" stroke-width="2.0" filter="url(#shadow)"/>
+<path d="M 74 360 H 534 Q 556 360 556 382 V 414 H 52 V 382 Q 52 360 74 360 Z" fill="#0f3d2e" stroke="#34d399" stroke-width="0"/>
+<text x="74" y="393" class="title2">LXC 101 · infra</text>
+<text x="534" y="393" class="ip" text-anchor="end">10.10.0.10</text>
+<text x="74" y="438" class="specs">2 vCPU · 4 GB RAM</text>
+<text x="74" y="458" class="meta">Ingress, auth en shared datastores</text>
+<text x="74" y="486" class="service">Traefik</text>
+<text x="74" y="504" class="service">Authentik</text>
+<text x="74" y="522" class="serviceMuted">Worker</text>
+<text x="74" y="540" class="serviceMuted">Postgres</text>
+<text x="326" y="486" class="service">Redis</text>
+<text x="326" y="504" class="service">MongoDB</text>
+<text x="326" y="522" class="serviceMuted">Adminer</text>
+<text x="326" y="540" class="serviceMuted">Mongo Express</text>
 </g><g>
-<rect x="626" y="396" width="504" height="212" rx="22" fill="url(#panel)" stroke="#c084fc" stroke-width="2.0" filter="url(#shadow)"/>
-<path d="M 648 396 H 1108 Q 1130 396 1130 418 V 450 H 626 V 418 Q 626 396 648 396 Z" fill="#4c1384" stroke="#c084fc" stroke-width="0"/>
-<text x="648" y="429" class="title2">LXC 102 · media</text>
-<text x="1108" y="429" class="ip" text-anchor="end">10.10.0.20</text>
-<text x="648" y="474" class="specs">6 vCPU · 10 GB RAM</text>
-<text x="648" y="494" class="meta">Streaming</text>
-<text x="648" y="522" class="service">Plex</text>
-<text x="648" y="540" class="service">Jellyfin</text>
-<text x="648" y="558" class="serviceMuted">Notifiarr</text>
-<text x="648" y="576" class="serviceMuted">Tracearr</text>
-<text x="900" y="522" class="service">Agregarr</text>
-<text x="900" y="540" class="service">Watchstate</text>
-<text x="900" y="558" class="serviceMuted">Bazarr</text>
-<text x="900" y="576" class="serviceMuted">Tautulli</text>
-<text x="648" y="590" class="footer">+ 7 more</text>
+<rect x="590" y="360" width="504" height="212" rx="22" fill="url(#panel)" stroke="#c084fc" stroke-width="2.0" filter="url(#shadow)"/>
+<path d="M 612 360 H 1072 Q 1094 360 1094 382 V 414 H 590 V 382 Q 590 360 612 360 Z" fill="#4c1384" stroke="#c084fc" stroke-width="0"/>
+<text x="612" y="393" class="title2">LXC 102 · media</text>
+<text x="1072" y="393" class="ip" text-anchor="end">10.10.0.20</text>
+<text x="612" y="438" class="specs">6 vCPU · 10 GB RAM</text>
+<text x="612" y="458" class="meta">Streaming</text>
+<text x="612" y="486" class="service">Plex</text>
+<text x="612" y="504" class="service">Jellyfin</text>
+<text x="612" y="522" class="serviceMuted">Notifiarr</text>
+<text x="612" y="540" class="serviceMuted">Tracearr</text>
+<text x="864" y="486" class="service">Agregarr</text>
+<text x="864" y="504" class="service">Watchstate</text>
+<text x="864" y="522" class="serviceMuted">Bazarr</text>
+<text x="864" y="540" class="serviceMuted">Tautulli</text>
+<text x="612" y="554" class="footer">+ 7 more</text>
 </g><g>
-<rect x="1164" y="396" width="504" height="212" rx="22" fill="url(#panel)" stroke="#fb923c" stroke-width="2.0" filter="url(#shadow)"/>
-<path d="M 1186 396 H 1646 Q 1668 396 1668 418 V 450 H 1164 V 418 Q 1164 396 1186 396 Z" fill="#6a3415" stroke="#fb923c" stroke-width="0"/>
-<text x="1186" y="429" class="title2">LXC 103 · home</text>
-<text x="1646" y="429" class="ip" text-anchor="end">10.10.0.30</text>
-<text x="1186" y="474" class="specs">2 vCPU · 4 GB RAM</text>
-<text x="1186" y="494" class="meta">Domotica, MQTT en local automation</text>
-<text x="1186" y="522" class="service">Home Assistant</text>
-<text x="1186" y="540" class="service">Mosquitto</text>
-<text x="1186" y="558" class="serviceMuted">Zigbee2MQTT</text>
-<text x="1186" y="576" class="serviceMuted">Node-RED</text>
-<text x="1438" y="522" class="service">Music Assistant</text>
-<text x="1438" y="540" class="service">Hyperion</text>
-<text x="1438" y="558" class="serviceMuted">Frigate</text>
+<rect x="1128" y="360" width="504" height="212" rx="22" fill="url(#panel)" stroke="#fb923c" stroke-width="2.0" filter="url(#shadow)"/>
+<path d="M 1150 360 H 1610 Q 1632 360 1632 382 V 414 H 1128 V 382 Q 1128 360 1150 360 Z" fill="#6a3415" stroke="#fb923c" stroke-width="0"/>
+<text x="1150" y="393" class="title2">LXC 103 · home</text>
+<text x="1610" y="393" class="ip" text-anchor="end">10.10.0.30</text>
+<text x="1150" y="438" class="specs">2 vCPU · 4 GB RAM</text>
+<text x="1150" y="458" class="meta">Domotica, MQTT en local automation</text>
+<text x="1150" y="486" class="service">Home Assistant</text>
+<text x="1150" y="504" class="service">Mosquitto</text>
+<text x="1150" y="522" class="serviceMuted">Zigbee2MQTT</text>
+<text x="1150" y="540" class="serviceMuted">Node-RED</text>
+<text x="1402" y="486" class="service">Music Assistant</text>
+<text x="1402" y="504" class="service">Hyperion</text>
+<text x="1402" y="522" class="serviceMuted">Frigate</text>
 </g><g>
-<rect x="88" y="638" width="504" height="212" rx="22" fill="url(#panel)" stroke="#60a5fa" stroke-width="2.0" filter="url(#shadow)"/>
-<path d="M 110 638 H 570 Q 592 638 592 660 V 692 H 88 V 660 Q 88 638 110 638 Z" fill="#22356f" stroke="#60a5fa" stroke-width="0"/>
-<text x="110" y="671" class="title2">LXC 104 · productivity</text>
-<text x="570" y="671" class="ip" text-anchor="end">10.10.0.40</text>
-<text x="110" y="716" class="specs">2 vCPU · 2 GB RAM</text>
-<text x="110" y="736" class="meta">Persoonlijke apps, documents, storage en finance</text>
-<text x="110" y="764" class="service">Immich</text>
-<text x="110" y="782" class="service">Paperless</text>
-<text x="110" y="800" class="serviceMuted">Nextcloud</text>
-<text x="110" y="818" class="serviceMuted">Backrest</text>
-<text x="362" y="764" class="service">Firefly III</text>
+<rect x="52" y="602" width="504" height="212" rx="22" fill="url(#panel)" stroke="#60a5fa" stroke-width="2.0" filter="url(#shadow)"/>
+<path d="M 74 602 H 534 Q 556 602 556 624 V 656 H 52 V 624 Q 52 602 74 602 Z" fill="#22356f" stroke="#60a5fa" stroke-width="0"/>
+<text x="74" y="635" class="title2">LXC 104 · productivity</text>
+<text x="534" y="635" class="ip" text-anchor="end">10.10.0.40</text>
+<text x="74" y="680" class="specs">2 vCPU · 2 GB RAM</text>
+<text x="74" y="700" class="meta">Persoonlijke apps, documents, storage en finance</text>
+<text x="74" y="728" class="service">Immich</text>
+<text x="74" y="746" class="service">Paperless</text>
+<text x="74" y="764" class="serviceMuted">Nextcloud</text>
+<text x="74" y="782" class="serviceMuted">Backrest</text>
+<text x="326" y="728" class="service">Firefly III</text>
 </g><g>
-<rect x="626" y="638" width="504" height="212" rx="22" fill="url(#panel)" stroke="#60a5fa" stroke-width="2.0" filter="url(#shadow)"/>
-<path d="M 648 638 H 1108 Q 1130 638 1130 660 V 692 H 626 V 660 Q 626 638 648 638 Z" fill="#22356f" stroke="#60a5fa" stroke-width="0"/>
-<text x="648" y="671" class="title2">LXC 105 · network</text>
-<text x="1108" y="671" class="ip" text-anchor="end">10.10.0.50</text>
-<text x="648" y="716" class="specs">1 vCPU · 2 GB RAM</text>
-<text x="648" y="736" class="meta">DNS en netwerkbeheer</text>
-<text x="648" y="764" class="service">Pi-hole</text>
-<text x="648" y="782" class="service">UniFi Network Applicati…</text>
+<rect x="590" y="602" width="504" height="212" rx="22" fill="url(#panel)" stroke="#60a5fa" stroke-width="2.0" filter="url(#shadow)"/>
+<path d="M 612 602 H 1072 Q 1094 602 1094 624 V 656 H 590 V 624 Q 590 602 612 602 Z" fill="#22356f" stroke="#60a5fa" stroke-width="0"/>
+<text x="612" y="635" class="title2">LXC 105 · network</text>
+<text x="1072" y="635" class="ip" text-anchor="end">10.10.0.50</text>
+<text x="612" y="680" class="specs">1 vCPU · 2 GB RAM</text>
+<text x="612" y="700" class="meta">DNS en netwerkbeheer</text>
+<text x="612" y="728" class="service">Pi-hole</text>
+<text x="612" y="746" class="service">UniFi Network Applicati…</text>
 </g><g>
-<rect x="1164" y="638" width="504" height="212" rx="22" fill="url(#panel)" stroke="#38bdf8" stroke-width="2.0" filter="url(#shadow)"/>
-<path d="M 1186 638 H 1646 Q 1668 638 1668 660 V 692 H 1164 V 660 Q 1164 638 1186 638 Z" fill="#155e86" stroke="#38bdf8" stroke-width="0"/>
-<text x="1186" y="671" class="title2">LXC 106 · monitoring</text>
-<text x="1646" y="671" class="ip" text-anchor="end">10.10.0.60</text>
-<text x="1186" y="716" class="specs">2 vCPU · 3 GB RAM</text>
-<text x="1186" y="736" class="meta">Metrics, dashboards, alerts en exporters</text>
-<text x="1186" y="764" class="service">Prometheus</text>
-<text x="1186" y="782" class="service">Grafana</text>
-<text x="1186" y="800" class="serviceMuted">Alertmanager</text>
-<text x="1186" y="818" class="serviceMuted">cAdvisor</text>
-<text x="1438" y="764" class="service">Node Exporter</text>
-<text x="1438" y="782" class="service">Smartctl Exporter</text>
-<text x="1438" y="800" class="serviceMuted">Mosquitto Exporter</text>
+<rect x="1128" y="602" width="504" height="212" rx="22" fill="url(#panel)" stroke="#38bdf8" stroke-width="2.0" filter="url(#shadow)"/>
+<path d="M 1150 602 H 1610 Q 1632 602 1632 624 V 656 H 1128 V 624 Q 1128 602 1150 602 Z" fill="#155e86" stroke="#38bdf8" stroke-width="0"/>
+<text x="1150" y="635" class="title2">LXC 106 · monitoring</text>
+<text x="1610" y="635" class="ip" text-anchor="end">10.10.0.60</text>
+<text x="1150" y="680" class="specs">2 vCPU · 3 GB RAM</text>
+<text x="1150" y="700" class="meta">Metrics, dashboards, alerts en exporters</text>
+<text x="1150" y="728" class="service">Prometheus</text>
+<text x="1150" y="746" class="service">Grafana</text>
+<text x="1150" y="764" class="serviceMuted">Alertmanager</text>
+<text x="1150" y="782" class="serviceMuted">cAdvisor</text>
+<text x="1402" y="728" class="service">Node Exporter</text>
+<text x="1402" y="746" class="service">Smartctl Exporter</text>
+<text x="1402" y="764" class="serviceMuted">Mosquitto Exporter</text>
 </g><g>
-<rect x="88" y="880" width="504" height="212" rx="22" fill="url(#panel)" stroke="#a1a1aa" stroke-width="2.0" filter="url(#shadow)"/>
-<path d="M 110 880 H 570 Q 592 880 592 902 V 934 H 88 V 902 Q 88 880 110 880 Z" fill="#52525b" stroke="#a1a1aa" stroke-width="0"/>
-<text x="110" y="913" class="title2">LXC 107 · utilities</text>
-<text x="570" y="913" class="ip" text-anchor="end">10.10.0.70</text>
-<text x="110" y="958" class="specs">1 vCPU · 1 GB RAM</text>
-<text x="110" y="978" class="meta">Kleine losse tools en 3D-print utilities</text>
-<text x="110" y="1006" class="service">IT-Tools</text>
-<text x="110" y="1024" class="service">Omni-Tools</text>
-<text x="110" y="1042" class="serviceMuted">Spoolman</text>
-<text x="110" y="1060" class="serviceMuted">Printer Calculator</text>
+<rect x="52" y="844" width="504" height="212" rx="22" fill="url(#panel)" stroke="#a1a1aa" stroke-width="2.0" filter="url(#shadow)"/>
+<path d="M 74 844 H 534 Q 556 844 556 866 V 898 H 52 V 866 Q 52 844 74 844 Z" fill="#52525b" stroke="#a1a1aa" stroke-width="0"/>
+<text x="74" y="877" class="title2">LXC 107 · utilities</text>
+<text x="534" y="877" class="ip" text-anchor="end">10.10.0.70</text>
+<text x="74" y="922" class="specs">1 vCPU · 1 GB RAM</text>
+<text x="74" y="942" class="meta">Kleine losse tools en 3D-print utilities</text>
+<text x="74" y="970" class="service">IT-Tools</text>
+<text x="74" y="988" class="service">Omni-Tools</text>
+<text x="74" y="1006" class="serviceMuted">Spoolman</text>
+<text x="74" y="1024" class="serviceMuted">Printer Calculator</text>
 </g><g>
-<rect x="626" y="880" width="504" height="212" rx="22" fill="url(#panel)" stroke="#94a3b8" stroke-width="2.0" filter="url(#shadow)"/>
-<path d="M 648 880 H 1108 Q 1130 880 1130 902 V 934 H 626 V 902 Q 626 880 648 880 Z" fill="#334155" stroke="#94a3b8" stroke-width="0"/>
-<text x="648" y="913" class="title2">LXC 108 · openclaw</text>
-<text x="1108" y="913" class="ip" text-anchor="end">10.10.0.80</text>
-<text x="648" y="958" class="specs">4 vCPU · 4 GB RAM</text>
-<text x="648" y="978" class="meta">Simple representation only</text>
-<text x="648" y="1006" class="service">OpenClaw</text>
+<rect x="590" y="844" width="504" height="212" rx="22" fill="url(#panel)" stroke="#94a3b8" stroke-width="2.0" filter="url(#shadow)"/>
+<path d="M 612 844 H 1072 Q 1094 844 1094 866 V 898 H 590 V 866 Q 590 844 612 844 Z" fill="#334155" stroke="#94a3b8" stroke-width="0"/>
+<text x="612" y="877" class="title2">LXC 108 · openclaw</text>
+<text x="1072" y="877" class="ip" text-anchor="end">10.10.0.80</text>
+<text x="612" y="922" class="specs">4 vCPU · 4 GB RAM</text>
+<text x="612" y="942" class="meta">Simple representation only</text>
+<text x="612" y="970" class="service">OpenClaw</text>
 </g><g>
-<rect x="1164" y="880" width="504" height="212" rx="22" fill="url(#panel)" stroke="#94a3b8" stroke-width="2.0" filter="url(#shadow)"/>
-<path d="M 1186 880 H 1646 Q 1668 880 1668 902 V 934 H 1164 V 902 Q 1164 880 1186 880 Z" fill="#334155" stroke="#94a3b8" stroke-width="0"/>
-<text x="1186" y="913" class="title2">LXC 109 · money</text>
-<text x="1646" y="913" class="ip" text-anchor="end">10.10.0.90</text>
-<text x="1186" y="958" class="specs">2 vCPU · 2 GB RAM</text>
-<text x="1186" y="978" class="meta">Simple representation only</text>
-<text x="1186" y="1006" class="service">Money</text>
+<rect x="1128" y="844" width="504" height="212" rx="22" fill="url(#panel)" stroke="#94a3b8" stroke-width="2.0" filter="url(#shadow)"/>
+<path d="M 1150 844 H 1610 Q 1632 844 1632 866 V 898 H 1128 V 866 Q 1128 844 1150 844 Z" fill="#334155" stroke="#94a3b8" stroke-width="0"/>
+<text x="1150" y="877" class="title2">LXC 109 · money</text>
+<text x="1610" y="877" class="ip" text-anchor="end">10.10.0.90</text>
+<text x="1150" y="922" class="specs">2 vCPU · 2 GB RAM</text>
+<text x="1150" y="942" class="meta">Simple representation only</text>
+<text x="1150" y="970" class="service">Money</text>
 </g></svg>
