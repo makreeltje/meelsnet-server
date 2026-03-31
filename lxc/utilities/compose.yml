@@ -6,5 +6,5 @@ networks:
 include:
   - compose/utilities/compose.it-tools.yml
   - compose/utilities/compose.omni-tools.yml
-  - compose/utilities/compose.printer-calculator.yml
+  # - compose/utilities/compose.printer-calculator.yml
   - compose/utilities/compose.spoolman.yml
