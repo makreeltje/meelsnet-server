@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: nextcloud
-    image: nextcloud:32.0.7
+    image: nextcloud:33.0.1
     profiles: [ "productivity", "all" ]
     environment:
       REDIS_HOST: 10.10.0.10
