@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common-lsio
     container_name: prowlarr
-    image: linuxserver/prowlarr:1.37.0
+    image: linuxserver/prowlarr:2.3.0
     profiles: [ "media", "all" ]
     volumes:
       - $CONF_DIR/prowlarr/config:/config
