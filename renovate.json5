@@ -11,19 +11,6 @@
     ]
   },
  
-  "customManagers": [
-    {
-      "customType": "regex",
-      "managerFilePatterns": [
-        "/(^|/)\.env\.example$/"
-      ],
-      "matchStrings": [
-        "# renovate: datasource=(?<datasource>[^\\s]+) depName=(?<depName>[^\\s]+)\\n[A-Z_]+=(?<currentValue>.+)"
-      ],
-      "datasourceTemplate": "{{datasource}}"
-    }
-  ],
- 
   "packageRules": [
     {
       "description": "Automerge patch and minor updates instantly",
