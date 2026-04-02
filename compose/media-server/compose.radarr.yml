@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common-lsio
     container_name: radarr
-    image: linuxserver/radarr:6.0.4
+    image: linuxserver/radarr:6.1.1
     profiles: [ "media", "all" ]
     volumes:
       - $CONF_DIR/radarr/config:/config
@@ -25,7 +25,7 @@ services:
       file: ../fragments/common-service.yml
       service: common-lsio
     container_name: radarr-4k
-    image: linuxserver/radarr:6.0.4
+    image: linuxserver/radarr:6.1.1
     profiles: [ "media", "all" ]
     volumes:
       - $CONF_DIR/radarr-4k/config:/config
