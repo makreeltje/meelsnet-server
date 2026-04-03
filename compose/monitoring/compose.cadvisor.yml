@@ -17,3 +17,8 @@ services:
       - /var/lib/docker/:/var/lib/docker:ro
     ports:
       - 8080:8080
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: "0.5"
