@@ -5,7 +5,7 @@ services:
       service: common
     container_name: pihole
     user: $PUID:$PGID
-    image: pihole/pihole:2025.07.1
+    image: pihole/pihole:2026.04.0
     profiles: [ "network", "all" ]
     cap_add:
       - SYS_NICE

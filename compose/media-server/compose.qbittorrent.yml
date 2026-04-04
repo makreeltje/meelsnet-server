@@ -9,19 +9,21 @@ services:
       - NET_ADMIN
     profiles: [ "media", "all" ]
     environment:
+      PUID: 1000
+      PGID: 1000
       UMASK: 0
-      VPN_ENABLED: yes
+      VPN_ENABLED: "yes"
       VPN_USER: $VPN_USERNAME
       VPN_PASS: $VPN_PASSWORD
       VPN_PROV: $VPN_PROVIDER
       VPN_CLIENT: openvpn
       VPN_INPUT_PORTS: 1234
       VPN_OUTPUT_PORTS: 5678
-      ENABLE_STARTUP_SCRIPTS: no
-      ENABLE_PRIVOXY: yes
-      STRICT_PORT_FORWARD: yes
-      USERSPACE_WIREGUARD: no
-      ENABLE_SOCKS: yes
+      ENABLE_STARTUP_SCRIPTS: "no"
+      ENABLE_PRIVOXY: "yes"
+      STRICT_PORT_FORWARD: "yes"
+      USERSPACE_WIREGUARD: "no"
+      ENABLE_SOCKS: "yes"
       SOCKS_USER: $QBITTORRENT_USER
       SOCKS_PASS: $QBITTORRENT_PASS
       LAN_NETWORK: 192.168.2.0/24

@@ -11,10 +11,8 @@ Restart=always
 RestartSec=5
 EnvironmentFile=/etc/gitops/config.env
 
-# Security hardening
-ProtectSystem=strict
-ReadWritePaths=/opt/gitops /var/log/gitops /tmp
-PrivateTmp=true
+# Note: ProtectSystem is intentionally omitted — the gitops controller
+# needs broad access to run pct push/exec, git, and docker commands.
 
 [Install]
 WantedBy=multi-user.target

@@ -4,10 +4,12 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: redis
-    image: redis:7.4-alpine
+    image: redis:8.6-alpine
     profiles: [ "database", "infra", "all" ]
     volumes:
       - $CONF_DIR/redis/data:/data
+    ports:
+      - 6379:6379
     healthcheck:
       interval: 30s
       retries: 5
