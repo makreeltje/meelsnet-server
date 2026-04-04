@@ -11,3 +11,4 @@ include:
   - compose/home-automation/compose.music-assistant.yml
   - compose/home-automation/compose.hyperion.yml
   - compose/home-automation/compose.frigate.yml
+  - compose/monitoring/compose.cadvisor.yml
