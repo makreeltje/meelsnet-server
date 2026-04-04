@@ -7,9 +7,10 @@ services:
     image: gcr.io/cadvisor/cadvisor:v0.55.1
     profiles: [ "monitoring", "all" ]
     command:
-      - '--housekeeping_interval=15s'
-      - '--docker_only=true'
-      - '--disable_metrics=percpu,sched,tcp,udp,disk,diskIO,hugetlb,referenced_memory'
+      - --docker_only=true
+      - --housekeeping_interval=15s
+      - --store_container_labels=false
+      - --disable_metrics=percpu,sched,tcp,udp,diskIO,hugetlb,referenced_memory
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:rw
