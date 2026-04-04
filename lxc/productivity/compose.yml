@@ -9,3 +9,4 @@ include:
   - compose/productivity/compose.paperless.yml
   - compose/productivity/compose.nextcloud.yml
   - compose/productivity/compose.backrest.yml
+  - compose/monitoring/compose.cadvisor.yml
