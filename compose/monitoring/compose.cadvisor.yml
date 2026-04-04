@@ -9,8 +9,6 @@ services:
     command:
       - --docker_only=true
       - --housekeeping_interval=15s
-      - --store_container_labels=false
-      - --disable_metrics=percpu,sched,tcp,udp,diskIO,hugetlb,referenced_memory
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:rw
