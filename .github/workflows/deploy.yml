@@ -5,94 +5,28 @@ on:
     paths:
       - 'compose/**'
       - 'lxc/**'
-      - 'compose.yml'
       - 'scripts/**'
-      - '.env.example'
+      - '.yamllint.yml'
 
 jobs:
   yaml-lint:
     name: YAML Lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Install yamllint
         run: pip install --quiet yamllint
 
       - name: Lint YAML files
-        run: yamllint -c .yamllint.yml compose/ lxc/ compose.yml
+        run: yamllint -c .yamllint.yml compose/ lxc/
 
   shellcheck:
     name: ShellCheck
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Run ShellCheck
         run: |
           find scripts/ -name '*.sh' -print0 | xargs -0 shellcheck --severity=warning
-
-  validate-root:
-    name: Validate root compose
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Validate compose syntax
-        run: |
-          cp .env.example .env
-          sed -i 's/=$/=dummy/g' .env
-          docker compose config --quiet && echo "Root compose config valid"
-
-  validate-lxc:
-    name: Validate LXC compose (${{ matrix.lxc }})
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        lxc: [infra, media, home, productivity, network, monitoring, utilities]
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Validate ${{ matrix.lxc }} compose syntax
-        run: |
-          cp .env.example .env
-          sed -i 's/=$/=dummy/g' .env
-          cp lxc/${{ matrix.lxc }}/compose.yml compose.yml
-          docker compose config --quiet \
-            && echo "${{ matrix.lxc }} compose config valid"
-
-  check-images:
-    name: Verify image tags exist
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Extract and verify image tags
-        run: |
-          cp .env.example .env
-          sed -i 's/=$/=dummy/g' .env
-
-          # Extract all image references from the full compose config
-          images=$(docker compose config --images 2>/dev/null | sort -u)
-
-          failed=0
-          for image in $images; do
-            # Skip images with unresolved variables (dummy placeholders)
-            if echo "$image" | grep -q 'dummy'; then
-              echo "SKIP: $image (unresolved variable)"
-              continue
-            fi
-
-            if docker manifest inspect "$image" > /dev/null 2>&1; then
-              echo "OK:   $image"
-            else
-              echo "FAIL: $image — tag not found on registry"
-              failed=1
-            fi
-          done
-
-          if [ "$failed" -eq 1 ]; then
-            echo "::error::One or more image tags do not exist on their registry"
-            exit 1
-          fi

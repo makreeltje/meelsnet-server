@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: mc-allthemods9
-    image: itzg/minecraft-server:2024.12.1-java21
+    image: itzg/minecraft-server:2026.4.0-java21
     profiles: [ "games", "all" ]
     environment:
       EULA: true

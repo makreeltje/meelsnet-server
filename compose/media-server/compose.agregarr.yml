@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: agregarr
-    image: agregarr/agregarr:v2.3.0
+    image: agregarr/agregarr:v2.4.2
     profiles: [ "media", "all" ]
     volumes:
       - $CONF_DIR/agregarr/config:/app/config

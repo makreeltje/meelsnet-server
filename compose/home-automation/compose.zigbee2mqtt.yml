@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: zigbee2mqtt
-    image: koenkk/zigbee2mqtt:2.7.2
+    image: koenkk/zigbee2mqtt:2.9.2
     profiles: [ "home", "all" ]
     volumes:
       - $CONF_DIR/zigbee2mqtt/data:/app/data

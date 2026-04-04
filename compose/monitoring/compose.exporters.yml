@@ -5,8 +5,9 @@ services:
   sonarr-exporter:
     extends:
       file: ../fragments/common-service.yml
-      service: exportarr-base
+      service: common
     container_name: sonarr-exporter
+    image: ghcr.io/onedr0p/exportarr:v2.3.0
     command: [ "sonarr" ]
     environment:
       PORT: "9707"
@@ -18,8 +19,9 @@ services:
   radarr-exporter:
     extends:
       file: ../fragments/common-service.yml
-      service: exportarr-base
+      service: common
     container_name: radarr-exporter
+    image: ghcr.io/onedr0p/exportarr:v2.3.0
     command: [ "radarr" ]
     environment:
       PORT: "9708"
@@ -31,8 +33,9 @@ services:
   prowlarr-exporter:
     extends:
       file: ../fragments/common-service.yml
-      service: exportarr-base
+      service: common
     container_name: prowlarr-exporter
+    image: ghcr.io/onedr0p/exportarr:v2.3.0
     command: [ "prowlarr" ]
     environment:
       PORT: "9710"
@@ -44,8 +47,9 @@ services:
   sabnzbd-exporter:
     extends:
       file: ../fragments/common-service.yml
-      service: exportarr-base
+      service: common
     container_name: sabnzbd-exporter
+    image: ghcr.io/onedr0p/exportarr:v2.3.0
     command: [ "sabnzbd" ]
     environment:
       PORT: "9711"

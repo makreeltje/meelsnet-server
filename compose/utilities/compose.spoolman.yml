@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: spoolman
-    image: ghcr.io/donkie/spoolman:0.21.0
+    image: ghcr.io/donkie/spoolman:0.23.1
     profiles: [ "utilities", "all" ]
     volumes:
       - $CONF_DIR/spoolman/data:/home/app/.local/share/spoolman

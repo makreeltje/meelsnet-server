@@ -2,24 +2,14 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended", "docker:enableMajor", ":dependencyDashboard"],
  
+  "ignorePaths": ["compose/archive/**"],
   "docker-compose": {
-    "fileMatch": [
-      "(^|/)compose\\..*\\.ya?ml$",
-      "(^|/)compose\\.ya?ml$",
-      "(^|/)lxc/.*/compose\\.ya?ml$"
+    "managerFilePatterns": [
+      "/(^|/)compose\..*\.ya?ml$/",
+      "/(^|/)compose\.ya?ml$/",
+      "/(^|/)lxc/.*/compose\.ya?ml$/"
     ]
   },
- 
-  "customManagers": [
-    {
-      "customType": "regex",
-      "fileMatch": ["(^|/)\\.env\\.example$"],
-      "matchStrings": [
-        "# renovate: datasource=(?<datasource>[^\\s]+) depName=(?<depName>[^\\s]+)\\n[A-Z_]+=(?<currentValue>.+)"
-      ],
-      "datasourceTemplate": "{{datasource}}"
-    }
-  ],
  
   "packageRules": [
     {
