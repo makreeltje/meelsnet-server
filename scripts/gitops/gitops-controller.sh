@@ -29,16 +29,17 @@ CONFIG_FILE="/etc/gitops/config.env"
 # -----------------------------------------------------------------------------
 # LXC Mapping
 # -----------------------------------------------------------------------------
-# Each entry: LXC_ID|NAME|COMPOSE_DIRS (comma-separated paths that trigger deploy)
-# compose/fragments is a shared dependency that triggers ALL LXCs
+# Each entry: LXC_ID|NAME
+# Compose directories are derived dynamically from lxc/<name>/compose.yml includes,
+# so adding a service to a LXC only requires editing that compose.yml — no changes here.
 LXC_ENTRIES=(
-  "101|infra|lxc/infra,compose/reverse-proxy,compose/database"
-  "102|media|lxc/media,compose/media-server"
-  "103|home|lxc/home,compose/home-automation"
-  "104|productivity|lxc/productivity,compose/productivity"
-  "105|network|lxc/network,compose/network"
-  "106|monitoring|lxc/monitoring,compose/monitoring"
-  "107|utilities|lxc/utilities,compose/utilities"
+  "101|infra"
+  "102|media"
+  "103|home"
+  "104|productivity"
+  "105|network"
+  "106|monitoring"
+  "107|utilities"
 )
 
 # Paths that affect ALL LXCs when changed
@@ -124,15 +125,34 @@ parse_lxc_entry() {
   local entry="$1"
   LXC_ID=$(echo "$entry" | cut -d'|' -f1)
   LXC_NAME=$(echo "$entry" | cut -d'|' -f2)
-  LXC_DIRS=$(echo "$entry" | cut -d'|' -f3)
+}
+
+# Derive compose directories from lxc/<name>/compose.yml include lines.
+# Returns unique top-level directories (e.g. "compose/media-server") plus
+# the LXC's own directory (e.g. "lxc/media").
+get_lxc_compose_dirs() {
+  local lxc_name="$1"
+  local compose_file="$REPO_DIR/lxc/$lxc_name/compose.yml"
+
+  if [[ ! -f "$compose_file" ]]; then
+    log_error "compose.yml not found for LXC $lxc_name: $compose_file"
+    return 1
+  fi
+
+  {
+    echo "lxc/$lxc_name"
+    grep -oP '(?<=- )compose/[^/]+' "$compose_file" | sort -u
+  }
 }
 
 lxc_is_affected() {
-  local lxc_dirs="$1"
+  local lxc_name="$1"
   shift
   local changed_files=("$@")
 
-  IFS=',' read -ra dirs <<< "$lxc_dirs"
+  local -a dirs
+  mapfile -t dirs < <(get_lxc_compose_dirs "$lxc_name")
+
   for file in "${changed_files[@]}"; do
     # Check shared paths first
     for shared in "${SHARED_PATHS[@]}"; do
@@ -140,7 +160,7 @@ lxc_is_affected() {
         return 0
       fi
     done
-    # Check LXC-specific paths
+    # Check LXC-specific paths (derived from compose.yml)
     for dir in "${dirs[@]}"; do
       if [[ "$file" == "$dir"/* ]]; then
         return 0
@@ -151,12 +171,14 @@ lxc_is_affected() {
 }
 
 deploy_to_lxc() {
-  local lxc_id="$1" lxc_name="$2" lxc_dirs="$3" sha="$4"
+  local lxc_id="$1" lxc_name="$2" sha="$3"
 
   log_info "Deploying to LXC $lxc_id ($lxc_name)..."
 
-  # Build the tar with all compose dirs this LXC needs (including fragments)
-  IFS=',' read -ra dirs <<< "$lxc_dirs"
+  # Build the tar with all compose dirs derived from lxc/<name>/compose.yml
+  local -a dirs
+  mapfile -t dirs < <(get_lxc_compose_dirs "$lxc_name")
+
   local tar_args=()
   for dir in "${dirs[@]}"; do
     tar_args+=("$dir")
@@ -284,10 +306,10 @@ sync() {
   for entry in "${LXC_ENTRIES[@]}"; do
     parse_lxc_entry "$entry"
 
-    if lxc_is_affected "$LXC_DIRS" "${changed_files[@]}"; then
+    if lxc_is_affected "$LXC_NAME" "${changed_files[@]}"; then
       log_info "LXC $LXC_ID ($LXC_NAME) affected by changes"
 
-      if deploy_to_lxc "$LXC_ID" "$LXC_NAME" "$LXC_DIRS" "$remote_sha"; then
+      if deploy_to_lxc "$LXC_ID" "$LXC_NAME" "$remote_sha"; then
         ((deployed_count++))
       else
         any_failed=1
@@ -358,7 +380,7 @@ cmd_deploy() {
     parse_lxc_entry "$entry"
 
     if [[ "$target" == "all" || "$target" == "$LXC_NAME" || "$target" == "$LXC_ID" ]]; then
-      deploy_to_lxc "$LXC_ID" "$LXC_NAME" "$LXC_DIRS" "$remote_sha"
+      deploy_to_lxc "$LXC_ID" "$LXC_NAME" "$remote_sha"
     fi
   done
 
