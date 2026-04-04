@@ -310,7 +310,7 @@ sync() {
     if lxc_is_affected "$LXC_NAME" "${changed_files[@]}"; then
       log_info "LXC $LXC_ID ($LXC_NAME) affected by changes"
 
-      if deploy_to_lxc "$LXC_ID" "$LXC_NAME" "$LXC_DIRS" "$remote_sha"; then
+      if deploy_to_lxc "$LXC_ID" "$LXC_NAME" "$remote_sha"; then
         ((deployed_count++)) || true
       else
         any_failed=1
