@@ -9,6 +9,8 @@ services:
       - NET_ADMIN
     profiles: [ "media", "all" ]
     environment:
+      PUID: 1000
+      PGID: 1000
       UMASK: 0
       VPN_ENABLED: "yes"
       VPN_USER: $VPN_USERNAME
