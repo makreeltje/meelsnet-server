@@ -9,7 +9,7 @@ services:
     command:
       - '--housekeeping_interval=15s'
       - '--docker_only=true'
-      - '--disable_metrics=disk,network,tcp,udp,percpu,sched,process'
+      - '--disable_metrics=percpu,sched,tcp,udp,disk,diskIO,hugetlb,referenced_memory'
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:rw
