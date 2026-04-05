@@ -72,15 +72,3 @@ services:
       - --client-id=mosquitto-exporter
     ports:
       - 9234:9234
-
-  smartctl-exporter:
-    extends:
-      file: ../fragments/common-service.yml
-      service: common
-    container_name: smartctl-exporter
-    image: prometheuscommunity/smartctl-exporter:v0.14.0
-    profiles: [ "monitoring", "all" ]
-    privileged: true
-    user: root
-    ports:
-      - "9633:9633"
