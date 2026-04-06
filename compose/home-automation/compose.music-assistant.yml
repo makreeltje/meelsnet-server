@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common-host
     container_name: musicassistant
-    image: ghcr.io/music-assistant/server:2.8.1
+    image: ghcr.io/music-assistant/server:2.8.2
     cap_add:
       - SYS_ADMIN
       - DAC_READ_SEARCH
