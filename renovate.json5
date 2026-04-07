@@ -1,8 +1,14 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended", "docker:enableMajor", ":dependencyDashboard"],
- 
-  "ignorePaths": ["compose/archive/**"],
+  "dependencyDashboard": true,
+  "prConcurrentLimit": 0,
+  "separateMinorPatch": true,
+  "separateMajorMinor": true,
+  "separateMultipleMajor": true,
+  "commitMessagePrefix": "[{{parentDir}}]",
+  "additionalBranchPrefix": "{{parentDir}}-",
+  "ignorePaths": ["compose/archive/**", "compose/game-servers/**"],
   "docker-compose": {
     "managerFilePatterns": [
       "/(^|/)compose\..*\.ya?ml$/",
@@ -13,17 +19,17 @@
  
   "packageRules": [
     {
-      "description": "Automerge patch and minor updates instantly",
+      "description": "Automerge patch updates instantly",
       "matchDatasources": ["docker"],
-      "matchUpdateTypes": ["patch", "minor"],
+      "matchUpdateTypes": ["patch"],
       "automerge": true,
       "automergeType": "pr",
       "schedule": ["at any time"]
     },
     {
-      "description": "Major versions require manual review",
+      "description": "Major and minor versions require manual review",
       "matchDatasources": ["docker"],
-      "matchUpdateTypes": ["major"],
+      "matchUpdateTypes": ["major", "minor"],
       "automerge": false,
       "labels": ["major-update", "needs-review"]
     },
