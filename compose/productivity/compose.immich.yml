@@ -5,7 +5,7 @@ services:
       service: common
     container_name: immich
     user: "$PUID:$PGID"
-    image: ghcr.io/immich-app/immich-server:v2.6.3
+    image: ghcr.io/immich-app/immich-server:v2.7.4
     profiles: [ "productivity", "all" ]
     env_file:
       - $CONF_DIR/immich/.env
@@ -28,7 +28,7 @@ services:
       service: common
     container_name: immich-machine-learning
     user: "$PUID:$PGID"
-    image: ghcr.io/immich-app/immich-machine-learning:v2.6.3
+    image: ghcr.io/immich-app/immich-machine-learning:v2.7.4
     profiles: [ "productivity", "all" ]
     env_file:
       - $CONF_DIR/immich/.env
