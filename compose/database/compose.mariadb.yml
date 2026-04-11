@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: mariadb
-    image: mariadb:11.6
+    image: mariadb:11.8
     profiles: [ "database", "infra", "all" ]
     environment:
       MARIADB_ROOT_PASSWORD: $MARIADB_ROOT_PASSWORD
