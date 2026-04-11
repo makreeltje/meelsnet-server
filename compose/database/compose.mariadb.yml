@@ -8,7 +8,7 @@ services:
     profiles: [ "database", "infra", "all" ]
     environment:
       MARIADB_ROOT_PASSWORD: $MARIADB_ROOT_PASSWORD
-      MARIADB_DATABASE: MARIADB_DBNAME
+      MARIADB_DATABASE: $MARIADB_DBNAME
       MARIADB_USER: $MARIADB_DBUSER
       MARIADB_PASSWORD: $MARIADB_DBPASS
     volumes:
