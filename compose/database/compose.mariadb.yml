@@ -1,0 +1,24 @@
+services:
+  mariadb:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
+    container_name: mariadb
+    image: mariadb:11.6
+    profiles: [ "database", "infra", "all" ]
+    environment:
+      MARIADB_ROOT_PASSWORD: $MARIADB_ROOT_PASSWORD
+      MARIADB_DATABASE: MARIADB_DBNAME
+      MARIADB_USER: $MARIADB_DBUSER
+      MARIADB_PASSWORD: $MARIADB_DBPASS
+    volumes:
+      - $CONF_DIR/mariadb/data:/var/lib/mysql
+      - $CONF_DIR/mariadb/conf.d:/etc/mysql/conf.d:ro
+    ports:
+      - 3306:3306
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
