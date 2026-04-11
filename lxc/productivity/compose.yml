@@ -9,4 +9,8 @@ include:
   - compose/productivity/compose.paperless.yml
   - compose/productivity/compose.nextcloud.yml
   - compose/productivity/compose.backrest.yml
+  - compose/utilities/compose.it-tools.yml
+  - compose/utilities/compose.omni-tools.yml
+  # - compose/utilities/compose.printer-calculator.yml
+  - compose/utilities/compose.spoolman.yml
   - compose/monitoring/compose.cadvisor.yml
