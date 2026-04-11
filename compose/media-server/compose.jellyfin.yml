@@ -9,8 +9,9 @@ services:
     volumes:
       - $CONF_DIR/jellyfin/config:/config
       - $CONF_DIR/jellyfin/cache:/cache
+      - $MEDIA_DIR/appdata/jellyfin/metadata:/config/metadata
+      - $MEDIA_DIR/appdata/jellyfin/trickplay:/config/data/trickplay
       - $MEDIA_DIR:/media
-      # - "$CLOUD_DIR/rick/files/Documents/Personal/3D prints:/media/3d-prints"
     ports:
       - 8096:8096/tcp
       - 7359:7359/udp
