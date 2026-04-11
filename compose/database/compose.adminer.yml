@@ -14,11 +14,3 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.adminer-rtr.tls=true"
-      - "traefik.http.routers.adminer-rtr.entrypoints=websecure"
-      - "traefik.http.routers.adminer-rtr.rule=Host(`adminer.$DOMAINNAME_1`)"
-      - "traefik.http.routers.adminer-rtr.middlewares=chain-oauth@file"
-      - "traefik.http.routers.adminer-rtr.service=adminer-svc"
-      - "traefik.http.services.adminer-svc.loadbalancer.server.port=8080"
