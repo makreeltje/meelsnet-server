@@ -117,6 +117,9 @@
 <text x="74" y="764" class="serviceMuted">Nextcloud</text>
 <text x="74" y="782" class="serviceMuted">Backrest</text>
 <text x="326" y="728" class="service">Firefly III</text>
+<text x="326" y="746" class="service">IT-Tools</text>
+<text x="326" y="764" class="serviceMuted">Omni-Tools</text>
+<text x="326" y="782" class="serviceMuted">Spoolman</text>
 </g><g>
 <rect x="590" y="602" width="504" height="212" rx="22" fill="url(#panel)" stroke="#60a5fa" stroke-width="2.0" filter="url(#shadow)"/>
 <path d="M 612 602 H 1072 Q 1094 602 1094 624 V 656 H 590 V 624 Q 590 602 612 602 Z" fill="#22356f" stroke="#60a5fa" stroke-width="0"/>
@@ -141,30 +144,19 @@
 <text x="1402" y="746" class="service">Smartctl Exporter</text>
 <text x="1402" y="764" class="serviceMuted">Mosquitto Exporter</text>
 </g><g>
-<rect x="52" y="844" width="504" height="212" rx="22" fill="url(#panel)" stroke="#a1a1aa" stroke-width="2.0" filter="url(#shadow)"/>
-<path d="M 74 844 H 534 Q 556 844 556 866 V 898 H 52 V 866 Q 52 844 74 844 Z" fill="#52525b" stroke="#a1a1aa" stroke-width="0"/>
-<text x="74" y="877" class="title2">LXC 107 · utilities</text>
-<text x="534" y="877" class="ip" text-anchor="end">10.10.0.70</text>
-<text x="74" y="922" class="specs">1 vCPU · 1 GB RAM</text>
-<text x="74" y="942" class="meta">Kleine losse tools en 3D-print utilities</text>
-<text x="74" y="970" class="service">IT-Tools</text>
-<text x="74" y="988" class="service">Omni-Tools</text>
-<text x="74" y="1006" class="serviceMuted">Spoolman</text>
-<text x="74" y="1024" class="serviceMuted">Printer Calculator</text>
+<rect x="52" y="844" width="504" height="212" rx="22" fill="url(#panel)" stroke="#94a3b8" stroke-width="2.0" filter="url(#shadow)"/>
+<path d="M 74 844 H 534 Q 556 844 556 866 V 898 H 52 V 866 Q 52 844 74 844 Z" fill="#334155" stroke="#94a3b8" stroke-width="0"/>
+<text x="74" y="877" class="title2">LXC 108 · openclaw</text>
+<text x="534" y="877" class="ip" text-anchor="end">10.10.0.80</text>
+<text x="74" y="922" class="specs">4 vCPU · 4 GB RAM</text>
+<text x="74" y="942" class="meta">Simple representation only</text>
+<text x="74" y="970" class="service">OpenClaw</text>
 </g><g>
 <rect x="590" y="844" width="504" height="212" rx="22" fill="url(#panel)" stroke="#94a3b8" stroke-width="2.0" filter="url(#shadow)"/>
 <path d="M 612 844 H 1072 Q 1094 844 1094 866 V 898 H 590 V 866 Q 590 844 612 844 Z" fill="#334155" stroke="#94a3b8" stroke-width="0"/>
-<text x="612" y="877" class="title2">LXC 108 · openclaw</text>
-<text x="1072" y="877" class="ip" text-anchor="end">10.10.0.80</text>
-<text x="612" y="922" class="specs">4 vCPU · 4 GB RAM</text>
+<text x="612" y="877" class="title2">LXC 109 · money</text>
+<text x="1072" y="877" class="ip" text-anchor="end">10.10.0.90</text>
+<text x="612" y="922" class="specs">2 vCPU · 2 GB RAM</text>
 <text x="612" y="942" class="meta">Simple representation only</text>
-<text x="612" y="970" class="service">OpenClaw</text>
-</g><g>
-<rect x="1128" y="844" width="504" height="212" rx="22" fill="url(#panel)" stroke="#94a3b8" stroke-width="2.0" filter="url(#shadow)"/>
-<path d="M 1150 844 H 1610 Q 1632 844 1632 866 V 898 H 1128 V 866 Q 1128 844 1150 844 Z" fill="#334155" stroke="#94a3b8" stroke-width="0"/>
-<text x="1150" y="877" class="title2">LXC 109 · money</text>
-<text x="1610" y="877" class="ip" text-anchor="end">10.10.0.90</text>
-<text x="1150" y="922" class="specs">2 vCPU · 2 GB RAM</text>
-<text x="1150" y="942" class="meta">Simple representation only</text>
-<text x="1150" y="970" class="service">Money</text>
+<text x="612" y="970" class="service">Money</text>
 </g></svg>
