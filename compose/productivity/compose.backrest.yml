@@ -10,14 +10,17 @@ services:
       XDG_CACHE_HOME: /cache
       BACKREST_CONFIG: /config/config.json
       BACKREST_DATA: /data
+      AZURE_ACCOUNT_NAME: $AZURE_ACCOUNT_NAME
+      AZURE_ACCOUNT_SAS: $AZURE_ACCOUNT_SAS
+      RESTIC_PASSWORD: $RESTIC_PASSWORD
     volumes:
       - $CONF_DIR/backrest/data:/data
       - $CONF_DIR/backrest/config:/config
       - $CONF_DIR/backrest/cache:/cache
       - $DOCKER_DIR:/docker
-      - $MNT_DIR:/mnt
+      - $MNT_DIR/backups:/mnt/backups
     ports:
-      - 9898:9898
+      - 10.10.0.40:9898:9898
     healthcheck:
       test: [ "CMD", "wget", "-qO-", "http://localhost:9898/" ]
       interval: 60s
