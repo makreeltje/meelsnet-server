@@ -86,7 +86,11 @@
         "Paperless",
         "Nextcloud",
         "Backrest",
-        "Firefly III"
+        "Firefly III",
+        "IT-Tools",
+        "Omni-Tools",
+        "Spoolman",
+        "Printer Calculator"
       ]
     },
     {
@@ -114,19 +118,6 @@
         "Node Exporter",
         "Smartctl Exporter",
         "Mosquitto Exporter"
-      ]
-    },
-    {
-      "title": "LXC 107 · utilities",
-      "ip": "10.10.0.70",
-      "specs": "1 vCPU · 1 GB RAM",
-      "subtitle": "Kleine losse tools en 3D-print utilities",
-      "accent": "gray",
-      "services": [
-        "IT-Tools",
-        "Omni-Tools",
-        "Spoolman",
-        "Printer Calculator"
       ]
     },
     {
