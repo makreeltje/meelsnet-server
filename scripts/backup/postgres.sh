@@ -8,6 +8,10 @@
 # Nieuwe databases worden automatisch opgepakt — geen script-onderhoud bij nieuwe services.
 #
 # Run schedule: dagelijks 04:00 via /etc/cron.d/homelab-backups op Proxmox host.
+#
+# Output policy: silent on success. Bij failure: full log naar journald via
+# `logger -p user.err -t postgres-backup`. Bekijk failures met:
+#   journalctl -t postgres-backup -p err
 
 set -euo pipefail
 
@@ -17,46 +21,52 @@ BACKUP_DIR=/mnt/pve/data/backups/databases/postgres
 DATE=$(date +%Y-%m-%d)
 RETENTION_DAYS=7
 
-mkdir -p "$BACKUP_DIR"
+LOG=$(mktemp)
+trap 'rm -f "$LOG"' EXIT
+trap 'logger -p user.err -t postgres-backup "FAILED at line $LINENO"; logger -p user.err -t postgres-backup -f "$LOG"; exit 1' ERR
 
-# Auto-discover alle non-template databases
-mapfile -t DATABASES < <(
+{
+  echo "=== postgres.sh start: $(date -Iseconds) ==="
+
+  mkdir -p "$BACKUP_DIR"
+
+  mapfile -t DATABASES < <(
+    pct exec $CTID -- docker exec $CONTAINER \
+      psql -U postgres -tAc \
+      "SELECT datname FROM pg_database WHERE datistemplate = false ORDER BY datname;"
+  )
+
+  if [ ${#DATABASES[@]} -eq 0 ]; then
+    echo "ERROR: no databases discovered — connection or permission issue?"
+    exit 1
+  fi
+
+  echo "Discovered ${#DATABASES[@]} databases: ${DATABASES[*]}"
+
+  echo "Dumping globals..."
   pct exec $CTID -- docker exec $CONTAINER \
-    psql -U postgres -tAc \
-    "SELECT datname FROM pg_database WHERE datistemplate = false ORDER BY datname;"
-)
+    pg_dumpall -U postgres --globals-only \
+    > "$BACKUP_DIR/${DATE}_globals.sql"
 
-if [ ${#DATABASES[@]} -eq 0 ]; then
-  echo "ERROR: no databases discovered — connection or permission issue?" >&2
-  exit 1
-fi
+  for db in "${DATABASES[@]}"; do
+    echo "Dumping $db..."
+    pct exec $CTID -- docker exec $CONTAINER \
+      pg_dump -U postgres --clean --if-exists "$db" \
+      > "$BACKUP_DIR/${DATE}_${db}.sql"
+  done
 
-echo "Discovered ${#DATABASES[@]} databases: ${DATABASES[*]}"
+  find "$BACKUP_DIR" -name "*.sql" -type f -mtime +$RETENTION_DAYS -delete
 
-# Globals (rollen, tablespaces, ACLs)
-echo "Dumping globals..."
-pct exec $CTID -- docker exec $CONTAINER \
-  pg_dumpall -U postgres --globals-only \
-  > "$BACKUP_DIR/${DATE}_globals.sql"
+  EXPECTED_FILES=$((${#DATABASES[@]} + 1))
+  ACTUAL_FILES=$(find "$BACKUP_DIR" -name "${DATE}_*.sql" -type f -size +0c | wc -l)
 
-# Per-database dumps
-for db in "${DATABASES[@]}"; do
-  echo "Dumping $db..."
-  pct exec $CTID -- docker exec $CONTAINER \
-    pg_dump -U postgres --clean --if-exists "$db" \
-    > "$BACKUP_DIR/${DATE}_${db}.sql"
-done
+  if [ "$ACTUAL_FILES" -ne "$EXPECTED_FILES" ]; then
+    echo "ERROR: expected $EXPECTED_FILES files, found $ACTUAL_FILES"
+    exit 1
+  fi
 
-# Local retention: verwijder dumps ouder dan RETENTION_DAYS
-find "$BACKUP_DIR" -name "*.sql" -type f -mtime +$RETENTION_DAYS -delete
+  echo "OK: $ACTUAL_FILES dumps written to $BACKUP_DIR"
+  echo "=== postgres.sh end: $(date -Iseconds) ==="
+} > "$LOG" 2>&1
 
-# Sanity check
-EXPECTED_FILES=$((${#DATABASES[@]} + 1))
-ACTUAL_FILES=$(find "$BACKUP_DIR" -name "${DATE}_*.sql" -type f -size +0c | wc -l)
-
-if [ "$ACTUAL_FILES" -ne "$EXPECTED_FILES" ]; then
-  echo "ERROR: expected $EXPECTED_FILES files, found $ACTUAL_FILES" >&2
-  exit 1
-fi
-
-echo "OK: $ACTUAL_FILES dumps written to $BACKUP_DIR"
+# Success: log discarded by EXIT trap, nothing written anywhere → silent
