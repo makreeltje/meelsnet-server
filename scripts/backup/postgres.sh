@@ -4,16 +4,11 @@
 # Output: /mnt/pve/data/backups/databases/postgres/<date>_<dbname>.sql
 # Local retention: 7 dagen (Backrest doet long-term naar Azure via 'databases' plan)
 #
-# Auto-discover: queries pg_database at runtime, filtert system templates weg.
-# Nieuwe databases worden automatisch opgepakt — geen script-onderhoud bij nieuwe services.
-#
-# Run schedule: dagelijks 04:00 via /etc/cron.d/homelab-backups op Proxmox host.
-#
-# Output policy: silent on success. Bij failure: full log naar journald via
+# Output policy: silent on success. Bij failure: full log via
 # `logger -p user.err -t postgres-backup`. Bekijk failures met:
 #   journalctl -t postgres-backup -p err
 
-set -euo pipefail
+set -uo pipefail
 
 CTID=101
 CONTAINER=postgres
@@ -22,51 +17,76 @@ DATE=$(date +%Y-%m-%d)
 RETENTION_DAYS=7
 
 LOG=$(mktemp)
-trap 'rm -f "$LOG"' EXIT
-trap 'logger -p user.err -t postgres-backup "FAILED at line $LINENO"; logger -p user.err -t postgres-backup -f "$LOG"; exit 1' ERR
+cleanup() { rm -f "$LOG"; }
+trap cleanup EXIT
 
-{
-  echo "=== postgres.sh start: $(date -Iseconds) ==="
+fail() {
+  local msg="$1"
+  {
+    echo "FAILED: $msg"
+    echo "--- log ---"
+    cat "$LOG" 2>/dev/null || true
+  } | logger -p user.err -t postgres-backup
+  exit 1
+}
 
-  mkdir -p "$BACKUP_DIR"
-
-  mapfile -t DATABASES < <(
-    pct exec $CTID -- docker exec $CONTAINER \
-      psql -U postgres -tAc \
-      "SELECT datname FROM pg_database WHERE datistemplate = false ORDER BY datname;"
-  )
-
-  if [ ${#DATABASES[@]} -eq 0 ]; then
-    echo "ERROR: no databases discovered — connection or permission issue?"
-    exit 1
+run() {
+  local desc="$1"
+  shift
+  echo ">>> $desc" >> "$LOG"
+  if ! "$@" >> "$LOG" 2>&1; then
+    fail "$desc"
   fi
+}
 
-  echo "Discovered ${#DATABASES[@]} databases: ${DATABASES[*]}"
+run_capture() {
+  local desc="$1"
+  local outfile="$2"
+  shift 2
+  echo ">>> $desc (-> $outfile)" >> "$LOG"
+  if ! "$@" > "$outfile" 2>> "$LOG"; then
+    fail "$desc"
+  fi
+}
 
-  echo "Dumping globals..."
-  pct exec $CTID -- docker exec $CONTAINER \
-    pg_dumpall -U postgres --globals-only \
-    > "$BACKUP_DIR/${DATE}_globals.sql"
+mkdir -p "$BACKUP_DIR" || fail "mkdir $BACKUP_DIR"
 
-  for db in "${DATABASES[@]}"; do
-    echo "Dumping $db..."
-    pct exec $CTID -- docker exec $CONTAINER \
-      pg_dump -U postgres --clean --if-exists "$db" \
-      > "$BACKUP_DIR/${DATE}_${db}.sql"
-  done
+# Auto-discover alle non-template databases
+DBLIST=$(pct exec $CTID -- docker exec $CONTAINER \
+  psql -U postgres -tAc \
+  "SELECT datname FROM pg_database WHERE datistemplate = false ORDER BY datname;" \
+  2>> "$LOG") || fail "database discovery"
 
+if [ -z "$DBLIST" ]; then
+  echo "no databases discovered" >> "$LOG"
+  fail "empty database list"
+fi
+
+mapfile -t DATABASES <<< "$DBLIST"
+echo "Discovered ${#DATABASES[@]} databases: ${DATABASES[*]}" >> "$LOG"
+
+# Globals
+run_capture "dump globals" "$BACKUP_DIR/${DATE}_globals.sql" \
+  pct exec $CTID -- docker exec $CONTAINER pg_dumpall -U postgres --globals-only
+
+# Per-database dumps
+for db in "${DATABASES[@]}"; do
+  run_capture "dump $db" "$BACKUP_DIR/${DATE}_${db}.sql" \
+    pct exec $CTID -- docker exec $CONTAINER pg_dump -U postgres --clean --if-exists "$db"
+done
+
+# Local retention
+run "cleanup old dumps" \
   find "$BACKUP_DIR" -name "*.sql" -type f -mtime +$RETENTION_DAYS -delete
 
-  EXPECTED_FILES=$((${#DATABASES[@]} + 1))
-  ACTUAL_FILES=$(find "$BACKUP_DIR" -name "${DATE}_*.sql" -type f -size +0c | wc -l)
+# Sanity check
+EXPECTED_FILES=$((${#DATABASES[@]} + 1))
+ACTUAL_FILES=$(find "$BACKUP_DIR" -name "${DATE}_*.sql" -type f -size +0c 2>/dev/null | wc -l)
 
-  if [ "$ACTUAL_FILES" -ne "$EXPECTED_FILES" ]; then
-    echo "ERROR: expected $EXPECTED_FILES files, found $ACTUAL_FILES"
-    exit 1
-  fi
+if [ "$ACTUAL_FILES" -ne "$EXPECTED_FILES" ]; then
+  echo "expected $EXPECTED_FILES files, found $ACTUAL_FILES" >> "$LOG"
+  fail "file count mismatch"
+fi
 
-  echo "OK: $ACTUAL_FILES dumps written to $BACKUP_DIR"
-  echo "=== postgres.sh end: $(date -Iseconds) ==="
-} > "$LOG" 2>&1
-
-# Success: log discarded by EXIT trap, nothing written anywhere → silent
+# Success: nothing to stdout, nothing to logger, cleanup trap removes $LOG
+exit 0
