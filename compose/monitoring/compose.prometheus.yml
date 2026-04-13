@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: prometheus
-    image: prom/prometheus:v3.11.1
+    image: prom/prometheus:v3.11.2
     user: $PUID:$PGID
     profiles: [ "monitoring", "all" ]
     command:
