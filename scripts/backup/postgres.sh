@@ -7,8 +7,31 @@
 # Output policy: silent on success. Bij failure: full log via
 # `logger -p user.err -t postgres-backup`. Bekijk failures met:
 #   journalctl -t postgres-backup -p err
+#
+# Monitoring: pingt healthchecks.io (start/success/fail) als HC_POSTGRES_BACKUP
+# is gedefinieerd in /etc/default/backup-scripts. Graceful degradation:
+# ontbrekende file of lege variabele = geen pings, backup draait nog wel.
 
 set -uo pipefail
+
+# Healthchecks.io ping URL (optional, graceful degradation)
+# Sourced from /etc/default/backup-scripts if present.
+if [ -f /etc/default/backup-scripts ]; then
+  # shellcheck disable=SC1091
+  source /etc/default/backup-scripts
+fi
+HC_URL="${HC_POSTGRES_BACKUP:-}"
+
+hc_ping() {
+  local endpoint="${1:-}"  # "", "/start", or "/fail"
+  local body="${2:-}"
+  [ -z "$HC_URL" ] && return 0
+  if [ -n "$body" ]; then
+    curl -fsS -m 10 --retry 3 --data-raw "$body" -o /dev/null "${HC_URL}${endpoint}" || true
+  else
+    curl -fsS -m 10 --retry 3 -o /dev/null "${HC_URL}${endpoint}" || true
+  fi
+}
 
 CTID=101
 CONTAINER=postgres
@@ -27,6 +50,7 @@ fail() {
     echo "--- log ---"
     cat "$LOG" 2>/dev/null || true
   } | logger -p user.err -t postgres-backup
+  hc_ping "/fail" "$(tail -n 50 "$LOG" 2>/dev/null || echo "$msg")"
   exit 1
 }
 
@@ -48,6 +72,8 @@ run_capture() {
     fail "$desc"
   fi
 }
+
+hc_ping "/start"
 
 mkdir -p "$BACKUP_DIR" || fail "mkdir $BACKUP_DIR"
 
@@ -89,4 +115,5 @@ if [ "$ACTUAL_FILES" -ne "$EXPECTED_FILES" ]; then
 fi
 
 # Success: nothing to stdout, nothing to logger, cleanup trap removes $LOG
+hc_ping
 exit 0
