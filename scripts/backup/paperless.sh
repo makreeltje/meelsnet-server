@@ -2,8 +2,8 @@
 set -euo pipefail
 
 SCRIPT_NAME="paperless"
-DATA_SRC="/mnt/pve/data/paperless"
-DATA_DST="/mnt/pve/data/backups/app-data/paperless/data"
+CT_ID=104
+CONTAINER="paperless"
 
 source /etc/default/backup-scripts
 HC_URL="${HC_PAPERLESS:-}"
@@ -20,15 +20,12 @@ fail() {
     exit 1
 }
 
-run() {
-    "$@" || fail "Command failed: $*"
-}
-
 hc_ping "/start"
 
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] Rsync Paperless data: $DATA_SRC -> $DATA_DST"
-mkdir -p "$DATA_DST"
-run rsync -a --delete "$DATA_SRC/" "$DATA_DST/"
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] Running Paperless document_exporter"
+pct exec "$CT_ID" -- docker exec "$CONTAINER" \
+    document_exporter ../export \
+    || fail "document_exporter failed"
 
 hc_ping
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] Paperless backup completed"
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] Paperless export completed"
