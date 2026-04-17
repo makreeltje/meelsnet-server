@@ -3,8 +3,9 @@ set -euo pipefail
 
 SCRIPT_NAME="homeassistant"
 CT_ID=103
-SRC="/root/docker/appdata/homeassistant"
-DST="/mnt/backups/app-data/homeassistant/data"
+HA_BACKUPS="/root/docker/appdata/homeassistant/config/backups"
+DST="/mnt/backups/app-data/homeassistant"
+RETENTION_DAYS=7
 
 source /etc/default/backup-scripts
 HC_URL="${HC_HOMEASSISTANT:-}"
@@ -21,17 +22,23 @@ fail() {
     exit 1
 }
 
-run() {
-    "$@" || fail "Command failed: $*"
-}
-
 hc_ping "/start"
 
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] Rsync HA config via pct exec: $SRC -> $DST"
-run pct exec "$CT_ID" -- bash -c "
+# Zoek nieuwste HA backup .tar
+LATEST=$(pct exec "$CT_ID" -- bash -c "ls -t '${HA_BACKUPS}'/*.tar 2>/dev/null | head -1") \
+    || fail "Geen HA backups gevonden in ${HA_BACKUPS}"
+
+[[ -z "$LATEST" ]] && fail "Geen HA backups gevonden in ${HA_BACKUPS}"
+
+FILENAME=$(basename "$LATEST")
+
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] Kopieer HA backup: $FILENAME"
+pct exec "$CT_ID" -- bash -c "
+    set -e
     mkdir -p '${DST}'
-    rsync -a --delete '${SRC}/' '${DST}/'
-"
+    cp '${LATEST}' '${DST}/${FILENAME}'
+    find '${DST}' -name '*.tar' -mtime +${RETENTION_DAYS} -delete
+" || fail "Kopiëren HA backup mislukt"
 
 hc_ping
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] Home Assistant backup completed"
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] Home Assistant backup completed: $FILENAME"
