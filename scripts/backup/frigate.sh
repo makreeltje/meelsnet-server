@@ -4,7 +4,9 @@ set -euo pipefail
 SCRIPT_NAME="frigate"
 CT_ID=103
 SRC="/root/docker/appdata/frigate"
-DST="/mnt/backups/app-data/frigate/data"
+DST="/mnt/backups/app-data/frigate"
+DATE=$(date +%Y-%m-%d)
+RETENTION_DAYS=7
 
 source /etc/default/backup-scripts
 HC_URL="${HC_FRIGATE:-}"
@@ -21,17 +23,15 @@ fail() {
     exit 1
 }
 
-run() {
-    "$@" || fail "Command failed: $*"
-}
-
 hc_ping "/start"
 
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] Rsync Frigate config+DB via pct exec: $SRC -> $DST"
-run pct exec "$CT_ID" -- bash -c "
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] Tar Frigate config+DB: $SRC"
+pct exec "$CT_ID" -- bash -c "
+    set -e
     mkdir -p '${DST}'
-    rsync -a --delete '${SRC}/' '${DST}/'
-"
+    tar czf '${DST}/${DATE}_frigate.tar.gz' -C '$(dirname "$SRC")' '$(basename "$SRC")'
+    find '${DST}' -name '*_frigate.tar.gz' -mtime +${RETENTION_DAYS} -delete
+" || fail "Frigate tar failed"
 
 hc_ping
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] Frigate backup completed"
