@@ -11,7 +11,7 @@ services:
     volumes:
       - $CONF_DIR/postgres:/var/lib/postgresql/data
     ports:
-      - 5432:5432
+      - 10.10.0.10:5432:5432
     shm_size: 256M
     healthcheck:
       interval: 30s

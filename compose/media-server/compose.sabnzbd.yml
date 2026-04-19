@@ -10,7 +10,7 @@ services:
       - $CONF_DIR/sabnzbd/config:/config
       - $DOWNLOAD_DIR:/downloads
     ports:
-      - 8082:8080
+      - 10.10.0.20:8082:8080
     healthcheck:
       test: [ "CMD", "curl", "-fsSo", "/dev/null", "http://localhost:8080/api?mode=version&output=json&apikey=$SABNZBD_API_KEY" ]
       interval: 30s

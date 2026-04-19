@@ -11,7 +11,7 @@ services:
       - $MEDIA_DIR/movies:/movies
       - $MEDIA_DIR/tv-shows:/tv
     ports:
-      - 6767:6767
+      - 10.10.0.20:6767:6767
     healthcheck:
       test: [ "CMD", "curl", "-fsSo", "/dev/null", "http://localhost:6767/api/system/ping" ]
       interval: 30s

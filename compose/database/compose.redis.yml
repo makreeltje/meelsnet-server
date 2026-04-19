@@ -9,7 +9,7 @@ services:
     volumes:
       - $CONF_DIR/redis/data:/data
     ports:
-      - 6379:6379
+      - 10.10.0.10:6379:6379
     healthcheck:
       interval: 30s
       retries: 5

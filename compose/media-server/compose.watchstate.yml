@@ -10,7 +10,7 @@ services:
     volumes:
       - $CONF_DIR/watchstate/config:/config
     ports:
-      - 8081:8080
+      - 10.10.0.20:8081:8080
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8080/" ]
       interval: 30s

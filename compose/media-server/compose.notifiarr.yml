@@ -13,7 +13,7 @@ services:
       - /var/run/utmp:/var/run/utmp
       - /etc/machine-id:/etc/machine-id
     ports:
-      - 5454:5454
+      - 10.10.0.20:5454:5454
     healthcheck:
       test: ["CMD-SHELL", "cat /proc/net/tcp6 /proc/net/tcp 2>/dev/null | grep -q '154E' || exit 1"]
       interval: 60s

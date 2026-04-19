@@ -37,7 +37,7 @@ services:
       - $DMS_DIR/consume:/usr/src/paperless/consume
       - $BACKUP_DIR/app-data/paperless/export:/usr/src/paperless/export
     ports:
-      - 8000:8000
+      - 10.10.0.40:8000:8000
     healthcheck:
       test: [ "CMD", "curl", "-fsSo", "/dev/null", "http://localhost:8000/" ]
       interval: 30s

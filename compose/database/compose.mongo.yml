@@ -12,7 +12,7 @@ services:
     volumes:
       - $CONF_DIR/mongo/db:/data/db
     ports:
-      - 27017:27017
+      - 10.10.0.10:27017:27017
     healthcheck:
       test: [ "CMD-SHELL", "mongosh --quiet --eval \"db.runCommand('ping').ok\" || exit 1" ]
       interval: 30s

@@ -11,8 +11,7 @@ services:
       - $CONF_DIR/mosquitto/data:/mosquitto/data
       - $CONF_DIR/mosquitto/log:/mosquitto/log
     ports:
-      - 1883:1883
-      - 9001:9001
+      - 10.10.0.30:1883:1883
     healthcheck:
       test: [ "CMD-SHELL", "mosquitto_sub -h localhost -t '$$SYS/#' -C 1 -u $MOSQUITTO_USER -P $MOSQUITTO_PASS -W 3 || exit 1" ]
       interval: 30s

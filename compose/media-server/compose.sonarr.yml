@@ -12,30 +12,9 @@ services:
       - $DOWNLOAD_DIR:/data
       - $DOWNLOAD_DIR:/downloads
     ports:
-      - 8989:8989
+      - 10.10.0.20:8989:8989
     healthcheck:
       test: [ "CMD", "curl", "-fsSo", "/dev/null", "http://localhost:8989/api/v3/system/status?apikey=$SONARR_API_KEY" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 30s
-
-  sonarr-4k:
-    extends:
-      file: ../fragments/common-service.yml
-      service: common-lsio
-    container_name: sonarr-4k
-    image: linuxserver/sonarr:4.0.17
-    profiles: [ "media", "all" ]
-    volumes:
-      - $CONF_DIR/sonarr-4k/config:/config
-      - $MEDIA_DIR:/media
-      - $DOWNLOAD_DIR:/data
-      - $DOWNLOAD_DIR:/downloads
-    ports:
-      - 8990:8989
-    healthcheck:
-      test: [ "CMD", "curl", "-fsSo", "/dev/null", "http://localhost:8989/api/v3/system/status?apikey=$SONARR_4K_API_KEY" ]
       interval: 30s
       timeout: 10s
       retries: 3

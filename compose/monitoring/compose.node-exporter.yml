@@ -18,4 +18,4 @@ services:
       - /sys:/host/sys:ro
       - /:/rootfs:ro
     ports:
-      - 9100:9100
+      - 10.10.0.60:9100:9100

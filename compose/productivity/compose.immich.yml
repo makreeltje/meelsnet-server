@@ -14,7 +14,7 @@ services:
       - $CONF_DIR/immich/external:/usr/src/app/external
       - /etc/localtime:/etc/localtime:ro
     ports:
-      - 2283:2283
+      - 10.10.0.40:2283:2283
     healthcheck:
       test: [ "CMD", "node", "-e", "require('http').get('http://localhost:2283/api/server/ping', r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))" ]
       interval: 30s

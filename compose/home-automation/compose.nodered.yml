@@ -10,7 +10,7 @@ services:
     volumes:
       - $CONF_DIR/node-red/data:/data
     ports:
-      - 1880:1880
+      - 10.10.0.30:1880:1880
     healthcheck:
       test: [ "CMD", "wget", "-qO-", "http://127.0.0.1:1880/" ]
       interval: 30s

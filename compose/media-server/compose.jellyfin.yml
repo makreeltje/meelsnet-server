@@ -13,7 +13,7 @@ services:
       - $MEDIA_DIR/appdata/jellyfin/trickplay:/config/data/trickplay
       - $MEDIA_DIR:/media
     ports:
-      - 8096:8096/tcp
+      - 10.10.0.20:8096:8096/tcp
       - 7359:7359/udp
     healthcheck:
       test: [ "CMD", "curl", "-fsSo", "/dev/null", "http://localhost:8096/health" ]

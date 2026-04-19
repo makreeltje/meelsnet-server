@@ -10,7 +10,7 @@ services:
       - $CONF_DIR/zigbee2mqtt/data:/app/data
       - /run/udev:/run/udev:ro
     ports:
-      - 8080:8080
+      - 10.10.0.30:8080:8080
     healthcheck:
       test: [ "CMD", "wget", "-qO-", "http://localhost:8080/" ]
       interval: 30s

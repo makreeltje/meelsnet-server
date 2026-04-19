@@ -15,7 +15,7 @@ services:
       - $CONF_DIR/mariadb/data:/var/lib/mysql
       - $CONF_DIR/mariadb/conf.d:/etc/mysql/conf.d:ro
     ports:
-      - 3306:3306
+      - 10.10.0.10:3306:3306
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       interval: 30s

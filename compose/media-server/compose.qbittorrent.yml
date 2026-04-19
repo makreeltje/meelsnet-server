@@ -35,7 +35,7 @@ services:
       - $CONF_DIR/qbittorrent/config:/config
       - /etc/localtime:/etc/localtime:ro
     ports:
-      - 8083:8080
+      - 10.10.0.20:8083:8080
       - 8118:8118
       - 9118:9118
       - 58946:58946
