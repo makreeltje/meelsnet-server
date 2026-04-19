@@ -10,7 +10,7 @@ services:
       - $CONF_DIR/tautulli/config:/config
       - $CONF_DIR/plex/config/Library/Application\ Support/Plex\ Media\ Server/Logs:/logs:ro
     ports:
-      - 8181:8181
+      - 10.10.0.20:8181:8181
     healthcheck:
       test: [ "CMD", "curl", "-fsSo", "/dev/null", "http://localhost:8181/status" ]
       interval: 30s

@@ -13,7 +13,7 @@ services:
       - $CONF_DIR/promtail/config:/mnt/config
       - /var/log:/var/log
     ports:
-      - 9080:9080
+      - 10.10.0.60:9080:9080
     healthcheck:
       test: [ "CMD", "wget", "-qO-", "http://localhost:9080/ready" ]
       interval: 30s

@@ -10,7 +10,7 @@ services:
     volumes:
       - $CONF_DIR/firefly/upload:/var/www/html/storage/upload
     ports:
-      - 8080:8080
+      - 10.10.0.40:8080:8080
     healthcheck:
       test: [ "CMD", "wget", "-qO-", "http://localhost:8080/" ]
       interval: 60s

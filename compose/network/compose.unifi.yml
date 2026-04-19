@@ -15,7 +15,7 @@ services:
     volumes:
       - $CONF_DIR/unifi/config:/config
     ports:
-      - 8443:8443
+      - 10.10.0.50:8443:8443
       - 3478:3478/udp
       - 10001:10001/udp
       - 8080:8080

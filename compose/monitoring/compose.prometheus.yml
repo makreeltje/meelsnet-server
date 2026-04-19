@@ -18,7 +18,7 @@ services:
       - $CONF_DIR/prometheus:/prometheus
       - $CONF_DIR/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
-      - 9090:9090
+      - 10.10.0.60:9090:9090
     healthcheck:
       test: [ "CMD", "wget", "-qO-", "http://localhost:9090/-/healthy" ]
       interval: 30s

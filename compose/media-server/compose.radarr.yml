@@ -12,7 +12,7 @@ services:
       - $DOWNLOAD_DIR:/data
       - $DOWNLOAD_DIR:/downloads
     ports:
-      - 7878:7878
+      - 10.10.0.20:7878:7878
     healthcheck:
       test: [ "CMD", "curl", "-fsSo", "/dev/null", "http://localhost:7878/api/v3/health?apiKey=$RADARR_API_KEY" ]
       interval: 30s
@@ -33,7 +33,7 @@ services:
       - $DOWNLOAD_DIR:/data
       - $DOWNLOAD_DIR:/downloads
     ports:
-      - 7879:7878
+      - 10.10.0.20:7879:7878
     healthcheck:
       test: [ "CMD", "curl", "-fsSo", "/dev/null", "http://localhost:7878/api/v3/health?apiKey=$RADARR_4K_API_KEY" ]
       interval: 30s
