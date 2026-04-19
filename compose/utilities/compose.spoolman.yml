@@ -9,7 +9,7 @@ services:
     volumes:
       - $CONF_DIR/spoolman/data:/home/app/.local/share/spoolman
     ports:
-      - 8001:8000
+      - 10.10.0.40:8001:8000
     healthcheck:
       test: [ "CMD", "wget", "-qO-", "http://localhost:8000/api/v1/info" ]
       interval: 30s

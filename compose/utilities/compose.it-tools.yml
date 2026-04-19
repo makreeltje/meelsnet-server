@@ -7,4 +7,4 @@ services:
     image: ghcr.io/corentinth/it-tools:2024.10.22-7ca5933
     profiles: [ "utilities", "all" ]
     ports:
-      - 8082:80
+      - 10.10.0.40:8082:80
