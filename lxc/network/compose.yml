@@ -5,5 +5,6 @@ networks:
 
 include:
   - compose/network/compose.unifi.yml
+  - compose/network/compose.unifi-os.yml
   - compose/network/compose.pihole.yml
   - compose/monitoring/compose.cadvisor.yml

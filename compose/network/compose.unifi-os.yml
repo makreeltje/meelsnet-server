@@ -1,0 +1,40 @@
+services:
+  unifi-os:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
+    container_name: unifi-os
+    image: ghcr.io/lemker/unifi-os-server:latest
+    profiles: [ "network", "all" ]
+    cgroup: host
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+    tmpfs:
+      - /run:exec
+      - /run/lock
+      - /tmp:exec
+      - /var/lib/journal
+      - /var/opt/unifi/tmp:size=64m
+    environment:
+      UOS_SYSTEM_IP: 192.168.2.205  # Jouw 192.168.2.x IP van CT 105
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+      - $CONF_DIR/unifi-os/persistent:/persistent
+      - $CONF_DIR/unifi-os/var-log:/var/log
+      - $CONF_DIR/unifi-os/data:/data
+      - $CONF_DIR/unifi-os/srv:/srv
+      - $CONF_DIR/unifi-os/var-lib-unifi:/var/lib/unifi
+      - $CONF_DIR/unifi-os/var-lib-mongodb:/var/lib/mongodb
+      - $CONF_DIR/unifi-os/etc-rabbitmq-ssl:/etc/rabbitmq/ssl
+    ports:
+      - 10.10.0.50:11443:443    # GUI (was 8443, Traefik route aanpassen!)
+      - 8080:8080                # Device inform (bare, moet bereikbaar zijn voor APs)
+      - 3478:3478/udp            # STUN
+      - 10003:10003/udp          # Discovery (was 10001, UOS gebruikt 10003)
+    healthcheck:
+      test: [ "CMD", "curl", "-fsSo", "/dev/null", "--insecure", "https://localhost:443/" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s         # UOS is trager met opstarten dan LSIO
