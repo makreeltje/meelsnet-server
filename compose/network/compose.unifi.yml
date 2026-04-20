@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common-lsio
     container_name: unifi-network-application
-    image: lscr.io/linuxserver/unifi-network-application:10.1.89
+    image: lscr.io/linuxserver/unifi-network-application:10.3.55
     profiles: [ "network", "all" ]
     environment:
       MONGO_USER: $UNIFI_DBUSER
