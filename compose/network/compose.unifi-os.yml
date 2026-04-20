@@ -7,9 +7,7 @@ services:
     image: ghcr.io/lemker/unifi-os-server:latest
     profiles: [ "network", "all" ]
     cgroup: host
-    cap_add:
-      - NET_RAW
-      - NET_ADMIN
+    privileged: true
     tmpfs:
       - /run:exec
       - /run/lock
