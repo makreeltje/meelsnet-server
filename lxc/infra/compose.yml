@@ -20,6 +20,5 @@ include:
   - compose/database/compose.postgres.yml
   - compose/database/compose.redis.yml
   - compose/database/compose.mariadb.yml
-  - compose/database/compose.mongo.yml
   - compose/database/compose.adminer.yml
   - compose/monitoring/compose.cadvisor.yml
