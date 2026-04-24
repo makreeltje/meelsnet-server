@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: print-costs
-    image: ghcr.io/makreeltje/3d-printer:v0.2.2
+    image: ghcr.io/makreeltje/3d-printer:v0.3.0
     profiles: [ "utilities", "all" ]
     volumes:
       - $CLOUD_DIR/rick/files/Documents/Personal/3D prints:/app/3D prints
