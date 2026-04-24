@@ -13,4 +13,5 @@ include:
   - compose/utilities/compose.omni-tools.yml
   # - compose/utilities/compose.printer-calculator.yml
   - compose/utilities/compose.spoolman.yml
+  - compose/utilities/compose.print-costs.yml
   - compose/monitoring/compose.cadvisor.yml
