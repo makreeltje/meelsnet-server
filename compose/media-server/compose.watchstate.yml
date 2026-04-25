@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: watchstate
-    image: ghcr.io/arabcoders/watchstate:v1.5.1
+    image: ghcr.io/arabcoders/watchstate:v1.6.0
     profiles: [ "media", "all" ]
     user: ${PUID:-1000}:${PGID:-1000}
     volumes:
