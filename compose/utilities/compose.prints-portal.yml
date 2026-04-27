@@ -1,0 +1,36 @@
+services:
+  prints-portal:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
+    container_name: prints-portal
+    image: ghcr.io/makreeltje/3d-prints-calculator:0.3.0
+    profiles: [ "utilities", "all" ]
+    volumes:
+      - $CLOUD_DIR/rick/files/Documents/Personal/3D prints:/mnt/3d-prints:ro
+      - $CONF_DIR/prints-portal/data:/data
+    ports:
+      - 10.10.0.40:8003:8080
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+      Database__Provider: sqlite
+      Database__ConnectionString: Data Source=/data/prints_portal.db
+      Sync__PrintsRoot: /mnt/3d-prints
+      Sync__RunInitialIndexOnStartup: "true"
+      Sync__EnableWatcher: "true"
+      Spoolman__BaseUrl: http://10.10.0.40:8001
+      LocalJwt__SigningKey: $PRINTS_PORTAL_JWT_KEY
+      Bootstrap__AdminEmail: $PRINTS_PORTAL_ADMIN_EMAIL
+      Bootstrap__AdminPassword: $PRINTS_PORTAL_ADMIN_PASSWORD
+      Electricity__TariffEurPerKwh: "0.32"
+      # Authentik (optioneel — leeg laten voor lokale admin-only)
+      Authentik__Authority: https://authentik.$DOMAINNAME_1/application/o/prints-portal/
+      Authentik__ClientId: $PRINTS_PORTAL_AUTHENTIK_CLIENT_ID
+      Authentik__Audience: prints-portal
+      Authentik__AdminGroup: authentik Admins
+    healthcheck:
+      test: [ "CMD", "wget", "-qO-", "http://localhost:8080/" ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
