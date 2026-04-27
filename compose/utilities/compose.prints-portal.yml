@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: prints-portal
-    image: ghcr.io/makreeltje/3d-prints-calculator:0.3.0
+    image: ghcr.io/makreeltje/3d-prints-calculator:0.3.1
     profiles: [ "utilities", "all" ]
     volumes:
       - $CLOUD_DIR/rick/files/Documents/Personal/3D prints:/mnt/3d-prints:ro
@@ -27,7 +27,6 @@ services:
       # Authentik (optioneel — leeg laten voor lokale admin-only)
       Authentik__Authority: https://authentik.$DOMAINNAME_1/application/o/prints-portal/
       Authentik__ClientId: $PRINTS_PORTAL_AUTHENTIK_CLIENT_ID
-      Authentik__Audience: prints-portal
       Authentik__AdminGroup: authentik Admins
     healthcheck:
       test: [ "CMD", "wget", "-qO-", "http://localhost:8080/" ]
