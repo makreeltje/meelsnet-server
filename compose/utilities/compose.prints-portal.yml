@@ -12,6 +12,7 @@ services:
     ports:
       - 10.10.0.40:8003:8080
     environment:
+      Serilog__MinimumLevel__Override__Microsoft.AspNetCore.Authentication: Debug
       ASPNETCORE_URLS: http://+:8080
       Database__Provider: sqlite
       Database__ConnectionString: Data Source=/data/prints_portal.db
