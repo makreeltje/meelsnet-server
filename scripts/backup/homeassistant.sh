@@ -1,7 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-SCRIPT_NAME="homeassistant"
 CT_ID=103
 HA_BACKUPS="/root/docker/appdata/homeassistant/config/backups"
 DST="/mnt/backups/app-data/homeassistant"

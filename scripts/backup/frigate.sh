@@ -1,7 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-SCRIPT_NAME="frigate"
 CT_ID=103
 SRC="/root/docker/appdata/frigate"
 DST="/mnt/backups/app-data/frigate"
