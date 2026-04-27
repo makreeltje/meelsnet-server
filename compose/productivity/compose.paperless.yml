@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: paperless
-    image: ghcr.io/paperless-ngx/paperless-ngx:2.20.14
+    image: ghcr.io/paperless-ngx/paperless-ngx:2.20.15
     profiles: [ "productivity", "all" ]
     environment:
       PAPERLESS_REDIS: redis://10.10.0.10:6379
