@@ -1,7 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-SCRIPT_NAME="paperless"
 CT_ID=104
 CONTAINER="paperless"
 

@@ -1,7 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-SCRIPT_NAME="immich"
 DATA_SRC="/mnt/pve/data/photos"
 DATA_DST="/mnt/pve/data/backups/app-data/immich/library"
 
