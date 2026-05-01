@@ -2,7 +2,7 @@ services:
   unifi-os:
     extends:
       file: ../fragments/common-service.yml
-      service: common-host
+      service: common
     container_name: unifi-os
     image: ghcr.io/lemker/unifi-os-server:latest
     profiles: [ "network", "all" ]
@@ -25,24 +25,24 @@ services:
       - $CONF_DIR/unifi-os/var-lib-unifi:/var/lib/unifi
       - $CONF_DIR/unifi-os/var-lib-mongodb:/var/lib/mongodb
       - $CONF_DIR/unifi-os/etc-rabbitmq-ssl:/etc/rabbitmq/ssl
-    # ports:
-    #   - 11443:443    # GUI (was 8443, Traefik route aanpassen!)
-    #   - 8080:8080                # Device inform (bare, moet bereikbaar zijn voor APs)
-    #   - 3478:3478/udp            # STUN
-    #   - 10003:10003         # Discovery (was 10001, UOS gebruikt 10003)
-    #   - 10001:10001
-    #   - 5005:5005 # Optional
-    #   - 9543:9543 # Optional
-    #   - 6789:6789 # Optional
-    #   - 8443:8443 # Optional
-    #   - 8444:8444 # Optional
-    #   - 3478:3478/udp
-    #   - 5514:5514/udp # Optional
-    #   - 11084:11084 # Optional
-    #   - 5671:5671 # Optional
-    #   - 8880:8880 # Optional
-    #   - 8881:8881 # Optional
-    #   - 8882:8882 # Optional
+    ports:
+      - 11443:443    # GUI (was 8443, Traefik route aanpassen!)
+      - 8080:8080                # Device inform (bare, moet bereikbaar zijn voor APs)
+      - 3478:3478/udp            # STUN
+      - 10003:10003         # Discovery (was 10001, UOS gebruikt 10003)
+      - 10001:10001
+      - 5005:5005 # Optional
+      - 9543:9543 # Optional
+      - 6789:6789 # Optional
+      - 8443:8443 # Optional
+      - 8444:8444 # Optional
+      - 3478:3478/udp
+      - 5514:5514/udp # Optional
+      - 11084:11084 # Optional
+      - 5671:5671 # Optional
+      - 8880:8880 # Optional
+      - 8881:8881 # Optional
+      - 8882:8882 # Optional
     healthcheck:
       test: [ "CMD", "curl", "-fsSo", "/dev/null", "--insecure", "https://localhost:443/" ]
       interval: 30s
