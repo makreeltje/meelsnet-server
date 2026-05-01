@@ -29,7 +29,8 @@ services:
       - 11443:443    # GUI (was 8443, Traefik route aanpassen!)
       - 8080:8080                # Device inform (bare, moet bereikbaar zijn voor APs)
       - 3478:3478/udp            # STUN
-      - 10003:10003/udp          # Discovery (was 10001, UOS gebruikt 10003)
+      - 10003:10003         # Discovery (was 10001, UOS gebruikt 10003)
+      - 10001:10001
       - 5005:5005 # Optional
       - 9543:9543 # Optional
       - 6789:6789 # Optional
@@ -37,7 +38,6 @@ services:
       - 8444:8444 # Optional
       - 3478:3478/udp
       - 5514:5514/udp # Optional
-      - 10003:10003/udp
       - 11084:11084 # Optional
       - 5671:5671 # Optional
       - 8880:8880 # Optional
