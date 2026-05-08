@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: qbittorrent
-    image: binhex/arch-qbittorrentvpn:5.1
+    image: binhex/arch-qbittorrentvpn:5.2
     cap_add:
       - NET_ADMIN
     profiles: [ "media", "all" ]
