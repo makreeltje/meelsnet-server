@@ -7,6 +7,8 @@ services:
     image: binhex/arch-qbittorrentvpn:5.2
     cap_add:
       - NET_ADMIN
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
     profiles: [ "media", "all" ]
     environment:
       PUID: 1000
@@ -16,7 +18,7 @@ services:
       VPN_USER: $VPN_USERNAME
       VPN_PASS: $VPN_PASSWORD
       VPN_PROV: $VPN_PROVIDER
-      VPN_CLIENT: openvpn
+      VPN_CLIENT: wireguard
       VPN_INPUT_PORTS: 1234
       VPN_OUTPUT_PORTS: 5678
       ENABLE_STARTUP_SCRIPTS: "no"
@@ -26,7 +28,7 @@ services:
       ENABLE_SOCKS: "yes"
       SOCKS_USER: $QBITTORRENT_USER
       SOCKS_PASS: $QBITTORRENT_PASS
-      LAN_NETWORK: 192.168.2.0/24
+      LAN_NETWORK: "10.10.0.0/24,192.168.2.0/24,172.16.0.0/12"
       NAME_SERVERS: 1.1.1.1,1.0.0.1
       DEBUG: true
       WEBUI_PORT: 8080
