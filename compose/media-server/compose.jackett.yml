@@ -1,0 +1,12 @@
+services:
+  jackett:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common-lsio
+    container_name: jackett
+    image: lscr.io/linuxserver/jackett:0.24.1879
+    profiles: [ "media", "all" ]
+    volumes:
+      - $CONF_DIR/jackett/config:/config
+    ports:
+      - 10.10.0.20:9117:9117
