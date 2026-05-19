@@ -8,6 +8,7 @@ include:
   - compose/media-server/compose.sonarr.yml
   - compose/media-server/compose.radarr.yml
   - compose/media-server/compose.prowlarr.yml
+  - compose/media-server/compose.jackett.yml
   - compose/media-server/compose.sabnzbd.yml
   - compose/media-server/compose.qbittorrent.yml
   - compose/media-server/compose.bazarr.yml
