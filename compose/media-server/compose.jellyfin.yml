@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: jellyfin
-    image: jellyfin/jellyfin:10.11.9
+    image: jellyfin/jellyfin:10.11.10
     profiles: [ "media", "all" ]
     volumes:
       - $CONF_DIR/jellyfin/config:/config
