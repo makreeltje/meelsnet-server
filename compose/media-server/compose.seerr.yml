@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: seerr
-    image: ghcr.io/seerr-team/seerr:v3.2.0
+    image: ghcr.io/seerr-team/seerr:v3.3.0
     init: true
     user: root
     profiles: [ "media", "all" ]
