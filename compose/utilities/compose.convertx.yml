@@ -1,0 +1,14 @@
+services:
+  convertx:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
+    container_name: convertx
+    image: ghcr.io/c4illin/convertx:v0.17.0
+    profiles: [ "utilities", "all" ]
+    environment:
+      - JWT_SECRET=$CONVERTX_JWT_SECRET
+    volumes:
+      - $CONF_DIR/convertx/data:/app/data
+    ports:
+      - 10.10.0.40:3000:3000
