@@ -13,6 +13,7 @@ services:
       AZURE_ACCOUNT_NAME: $AZURE_ACCOUNT_NAME
       AZURE_ACCOUNT_SAS: $AZURE_ACCOUNT_SAS
       RESTIC_PASSWORD: $RESTIC_PASSWORD
+      ISSUE_1139_FIX_PASSWORDS: 1
     volumes:
       - $CONF_DIR/backrest/data:/data
       - $CONF_DIR/backrest/config:/config
