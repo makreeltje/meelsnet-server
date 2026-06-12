@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common-lsio
     container_name: sabnzbd
-    image: linuxserver/sabnzbd:5.0.3
+    image: linuxserver/sabnzbd:5.0.4
     profiles: [ "media", "all" ]
     volumes:
       - $CONF_DIR/sabnzbd/config:/config
