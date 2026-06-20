@@ -19,3 +19,24 @@ services:
       timeout: 10s
       retries: 3
       start_period: 30s
+
+  sonarr-anime:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common-lsio
+    container_name: sonarr-anime
+    image: linuxserver/sonarr:4.0.17
+    profiles: [ "media", "all" ]
+    volumes:
+      - $CONF_DIR/sonarr-anime/config:/config
+      - $MEDIA_DIR:/media
+      - $DOWNLOAD_DIR:/data
+      - $DOWNLOAD_DIR:/downloads
+    ports:
+      - 8999:8989
+    healthcheck:
+      test: [ "CMD", "curl", "-fsSo", "/dev/null", "http://localhost:8989/api/v3/system/status?apikey=$SONARR_ANIME_API_KEY" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
