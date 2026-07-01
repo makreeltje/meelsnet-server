@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: nodered
-    image: nodered/node-red:4.1.11
+    image: nodered/node-red:5.0.1
     user: $PUID:$PGID
     profiles: [ "home", "all" ]
     volumes:
