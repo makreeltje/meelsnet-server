@@ -10,6 +10,7 @@ services:
       - $CONF_DIR/homeassistant/config:/config
       - $CONF_DIR/homeassistant/images:/images
       - /etc/localtime:/etc/localtime:ro
+      - $NVR_DIR:/media/frigate:ro
     healthcheck:
       test: [ "CMD", "curl", "-fsSo", "/dev/null", "http://localhost:8123/" ]
       interval: 30s
