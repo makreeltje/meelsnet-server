@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: alertmanager
-    image: prom/alertmanager:v0.33.0
+    image: prom/alertmanager:v0.33.1
     profiles: [ "monitoring", "all" ]
     command:
       - --config.file=/config/alertmanager.yml
