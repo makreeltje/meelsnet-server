@@ -4,10 +4,9 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: portainer
-    image: portainer/portainer-ce:2.21.5 # Or your preferred stable tag
+    image: portainer/portainer-ce:2.21.5
     profiles: [ "utilities", "all" ]
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
       - $CONF_DIR/portainer/data:/data
     ports:
       - 9000:9000
