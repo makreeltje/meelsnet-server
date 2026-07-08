@@ -75,10 +75,15 @@
       "enabled": false
     },
     {
+      "description": "Extract semantic version from Tracearr supervised tags",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["ghcr.io/connorgallopo/tracearr"],
+      "extractVersion": "^supervised-(?<version>.*)$"
+    }
+    {
       "description": "Track untagged or latest-tagged images safely via SHA256 digests",
       "matchFileNames": [
         "compose/media-server/compose.plex.yml",
-        "compose/media-server/compose.tracearr.yml",
         "compose/home-automation/compose.hyperion.yml",
         "compose/network/compose.unifi-os.yml",
         "compose/productivity/compose.firefly.yml"
