@@ -9,6 +9,7 @@
   "commitMessagePrefix": "[{{parentDir}}]",
   "additionalBranchPrefix": "{{parentDir}}-",
   "ignorePaths": ["compose/archive/**", "compose/game-servers/**"],
+  
   "docker-compose": {
     "managerFilePatterns": [
       "/(^|/)compose\..*\.ya?ml$/",
@@ -27,9 +28,16 @@
       "schedule": ["at any time"]
     },
     {
-      "description": "Major and minor versions require manual review",
+      "description": "Minor versions require manual review",
       "matchDatasources": ["docker"],
-      "matchUpdateTypes": ["major", "minor"],
+      "matchUpdateTypes": ["minor"],
+      "automerge": false,
+      "labels": ["minor-update", "needs-review"]
+    },
+    {
+      "description": "Major versions require manual review",
+      "matchDatasources": ["docker"],
+      "matchUpdateTypes": ["major"],
       "automerge": false,
       "labels": ["major-update", "needs-review"]
     },
@@ -42,6 +50,40 @@
       ],
       "automerge": false,
       "labels": ["infra", "needs-review"]
+    },
+    {
+      "description": "Group Portainer ecosystem together (STS tracking allowed)",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["portainer/portainer-ce", "portainer/agent"],
+      "groupName": "Portainer Ecosystem"
+    },
+    {
+      "description": "Group Immich microservices to prevent machine-learning version drift",
+      "matchDatasources": ["docker"],
+      "matchPackagePatterns": ["^ghcr\\.io/immich-app/"],
+      "groupName": "Immich Stack"
+    },
+    {
+      "description": "Group Authentik server and worker to prevent breaking SSO authentication",
+      "matchDatasources": ["docker"],
+      "matchPackagePatterns": ["^ghcr\\.io/goauthentik/"],
+      "groupName": "Authentik Stack"
+    },
+    {
+      "description": "Silence lookup warnings for custom local app packages",
+      "matchPackageNames": ["ghcr.io/makreeltje/3d-prints-calculator"],
+      "enabled": false
+    },
+    {
+      "description": "Track untagged or latest-tagged images safely via SHA256 digests",
+      "matchFileNames": [
+        "compose/media-server/compose.plex.yml",
+        "compose/media-server/compose.tracearr.yml",
+        "compose/home-automation/compose.hyperion.yml",
+        "compose/network/compose.unifi-os.yml",
+        "compose/productivity/compose.firefly.yml"
+      ],
+      "pinDigests": true
     }
   ],
  
