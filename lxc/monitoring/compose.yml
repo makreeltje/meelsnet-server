@@ -12,3 +12,4 @@ include:
   - compose/monitoring/compose.cadvisor.yml
   - compose/monitoring/compose.node-exporter.yml
   # - compose/monitoring/compose.promtail.yml
+  - compose/utilities/compose.portainer-agent.yml
