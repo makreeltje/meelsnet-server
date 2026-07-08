@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: hyperion
-    image: amd989/hyperion.ng:main
+    image: amd989/hyperion.ng:main@sha256:b5d7d14b8a0dbc41cb57bc782c77b43243b71a449505c957b713d28d309cf69b
     profiles: [ "home", "all" ]
     volumes:
       - $CONF_DIR/hyperion/config:/config
