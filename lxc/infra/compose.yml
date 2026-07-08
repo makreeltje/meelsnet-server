@@ -22,3 +22,4 @@ include:
   - compose/database/compose.mariadb.yml
   - compose/database/compose.adminer.yml
   - compose/monitoring/compose.cadvisor.yml
+  - compose/utilities/compose.portainer.yml
