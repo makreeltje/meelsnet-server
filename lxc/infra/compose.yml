@@ -23,3 +23,4 @@ include:
   - compose/database/compose.adminer.yml
   - compose/monitoring/compose.cadvisor.yml
   - compose/utilities/compose.portainer.yml
+  - compose/utilities/compose.portainer-agent.yml
