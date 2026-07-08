@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: portainer-agent
-    image: portainer/agent:2.21.5
+    image: portainer/agent:2.43.0
     profiles: [ "all" ]
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
