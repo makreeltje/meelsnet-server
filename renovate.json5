@@ -1,101 +1,156 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended", "docker:enableMajor", ":dependencyDashboard"],
-  "dependencyDashboard": true,
-  "prConcurrentLimit": 0,
-  "separateMinorPatch": true,
-  "separateMajorMinor": true,
-  "separateMultipleMajor": true,
-  "commitMessagePrefix": "[{{parentDir}}]",
-  "additionalBranchPrefix": "{{parentDir}}-",
-  "ignorePaths": ["compose/archive/**", "compose/game-servers/**"],
-  
-  "docker-compose": {
-    "managerFilePatterns": [
-      "/(^|/)compose\..*\.ya?ml$/",
-      "/(^|/)compose\.ya?ml$/",
-      "/(^|/)lxc/.*/compose\.ya?ml$/"
-    ]
-  },
- 
-  "packageRules": [
-    {
-      "description": "Automerge patch updates instantly",
-      "matchDatasources": ["docker"],
-      "matchUpdateTypes": ["patch"],
-      "automerge": true,
-      "automergeType": "pr",
-      "schedule": ["at any time"]
-    },
-    {
-      "description": "Minor versions require manual review",
-      "matchDatasources": ["docker"],
-      "matchUpdateTypes": ["minor"],
-      "automerge": false,
-      "labels": ["minor-update", "needs-review"]
-    },
-    {
-      "description": "Major versions require manual review",
-      "matchDatasources": ["docker"],
-      "matchUpdateTypes": ["major"],
-      "automerge": false,
-      "labels": ["major-update", "needs-review"]
-    },
-    {
-      "description": "Infra services always require manual review",
-      "matchDatasources": ["docker"],
-      "matchFileNames": [
-        "compose/reverse-proxy/**",
-        "compose/database/**"
-      ],
-      "automerge": false,
-      "labels": ["infra", "needs-review"]
-    },
-    {
-      "description": "Group Portainer ecosystem together (STS tracking allowed)",
-      "matchDatasources": ["docker"],
-      "matchPackageNames": ["portainer/portainer-ce", "portainer/agent"],
-      "groupName": "Portainer Ecosystem"
-    },
-    {
-      "description": "Group Immich microservices to prevent machine-learning version drift",
-      "matchDatasources": ["docker"],
-      "matchPackagePatterns": ["^ghcr\\.io/immich-app/"],
-      "groupName": "Immich Stack"
-    },
-    {
-      "description": "Group Authentik server and worker to prevent breaking SSO authentication",
-      "matchDatasources": ["docker"],
-      "matchPackagePatterns": ["^ghcr\\.io/goauthentik/"],
-      "groupName": "Authentik Stack"
-    },
-    {
-      "description": "Silence lookup warnings for custom local app packages",
-      "matchPackageNames": ["ghcr.io/makreeltje/3d-prints-calculator"],
-      "enabled": false
-    },
-    {
-      "description": "Extract semantic version from Tracearr supervised tags",
-      "matchDatasources": ["docker"],
-      "matchPackageNames": ["ghcr.io/connorgallopo/tracearr"],
-      "extractVersion": "^supervised-(?<version>.*)$"
-    },
-    {
-      "description": "Extract semantic version from Firefly tags",
-      "matchDatasources": ["docker"],
-      "matchFileNames": ["compose/productivity/compose.firefly.yml"],
-      "extractVersion": "^version-(?<version>.*)$"
-    },
-    {
-      "description": "Track untagged or latest-tagged images safely via SHA256 digests",
-      "matchFileNames": [
-        "compose/media-server/compose.plex.yml",
-        "compose/home-automation/compose.hyperion.yml",
-        "compose/network/compose.unifi-os.yml",
-      ],
-      "pinDigests": true
-    }
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  extends: [
+    'config:recommended',
+    'docker:enableMajor',
+    ':dependencyDashboard',
   ],
- 
-  "labels": ["renovate", "dependencies"]
+  dependencyDashboard: true,
+  prConcurrentLimit: 0,
+  separateMinorPatch: true,
+  separateMajorMinor: true,
+  separateMultipleMajor: true,
+  commitMessagePrefix: '[{{parentDir}}]',
+  additionalBranchPrefix: '{{parentDir}}-',
+  ignorePaths: [
+    'compose/archive/**',
+    'compose/game-servers/**',
+  ],
+  'docker-compose': {
+    managerFilePatterns: [
+      '/(^|/)compose..*.ya?ml$/',
+      '/(^|/)compose.ya?ml$/',
+      '/(^|/)lxc/.*/compose.ya?ml$/',
+    ],
+  },
+  packageRules: [
+    {
+      description: 'Automerge patch updates instantly',
+      matchDatasources: [
+        'docker',
+      ],
+      matchUpdateTypes: [
+        'patch',
+      ],
+      automerge: true,
+      automergeType: 'pr',
+      schedule: [
+        'at any time',
+      ],
+    },
+    {
+      description: 'Minor versions require manual review',
+      matchDatasources: [
+        'docker',
+      ],
+      matchUpdateTypes: [
+        'minor',
+      ],
+      automerge: false,
+      labels: [
+        'minor-update',
+        'needs-review',
+      ],
+    },
+    {
+      description: 'Major versions require manual review',
+      matchDatasources: [
+        'docker',
+      ],
+      matchUpdateTypes: [
+        'major',
+      ],
+      automerge: false,
+      labels: [
+        'major-update',
+        'needs-review',
+      ],
+    },
+    {
+      description: 'Infra services always require manual review',
+      matchDatasources: [
+        'docker',
+      ],
+      matchFileNames: [
+        'compose/reverse-proxy/**',
+        'compose/database/**',
+      ],
+      automerge: false,
+      labels: [
+        'infra',
+        'needs-review',
+      ],
+    },
+    {
+      description: 'Group Portainer ecosystem together (STS tracking allowed)',
+      matchDatasources: [
+        'docker',
+      ],
+      matchPackageNames: [
+        'portainer/portainer-ce',
+        'portainer/agent',
+      ],
+      groupName: 'Portainer Ecosystem',
+    },
+    {
+      description: 'Group Immich microservices to prevent machine-learning version drift',
+      matchDatasources: [
+        'docker',
+      ],
+      groupName: 'Immich Stack',
+      matchPackageNames: [
+        '/^ghcr\\.io/immich-app//',
+      ],
+    },
+    {
+      description: 'Group Authentik server and worker to prevent breaking SSO authentication',
+      matchDatasources: [
+        'docker',
+      ],
+      groupName: 'Authentik Stack',
+      matchPackageNames: [
+        '/^ghcr\\.io/goauthentik//',
+      ],
+    },
+    {
+      description: 'Silence lookup warnings for custom local app packages',
+      matchPackageNames: [
+        'ghcr.io/makreeltje/3d-prints-calculator',
+      ],
+      enabled: false,
+    },
+    {
+      description: 'Extract semantic version from Tracearr supervised tags',
+      matchDatasources: [
+        'docker',
+      ],
+      matchPackageNames: [
+        'ghcr.io/connorgallopo/tracearr',
+      ],
+      extractVersion: '^supervised-(?<version>.*)$',
+    },
+    {
+      description: 'Extract semantic version from Firefly tags',
+      matchDatasources: [
+        'docker',
+      ],
+      matchFileNames: [
+        'compose/productivity/compose.firefly.yml',
+      ],
+      extractVersion: '^version-(?<version>.*)$',
+    },
+    {
+      description: 'Track untagged or latest-tagged images safely via SHA256 digests',
+      matchFileNames: [
+        'compose/media-server/compose.plex.yml',
+        'compose/home-automation/compose.hyperion.yml',
+        'compose/network/compose.unifi-os.yml',
+      ],
+      pinDigests: true,
+    },
+  ],
+  labels: [
+    'renovate',
+    'dependencies',
+  ],
 }
