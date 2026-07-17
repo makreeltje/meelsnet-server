@@ -113,9 +113,9 @@ for db in "${DATABASES[@]}"; do
     "mariadb-dump -u root -p\"\$MARIADB_ROOT_PASSWORD\" --single-transaction --routines --events --triggers \"$db\""
 done
 
-# Local retention
-run "cleanup old dumps" \
-  find "$BACKUP_DIR" -name "*.sql" -type f -mtime +$RETENTION_DAYS -delete
+# Local retention (Direct uitgevoerd zonder run wrapper)
+echo ">>> cleanup old dumps" >> "$LOG"
+find "$BACKUP_DIR" -name "*.sql" -type f -mtime +$RETENTION_DAYS -delete >> "$LOG" 2>&1 || fail "cleanup old dumps"
 
 # Sanity check
 EXPECTED_FILES=${#DATABASES[@]}
