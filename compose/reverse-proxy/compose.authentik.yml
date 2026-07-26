@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: authentik
-    image: ghcr.io/goauthentik/server:2026.5.5
+    image: ghcr.io/goauthentik/server:2026.5.6
     profiles: [ "reverse-proxy", "infra", "all" ]
     command: server
     depends_on:
@@ -44,7 +44,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: authentik-worker
-    image: ghcr.io/goauthentik/server:2026.5.5
+    image: ghcr.io/goauthentik/server:2026.5.6
     profiles: [ "reverse-proxy", "infra", "all" ]
     user: root
     command: worker
