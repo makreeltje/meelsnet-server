@@ -8,8 +8,8 @@ services:
     profiles: [ "productivity", "all" ]
     environment:
       - GENERIC_TIMEZONE=Europe/Amsterdam
-      - N8N_HOST=n8n.${DOMAINNAME_1}.nl
-      - N8N_WEBHOOK_URL=https://n8n.${DOMAINNAME_1}.nl/
+      - N8N_HOST=n8n.${DOMAINNAME_1}
+      - N8N_WEBHOOK_URL=https://n8n.${DOMAINNAME_1}/
       - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
       - N8N_RESTRICT_FILE_ACCESS_TO=/appdata/queue;/archive
     volumes:
