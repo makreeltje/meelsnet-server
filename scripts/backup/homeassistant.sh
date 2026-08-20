@@ -4,7 +4,7 @@ set -euo pipefail
 CT_ID=103
 HA_BACKUPS="/root/docker/appdata/homeassistant/config/backups"
 DST="/mnt/backups/app-data/homeassistant"
-RETENTION_DAYS=7
+RETENTION_DAYS=1
 
 source /etc/default/backup-scripts
 HC_URL="${HC_HOMEASSISTANT:-}"
