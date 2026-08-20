@@ -39,7 +39,7 @@ CTID=101
 CONTAINER=mariadb
 BACKUP_DIR=/mnt/pve/data/backups/databases/mariadb
 DATE=$(date +%Y-%m-%d)
-RETENTION_DAYS=7
+RETENTION_DAYS=1
 
 # System databases to skip (information_schema, performance_schema, sys are
 # virtual and cannot/should not be dumped). The 'mysql' database IS included
