@@ -10,7 +10,7 @@ NC_CONTAINER="nextcloud"
 DATA_SRC="/mnt/pve/data/cloud"
 DATA_DST="/mnt/pve/data/backups/app-data/nextcloud/data"
 CONFIG_DST_DIR="/mnt/backups/app-data/nextcloud"  # pad binnen CT 104
-CONFIG_RETENTION_DAYS=7
+CONFIG_RETENTION_DAYS=1
 DATE=$(date +%Y-%m-%d)
 
 # --- Healthchecks.io ---
