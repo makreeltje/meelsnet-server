@@ -37,7 +37,7 @@ CTID=101
 CONTAINER=postgres
 BACKUP_DIR=/mnt/pve/data/backups/databases/postgres
 DATE=$(date +%Y-%m-%d)
-RETENTION_DAYS=7
+RETENTION_DAYS=1
 
 LOG=$(mktemp)
 cleanup() { rm -f "$LOG"; }
