@@ -5,7 +5,7 @@ CT_ID=103
 SRC="/root/docker/appdata/frigate"
 DST="/mnt/backups/app-data/frigate"
 DATE=$(date +%Y-%m-%d)
-RETENTION_DAYS=7
+RETENTION_DAYS=1
 
 source /etc/default/backup-scripts
 HC_URL="${HC_FRIGATE:-}"
