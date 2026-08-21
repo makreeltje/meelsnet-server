@@ -7,10 +7,11 @@ services:
     image: adminer:6.0.1-standalone
     profiles: [ "database", "infra", "all" ]
     ports:
-      - 10.10.0.10:8080:8080
+      - 8083:8080
     healthcheck:
       test: [ "CMD-SHELL", "nc -z localhost 8080 || exit 1" ]
       interval: 30s
       timeout: 5s
       retries: 3
       start_period: 10s
+    
