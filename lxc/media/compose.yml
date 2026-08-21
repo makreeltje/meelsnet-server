@@ -20,5 +20,6 @@ include:
   - compose/media-server/compose.tracearr.yml
   - compose/media-server/compose.agregarr.yml
   - compose/media-server/compose.watchstate.yml
+  - compose/media-server/compose.pinchflat.yml
   - compose/monitoring/compose.cadvisor.yml
   - compose/utilities/compose.portainer-agent.yml
