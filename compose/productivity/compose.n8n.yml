@@ -7,11 +7,17 @@ services:
     image: n8nio/n8n:2.36.4
     profiles: [ "productivity", "all" ]
     environment:
-      - GENERIC_TIMEZONE=Europe/Amsterdam
-      - N8N_HOST=n8n.${DOMAINNAME_1}
-      - N8N_WEBHOOK_URL=https://n8n.${DOMAINNAME_1}/
-      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
-      - N8N_RESTRICT_FILE_ACCESS_TO=/appdata/queue;/archive
+      GENERIC_TIMEZONE: $TZ
+      N8N_HOST=n8n.${DOMAINNAME_1}
+      N8N_WEBHOOK_URL=https://n8n.${DOMAINNAME_1}/
+      N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+      N8N_RESTRICT_FILE_ACCESS_TO=/appdata/queue;/archive
+      DB_TYPE: postgresdb
+      DB_POSTGRESDB_HOST: 10.10.0.10
+      DB_POSTGRESDB_PORT: 5432
+      DB_POSTGRESDB_DATABASE: $N8N_DBNAME
+      DB_POSTGRESDB_USER: $N8N_DBUSER
+      DB_POSTGRESDB_PASSWORD: $N8N_DBPASS
     volumes:
       - $CONF_DIR/n8n/data:/home/node/.n8n
       - $CONF_DIR/n8n/queue:/appdata/queue
