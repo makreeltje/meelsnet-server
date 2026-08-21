@@ -1,0 +1,13 @@
+services:
+  pinchflat:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
+    container_name: pinchflat
+    image: ghcr.io/kieraneglin/pinchflat:v2025.6.6
+    profiles: [ "media", "all" ]
+    volumes:
+      - $CONF_DIR/pinchflat/config:/config
+      - $MEDIA_DIR/youtube:/downloads
+    ports:
+      - 10.10.0.20:8945:8945
