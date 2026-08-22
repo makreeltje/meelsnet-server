@@ -1,0 +1,13 @@
+services:
+  chromium:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
+    container_name: chromium
+    image: ghcr.io/browserless/chromium:v2.56.0
+    profiles: [ "productivity", "all" ]
+    environment:
+      CONCURRENT: 5
+      TOKEN: $CHROMIUM_TOKEN
+    ports:
+      - 3000:3000
