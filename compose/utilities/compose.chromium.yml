@@ -10,4 +10,4 @@ services:
       CONCURRENT: 5
       TOKEN: $CHROMIUM_TOKEN
     ports:
-      - 3000:3000
+      - 3001:3000
