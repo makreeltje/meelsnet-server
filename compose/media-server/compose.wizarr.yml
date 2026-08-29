@@ -20,6 +20,8 @@ services:
       - $CONF_DIR/wizarr/database:/usr/wizarr/data/database
       - $CONF_DIR/wizarr/storage:/usr/wizarr/data/storage
       - /etc/localtime:/etc/localtime:ro
+    env_file:
+      - $CONF_DIR/wizarr/.env
     ports:
       - 10.10.0.20:5001:5001
     healthcheck:
