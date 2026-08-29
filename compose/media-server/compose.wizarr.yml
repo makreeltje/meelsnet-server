@@ -13,7 +13,7 @@ services:
     extends:
       file: ../fragments/common-service.yml
       service: common
-    container_name: wizarr-backend
+    container_name: wizarr_backend
     image: ghcr.io/wizarrrrr/wizarr-backend:3.5.6
     profiles: [ "media", "all" ]
     volumes:
@@ -23,7 +23,7 @@ services:
     env_file:
       - $CONF_DIR/wizarr/.env
     ports:
-      - 10.10.0.20:5001:5001
+      - 5001:5001
     healthcheck:
         test: ["CMD", "curl", "-f", "http://localhost:5001/api/health"]
         interval: 30s
