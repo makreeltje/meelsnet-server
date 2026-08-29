@@ -1,0 +1,19 @@
+services:
+  memcached:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
+    container_name: memcached
+    image: memcached:1.6.45-alpine
+    profiles: [ "database", "infra", "all" ]
+    command:
+      - --conn-limit=1024
+      - --memory-limit=64
+      - --threads=4
+    ports:
+      - 10.10.0.10:11211:11211
+    healthcheck:
+      test: echo stats | nc 127.0.0.1 11211
+      interval: 20s
+      timeout: 1s
+      retries: 5
