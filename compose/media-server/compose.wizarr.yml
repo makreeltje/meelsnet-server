@@ -4,28 +4,11 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: wizarr
-    image: ghcr.io/wizarrrrr/wizarr-frontend:3.5.6
+    image: ghcr.io/wizarrrr/wizarr:v2026.7.1
     profiles: [ "media", "all" ]
-    ports:
-      - 5173:5173
-
-  wizarr-backend:
-    extends:
-      file: ../fragments/common-service.yml
-      service: common
-    container_name: wizarr_backend
-    image: ghcr.io/wizarrrrr/wizarr-backend:3.5.6
-    profiles: [ "media", "all" ]
+    environment:
+      DISABLE_BUILTIN_AUTH: false
     volumes:
-      - $CONF_DIR/wizarr/database:/usr/wizarr/data/database
-      - $CONF_DIR/wizarr/storage:/usr/wizarr/data/storage
-      - /etc/localtime:/etc/localtime:ro
-    env_file:
-      - $CONF_DIR/wizarr/.env
+      - $CONF_DIR/wizarr/data:/data
     ports:
-      - 5001:5001
-    healthcheck:
-        test: ["CMD", "curl", "-f", "http://localhost:5001/api/health"]
-        interval: 30s
-        timeout: 10s
-        retries: 5
+      - 5690:5690
