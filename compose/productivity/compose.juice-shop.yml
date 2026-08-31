@@ -1,10 +1,41 @@
 services:
-  juice-shop:
+  juice-shop-1:
     extends:
       file: ../fragments/common-service.yml
       service: common
-    container_name: juice-shop
+    container_name: juice-shop-1
     image: bkimminich/juice-shop:v20.2.0
     profiles: [ "productivity", "all" ]
     ports:
       - 3002:3000
+
+  juice-shop-2:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
+    container_name: juice-shop-2
+    image: bkimminich/juice-shop:v20.2.0
+    profiles: [ "productivity", "all" ]
+    ports:
+      - 3003:3000
+
+  juice-shop-3:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
+    container_name: juice-shop-3
+    image: bkimminich/juice-shop:v20.2.0
+    profiles: [ "productivity", "all" ]
+    ports:
+      - 3004:3000
+
+  juice-shop-4:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
+    container_name: juice-shop-4
+    image: bkimminich/juice-shop:v20.2.0
+    profiles: [ "productivity", "all" ]
+    ports:
+      - 3005:3000
+
