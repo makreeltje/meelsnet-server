@@ -1,0 +1,10 @@
+services:
+  juice-shop:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
+    container_name: juice-shop
+    image: bkimminich/juice-shop:v20.2.0
+    profiles: [ "productivity", "all" ]
+    ports:
+      - 3000:3000
