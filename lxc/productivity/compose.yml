@@ -10,7 +10,6 @@ include:
   - compose/productivity/compose.nextcloud.yml
   - compose/productivity/compose.backrest.yml
   - compose/productivity/compose.n8n.yml
-  - compose/productivity/compose.juice-shop.yml
   - compose/utilities/compose.it-tools.yml
   - compose/utilities/compose.omni-tools.yml
   - compose/utilities/compose.spoolman.yml
