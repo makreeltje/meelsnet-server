@@ -6,6 +6,8 @@ services:
     container_name: juice-shop-1
     image: bkimminich/juice-shop:v20.2.0
     profiles: [ "productivity", "all" ]
+    volumes:
+      - $CONF_DIR/juice-shop/instance1/config:/config
     ports:
       - 3002:3000
 
