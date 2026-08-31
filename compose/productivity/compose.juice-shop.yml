@@ -6,6 +6,8 @@ services:
     container_name: juice-shop-1
     image: bkimminich/juice-shop:v20.2.0
     profiles: [ "productivity", "all" ]
+    environment:
+      NODE_ENV: quiet
     volumes:
       - $CONF_DIR/juice-shop/instance1/:/*
     ports:
