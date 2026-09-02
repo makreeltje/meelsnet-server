@@ -39,7 +39,6 @@ LXC_ENTRIES=(
   "104|productivity"
   "105|network"
   "106|monitoring"
-  "107|utilities"
 )
 
 # Paths that affect ALL LXCs when changed
