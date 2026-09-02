@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: unifi-os
-    image: ghcr.io/lemker/unifi-os-server:latest@sha256:98bc2ea78e2d03d394753323a4792c7fa746cb57d293cb945f975975728a9958
+    image: ghcr.io/lemker/unifi-os-server:latest@sha256:1a6a7167082d005f714b33757af74972aeac890c156ea37136c863ca606bacf9
     profiles: [ "network", "all" ]
     cgroup: host
     privileged: true
