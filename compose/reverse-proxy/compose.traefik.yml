@@ -44,6 +44,8 @@ services:
       - --entrypoints.websecure.http.tls.certresolver=dns-cloudflare
       - --entrypoints.websecure.http.tls.domains[0].main=$DOMAINNAME_1
       - --entrypoints.websecure.http.tls.domains[0].sans=*.$DOMAINNAME_1
+      - --entrypoints.websecure.http.tls.domains[1].main=$DOMAINNAME_2
+      - --entrypoints.websecure.http.tls.domains[1].sans=*.$DOMAINNAME_2
       - --providers.file.directory=/rules
       - --providers.file.watch=true
       # - --certificatesResolvers.dns-cloudflare.acme.caServer=https://acme-staging-v02.api.letsencrypt.org/directory # LetsEncrypt Staging Server
@@ -59,6 +61,8 @@ services:
       - CF_DNS_API_TOKEN_FILE=/run/secrets/cf_dns_api_token
       - HTPASSWD_FILE=/run/secrets/basic_auth_credentials
       - DOMAINNAME_1
+      - DOMAINNAME_2
+      - BYPASS_SECRET
     volumes:
       - $CONF_DIR/traefik3/rules/$HOSTNAME:/rules
       - /var/run/docker.sock:/var/run/docker.sock:ro
