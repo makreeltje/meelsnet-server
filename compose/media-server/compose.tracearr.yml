@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: tracearr
-    image: ghcr.io/connorgallopo/tracearr:supervised-2.0.1
+    image: ghcr.io/connorgallopo/tracearr:supervised-2.1.0
     profiles: [ "media", "all" ]
     environment:
       LOG_LEVEL: debug
