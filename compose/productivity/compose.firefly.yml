@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: firefly
-    image: fireflyiii/core:version-6.5.9
+    image: fireflyiii/core:version-6.6.6
     profiles: [ "productivity", "all" ]
     env_file: $CONF_DIR/firefly/.env
     volumes:
