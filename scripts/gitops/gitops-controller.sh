@@ -218,7 +218,7 @@ deploy_to_lxc() {
     set -a; source .env 2>/dev/null || true; set +a
     docker compose --profile all pull --quiet 2>&1
     docker compose --profile all up -d --remove-orphans 2>&1
-    docker image prune -f --filter 'until=24h' 2>&1
+    docker image prune -a -f --filter 'until=24h' 2>&1
   "; then
     log_error "Failed to deploy services in LXC $lxc_id ($lxc_name)"
     record_lxc_deploy "$lxc_id" "FAILED" "$sha"
