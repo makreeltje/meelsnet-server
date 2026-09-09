@@ -58,9 +58,7 @@
 <rect x="1398" y="280" width="14" height="14" rx="4" fill="#dbeafe" stroke="#3b82f6"/>
 <text x="1422" y="292" class="legendText">Feature/application stacks</text>
 <rect x="1188" y="304" width="14" height="14" rx="4" fill="#cffafe" stroke="#06b6d4"/>
-<text x="1212" y="316" class="legendText">Monitoring / observability</text>
-<rect x="1398" y="304" width="14" height="14" rx="4" fill="#e2e8f0" stroke="#64748b"/>
-<text x="1422" y="316" class="legendText">Simple / supporting stacks</text><g>
+<text x="1212" y="316" class="legendText">Monitoring / observability</text><g>
 <rect x="52" y="360" width="504" height="212" rx="22" fill="url(#panel)" stroke="#d0d7de" stroke-width="2.0" filter="url(#shadow)"/>
 <path d="M 74 360 H 534 Q 556 360 556 382 V 414 H 52 V 382 Q 52 360 74 360 Z" fill="#dcfce7" stroke="#22c55e" stroke-width="0"/>
 <text x="74" y="393" class="title2">LXC 101 · infra</text>
@@ -72,9 +70,9 @@
 <text x="74" y="522" class="serviceMuted">Worker</text>
 <text x="74" y="540" class="serviceMuted">Postgres</text>
 <text x="326" y="486" class="service">Redis</text>
-<text x="326" y="504" class="service">MongoDB</text>
+<text x="326" y="504" class="service">MariaDB</text>
 <text x="326" y="522" class="serviceMuted">Adminer</text>
-<text x="326" y="540" class="serviceMuted">Mongo Express</text>
+<text x="326" y="540" class="serviceMuted">Portainer</text>
 </g><g>
 <rect x="590" y="360" width="504" height="212" rx="22" fill="url(#panel)" stroke="#d0d7de" stroke-width="2.0" filter="url(#shadow)"/>
 <path d="M 612 360 H 1072 Q 1094 360 1094 382 V 414 H 590 V 382 Q 590 360 612 360 Z" fill="#f3e8ff" stroke="#a855f7" stroke-width="0"/>
@@ -90,7 +88,7 @@
 <text x="864" y="504" class="service">Watchstate</text>
 <text x="864" y="522" class="serviceMuted">Bazarr</text>
 <text x="864" y="540" class="serviceMuted">Tautulli</text>
-<text x="612" y="554" class="footer">+ 7 more</text>
+<text x="612" y="554" class="footer">+ 9 more</text>
 </g><g>
 <rect x="1128" y="360" width="504" height="212" rx="22" fill="url(#panel)" stroke="#d0d7de" stroke-width="2.0" filter="url(#shadow)"/>
 <path d="M 1150 360 H 1610 Q 1632 360 1632 382 V 414 H 1128 V 382 Q 1128 360 1150 360 Z" fill="#ffedd5" stroke="#f97316" stroke-width="0"/>
@@ -117,9 +115,10 @@
 <text x="74" y="764" class="serviceMuted">Nextcloud</text>
 <text x="74" y="782" class="serviceMuted">Backrest</text>
 <text x="326" y="728" class="service">Firefly III</text>
-<text x="326" y="746" class="service">IT-Tools</text>
-<text x="326" y="764" class="serviceMuted">Omni-Tools</text>
+<text x="326" y="746" class="service">N8n</text>
+<text x="326" y="764" class="serviceMuted">IT-Tools</text>
 <text x="326" y="782" class="serviceMuted">Spoolman</text>
+<text x="74" y="796" class="footer">+ 4 more</text>
 </g><g>
 <rect x="590" y="602" width="504" height="212" rx="22" fill="url(#panel)" stroke="#d0d7de" stroke-width="2.0" filter="url(#shadow)"/>
 <path d="M 612 602 H 1072 Q 1094 602 1094 624 V 656 H 590 V 624 Q 590 602 612 602 Z" fill="#dbeafe" stroke="#3b82f6" stroke-width="0"/>
@@ -127,8 +126,7 @@
 <text x="1072" y="635" class="ip" text-anchor="end">10.10.0.50</text>
 <text x="612" y="680" class="specs">1 vCPU · 2 GB RAM</text>
 <text x="612" y="700" class="meta">DNS en netwerkbeheer</text>
-<text x="612" y="728" class="service">Pi-hole</text>
-<text x="612" y="746" class="service">UniFi Network Applicati…</text>
+<text x="612" y="728" class="service">UniFi Network Applicati…</text>
 </g><g>
 <rect x="1128" y="602" width="504" height="212" rx="22" fill="url(#panel)" stroke="#d0d7de" stroke-width="2.0" filter="url(#shadow)"/>
 <path d="M 1150 602 H 1610 Q 1632 602 1632 624 V 656 H 1128 V 624 Q 1128 602 1150 602 Z" fill="#cffafe" stroke="#06b6d4" stroke-width="0"/>
@@ -141,22 +139,8 @@
 <text x="1150" y="764" class="serviceMuted">Alertmanager</text>
 <text x="1150" y="782" class="serviceMuted">cAdvisor</text>
 <text x="1402" y="728" class="service">Node Exporter</text>
-<text x="1402" y="746" class="service">Smartctl Exporter</text>
-<text x="1402" y="764" class="serviceMuted">Mosquitto Exporter</text>
-</g><g>
-<rect x="52" y="844" width="504" height="212" rx="22" fill="url(#panel)" stroke="#d0d7de" stroke-width="2.0" filter="url(#shadow)"/>
-<path d="M 74 844 H 534 Q 556 844 556 866 V 898 H 52 V 866 Q 52 844 74 844 Z" fill="#e2e8f0" stroke="#64748b" stroke-width="0"/>
-<text x="74" y="877" class="title2">LXC 108 · openclaw</text>
-<text x="534" y="877" class="ip" text-anchor="end">10.10.0.80</text>
-<text x="74" y="922" class="specs">4 vCPU · 4 GB RAM</text>
-<text x="74" y="942" class="meta">Simple representation only</text>
-<text x="74" y="970" class="service">OpenClaw</text>
-</g><g>
-<rect x="590" y="844" width="504" height="212" rx="22" fill="url(#panel)" stroke="#d0d7de" stroke-width="2.0" filter="url(#shadow)"/>
-<path d="M 612 844 H 1072 Q 1094 844 1094 866 V 898 H 590 V 866 Q 590 844 612 844 Z" fill="#e2e8f0" stroke="#64748b" stroke-width="0"/>
-<text x="612" y="877" class="title2">LXC 109 · money</text>
-<text x="1072" y="877" class="ip" text-anchor="end">10.10.0.90</text>
-<text x="612" y="922" class="specs">2 vCPU · 2 GB RAM</text>
-<text x="612" y="942" class="meta">Simple representation only</text>
-<text x="612" y="970" class="service">Money</text>
+<text x="1402" y="746" class="service">Sonarr Exporter</text>
+<text x="1402" y="764" class="serviceMuted">Radarr Exporter</text>
+<text x="1402" y="782" class="serviceMuted">Mosquitto Exporter</text>
+<text x="1150" y="796" class="footer">+ 2 more</text>
 </g></svg>
