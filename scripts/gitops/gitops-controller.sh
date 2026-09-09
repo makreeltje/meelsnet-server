@@ -171,6 +171,7 @@ lxc_is_affected() {
 
 deploy_to_lxc() {
   local lxc_id="$1" lxc_name="$2" sha="$3"
+  local deploy_started=$SECONDS
 
   log_info "Deploying to LXC $lxc_id ($lxc_name)..."
 
@@ -188,15 +189,16 @@ deploy_to_lxc() {
   cd "$REPO_DIR"
 
   local tar_file="/tmp/lxc${lxc_id}-compose.tar.gz"
+  log_info "LXC $lxc_id ($lxc_name): creating deployment archive..."
   if ! tar -czf "$tar_file" "${tar_args[@]}" 2>/dev/null; then
-    log_error "Failed to create tar for LXC $lxc_id"
+    log_error "LXC $lxc_id ($lxc_name): failed to create deployment archive"
     record_lxc_deploy "$lxc_id" "FAILED" "$sha"
     return 1
   fi
 
-  # Push tar into LXC and deploy
+  log_info "LXC $lxc_id ($lxc_name): transferring deployment archive..."
   if ! pct push "$lxc_id" "$tar_file" /tmp/compose.tar.gz; then
-    log_error "Failed to push compose files to LXC $lxc_id"
+    log_error "LXC $lxc_id ($lxc_name): failed to transfer deployment archive"
     rm -f "$tar_file"
     record_lxc_deploy "$lxc_id" "FAILED" "$sha"
     return 1
@@ -204,28 +206,61 @@ deploy_to_lxc() {
 
   rm -f "$tar_file"
 
-  # Extract and deploy inside the LXC
   # The LXC compose file uses relative include paths (e.g. compose/network/...)
   # which Docker Compose resolves relative to the compose file's directory.
   # We copy it to $DOCKER_BASE/compose.yml so includes resolve correctly.
+  log_info "LXC $lxc_id ($lxc_name): applying compose configuration..."
   if ! pct exec "$lxc_id" -- bash -c "
     set -e
     export HOME=/root
     tar -xzf /tmp/compose.tar.gz -C $DOCKER_BASE
     rm -f /tmp/compose.tar.gz
     cp $DOCKER_BASE/lxc/$lxc_name/compose.yml $DOCKER_BASE/compose.yml
-    cd $DOCKER_BASE
-    set -a; source .env 2>/dev/null || true; set +a
-    docker compose --profile all pull --quiet 2>&1
-    docker compose --profile all up -d --remove-orphans 2>&1
-    docker image prune -a -f --filter 'until=24h' 2>&1
   "; then
-    log_error "Failed to deploy services in LXC $lxc_id ($lxc_name)"
+    log_error "LXC $lxc_id ($lxc_name): failed to apply compose configuration"
     record_lxc_deploy "$lxc_id" "FAILED" "$sha"
     return 1
   fi
 
-  log_info "Successfully deployed LXC $lxc_id ($lxc_name)"
+  log_info "LXC $lxc_id ($lxc_name): pulling container images..."
+  if ! pct exec "$lxc_id" -- bash -c "
+    set -e
+    export HOME=/root
+    cd $DOCKER_BASE
+    set -a; source .env 2>/dev/null || true; set +a
+    docker compose --profile all pull --quiet 2>&1
+  "; then
+    log_error "LXC $lxc_id ($lxc_name): failed to pull container images"
+    record_lxc_deploy "$lxc_id" "FAILED" "$sha"
+    return 1
+  fi
+
+  log_info "LXC $lxc_id ($lxc_name): updating services..."
+  if ! pct exec "$lxc_id" -- bash -c "
+    set -e
+    export HOME=/root
+    cd $DOCKER_BASE
+    set -a; source .env 2>/dev/null || true; set +a
+    docker compose --profile all up -d --remove-orphans 2>&1
+  "; then
+    log_error "LXC $lxc_id ($lxc_name): failed to update services"
+    record_lxc_deploy "$lxc_id" "FAILED" "$sha"
+    return 1
+  fi
+
+  local prune_output reclaimed_space
+  log_info "LXC $lxc_id ($lxc_name): cleaning unused images older than 24 hours..."
+  if ! prune_output=$(pct exec "$lxc_id" -- docker image prune -a -f --filter 'until=24h' 2>&1); then
+    printf '%s\n' "$prune_output" >> "$LOG_FILE"
+    log_error "LXC $lxc_id ($lxc_name): failed to clean unused images"
+    record_lxc_deploy "$lxc_id" "FAILED" "$sha"
+    return 1
+  fi
+
+  reclaimed_space=$(awk -F ': ' '/Total reclaimed space:/ { value=$2 } END { print value }' <<< "$prune_output")
+  log_info "LXC $lxc_id ($lxc_name): image cleanup complete; reclaimed ${reclaimed_space:-unknown}"
+
+  log_info "Successfully deployed LXC $lxc_id ($lxc_name) in $((SECONDS - deploy_started))s"
   record_lxc_deploy "$lxc_id" "OK" "$sha"
   return 0
 }
