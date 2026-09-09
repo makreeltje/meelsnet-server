@@ -21,6 +21,13 @@ STATE_DIR="${STATE_DIR:-/opt/gitops/state}"
 LOG_DIR="${LOG_DIR:-/var/log/gitops}"
 DOCKER_BASE="${DOCKER_BASE:-/root/docker}"
 
+# Host-managed paths: repo content deployed directly onto the Proxmox host
+# itself (not into any LXC) — the controller/webhook install and the backup
+# scripts. See sync_host_managed_paths() below.
+GITOPS_INSTALL_DIR="${GITOPS_INSTALL_DIR:-/opt/gitops}"
+BACKUP_SCRIPTS_DIR="${BACKUP_SCRIPTS_DIR:-/root/scripts/backup}"
+SYSTEMD_DIR="${SYSTEMD_DIR:-/etc/systemd/system}"
+
 # Load config override if present
 CONFIG_FILE="/etc/gitops/config.env"
 # shellcheck source=/dev/null
@@ -81,6 +88,15 @@ record_lxc_deploy() {
   echo "$timestamp|$sha|$status" > "$STATE_DIR/lxc-${lxc_id}-last-deploy"
 }
 
+# Host-managed path sync status (for dashboarding/debugging), mirrors
+# record_lxc_deploy but keyed by name instead of LXC ID.
+record_host_sync() {
+  local name="$1" status="$2" sha="$3"
+  local timestamp
+  timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+  echo "$timestamp|$sha|$status" > "$STATE_DIR/host-${name}-last-sync"
+}
+
 # -----------------------------------------------------------------------------
 # Git operations
 # -----------------------------------------------------------------------------
@@ -115,6 +131,134 @@ get_changed_files() {
 pull_latest() {
   cd "$REPO_DIR"
   git reset --hard "origin/$BRANCH" --quiet 2>/dev/null || git reset --hard "origin/$BRANCH"
+}
+
+# -----------------------------------------------------------------------------
+# Host-managed path deployment
+# -----------------------------------------------------------------------------
+# scripts/backup/** and scripts/gitops/** don't belong to any LXC — they run
+# directly on the Proxmox host. $REPO_DIR is already a fresh git checkout by
+# the time these run, so this is a local copy, not a pct push.
+
+file_in_list() {
+  local needle="$1"; shift
+  local f
+  for f in "$@"; do
+    [[ "$f" == "$needle" ]] && return 0
+  done
+  return 1
+}
+
+# Copies $1 (repo-relative source) to $2 (absolute destination) via
+# write-temp-then-rename in the destination directory, so a script that is
+# currently executing (e.g. this controller updating itself) never reads a
+# half-written file mid-run — mv within the same filesystem is an atomic
+# rename, and a running process keeps its open handle to the old inode.
+install_file() {
+  local src="$REPO_DIR/$1" dest="$2" mode="${3:-644}"
+  local tmp
+  tmp=$(mktemp "$(dirname "$dest")/.$(basename "$dest").XXXXXX")
+  cp "$src" "$tmp"
+  chmod "$mode" "$tmp"
+  mv "$tmp" "$dest"
+}
+
+sync_backup_scripts() {
+  local sha="$1"
+  log_info "Host sync: scripts/backup/** changed — syncing to $BACKUP_SCRIPTS_DIR"
+  mkdir -p "$BACKUP_SCRIPTS_DIR"
+
+  local f base
+  for f in "$REPO_DIR"/scripts/backup/*; do
+    [[ -f "$f" ]] || continue
+    base=$(basename "$f")
+    install_file "scripts/backup/$base" "$BACKUP_SCRIPTS_DIR/$base" 755
+    log_info "Host sync:   $base -> $BACKUP_SCRIPTS_DIR/$base"
+  done
+
+  # Prune scripts removed from the repo (e.g. mongo.sh after MongoDB was
+  # decommissioned) so a stale script can't keep running via cron.
+  for f in "$BACKUP_SCRIPTS_DIR"/*; do
+    [[ -f "$f" ]] || continue
+    base=$(basename "$f")
+    if [[ ! -f "$REPO_DIR/scripts/backup/$base" ]]; then
+      rm -f "$f"
+      log_info "Host sync:   removed $BACKUP_SCRIPTS_DIR/$base (no longer in repo)"
+    fi
+  done
+
+  log_info "Host sync: backup scripts up to date at $BACKUP_SCRIPTS_DIR"
+  record_host_sync "backup-scripts" "OK" "$sha"
+}
+
+# Updates the controller/webhook install itself. Restarts gitops-webhook.service
+# when webhook.py or the unit file changed — it's a long-running systemd
+# service, so a file copy alone doesn't change its running behavior. The
+# controller script itself needs no restart: it's invoked fresh every run.
+sync_gitops_install() {
+  local sha="$1"; shift
+  local -a changed_files=("$@")
+  local restart_webhook=0
+
+  mkdir -p "$GITOPS_INSTALL_DIR"
+
+  install_file "scripts/gitops/gitops-controller.sh" "$GITOPS_INSTALL_DIR/gitops-controller.sh" 755
+  log_info "Host sync: updated $GITOPS_INSTALL_DIR/gitops-controller.sh (self-update — this run keeps executing the version already loaded in memory; the next invocation picks up the change)"
+
+  if file_in_list "scripts/gitops/gitops-webhook.py" "${changed_files[@]}"; then
+    install_file "scripts/gitops/gitops-webhook.py" "$GITOPS_INSTALL_DIR/gitops-webhook.py" 644
+    log_info "Host sync: updated $GITOPS_INSTALL_DIR/gitops-webhook.py"
+    restart_webhook=1
+  fi
+
+  if file_in_list "scripts/gitops/gitops-webhook.service" "${changed_files[@]}"; then
+    install_file "scripts/gitops/gitops-webhook.service" "$SYSTEMD_DIR/gitops-webhook.service" 644
+    log_info "Host sync: updated $SYSTEMD_DIR/gitops-webhook.service"
+    systemctl daemon-reload
+    log_info "Host sync: ran systemctl daemon-reload"
+    restart_webhook=1
+  fi
+
+  if [[ $restart_webhook -eq 1 ]]; then
+    if systemctl restart gitops-webhook.service; then
+      log_info "Host sync: restarted gitops-webhook.service to apply changes"
+    else
+      log_error "Host sync: failed to restart gitops-webhook.service — check 'systemctl status gitops-webhook.service' manually"
+      record_host_sync "gitops-install" "FAILED" "$sha"
+      return 1
+    fi
+  fi
+
+  log_info "Host sync: gitops controller install up to date at $GITOPS_INSTALL_DIR"
+  record_host_sync "gitops-install" "OK" "$sha"
+}
+
+# Dispatches to the two host-managed syncs above based on what actually
+# changed in this commit range. Called from sync() (automatic) and
+# cmd_deploy() (manual force-deploy, which passes its own file list).
+sync_host_managed_paths() {
+  local sha="$1"; shift
+  local -a changed_files=("$@")
+  local any_failed=0
+  local f
+
+  for f in "${changed_files[@]}"; do
+    if [[ "$f" == scripts/backup/* ]]; then
+      sync_backup_scripts "$sha"
+      break
+    fi
+  done
+
+  for f in "${changed_files[@]}"; do
+    if [[ "$f" == scripts/gitops/* ]]; then
+      if ! sync_gitops_install "$sha" "${changed_files[@]}"; then
+        any_failed=1
+      fi
+      break
+    fi
+  done
+
+  return $any_failed
 }
 
 # -----------------------------------------------------------------------------
@@ -338,6 +482,10 @@ sync() {
   local any_failed=0
   local deployed_count=0
 
+  if ! sync_host_managed_paths "$remote_sha" "${changed_files[@]}"; then
+    any_failed=1
+  fi
+
   for entry in "${LXC_ENTRIES[@]}"; do
     parse_lxc_entry "$entry"
 
@@ -399,6 +547,18 @@ cmd_status() {
       echo "  LXC $LXC_ID ($LXC_NAME): no deployments recorded"
     fi
   done
+
+  echo ""
+  echo "Host-managed paths:"
+  local host_name
+  for host_name in backup-scripts gitops-install; do
+    local host_state_file="$STATE_DIR/host-${host_name}-last-sync"
+    if [[ -f "$host_state_file" ]]; then
+      echo "  $host_name: $(cat "$host_state_file")"
+    else
+      echo "  $host_name: no syncs recorded"
+    fi
+  done
 }
 
 cmd_deploy() {
@@ -410,6 +570,14 @@ cmd_deploy() {
 
   local remote_sha
   remote_sha=$(get_remote_sha)
+
+  if [[ "$target" == "all" || "$target" == "scripts" ]]; then
+    sync_backup_scripts "$remote_sha"
+  fi
+
+  if [[ "$target" == "all" || "$target" == "gitops" ]]; then
+    sync_gitops_install "$remote_sha" "scripts/gitops/gitops-webhook.py" "scripts/gitops/gitops-webhook.service"
+  fi
 
   for entry in "${LXC_ENTRIES[@]}"; do
     parse_lxc_entry "$entry"
@@ -441,18 +609,25 @@ usage() {
 Usage: $(basename "$0") <command> [args]
 
 Commands:
-  sync           Check for changes and deploy affected LXCs (used by timer)
+  sync           Check for changes and deploy affected LXCs + host-managed
+                 paths (used by timer)
   status         Show current deployment status
-  deploy [target] Force deploy to target (lxc name, id, or 'all')
+  deploy [target] Force deploy to target (lxc name, id, 'scripts', 'gitops',
+                 or 'all')
   help           Show this help
 
-Targets: all, infra, media, home, productivity, network, monitoring, utilities
-         Or LXC ID: 101, 102, 103, 104, 105, 106, 107
+Targets: all, infra, media, home, productivity, network, monitoring
+         Or LXC ID: 101, 102, 103, 104, 105, 106
+         scripts  — force-sync scripts/backup/** to $BACKUP_SCRIPTS_DIR
+         gitops   — force-sync scripts/gitops/** to $GITOPS_INSTALL_DIR
+                    (restarts gitops-webhook.service)
 
 Examples:
   $(basename "$0") sync              # Normal poll cycle
   $(basename "$0") status            # Show status
   $(basename "$0") deploy media      # Force redeploy media LXC
+  $(basename "$0") deploy scripts    # Force resync backup scripts
+  $(basename "$0") deploy gitops     # Force resync + restart controller/webhook
   $(basename "$0") deploy all        # Force redeploy everything
   $(basename "$0") deploy 102        # Force redeploy LXC 102
 EOF
