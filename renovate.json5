@@ -111,6 +111,54 @@
       ],
     },
     {
+      description: 'Add Bazarr release references',
+      matchDatasources: ['docker'],
+      matchPackageNames: ['lscr.io/linuxserver/bazarr'],
+      prBodyNotes: [
+        'Release references: [LinuxServer image](https://github.com/linuxserver/docker-bazarr/releases) | [Bazarr application](https://github.com/morpheus65535/bazarr/releases)',
+      ],
+    },
+    {
+      description: 'Add Jackett release references',
+      matchDatasources: ['docker'],
+      matchPackageNames: ['lscr.io/linuxserver/jackett'],
+      prBodyNotes: [
+        'Release references: [LinuxServer image](https://github.com/linuxserver/docker-jackett/releases) | [Jackett application](https://github.com/Jackett/Jackett/releases)',
+      ],
+    },
+    {
+      description: 'Add Prowlarr release references',
+      matchDatasources: ['docker'],
+      matchPackageNames: ['linuxserver/prowlarr'],
+      prBodyNotes: [
+        'Release references: [LinuxServer image](https://github.com/linuxserver/docker-prowlarr/releases) | [Prowlarr application](https://github.com/Prowlarr/Prowlarr/releases)',
+      ],
+    },
+    {
+      description: 'Add Radarr release references',
+      matchDatasources: ['docker'],
+      matchPackageNames: ['linuxserver/radarr'],
+      prBodyNotes: [
+        'Release references: [LinuxServer image](https://github.com/linuxserver/docker-radarr/releases) | [Radarr application](https://github.com/Radarr/Radarr/releases)',
+      ],
+    },
+    {
+      description: 'Add SABnzbd release references',
+      matchDatasources: ['docker'],
+      matchPackageNames: ['linuxserver/sabnzbd'],
+      prBodyNotes: [
+        'Release references: [LinuxServer image](https://github.com/linuxserver/docker-sabnzbd/releases) | [SABnzbd application](https://github.com/sabnzbd/sabnzbd/releases)',
+      ],
+    },
+    {
+      description: 'Add Sonarr release references',
+      matchDatasources: ['docker'],
+      matchPackageNames: ['linuxserver/sonarr'],
+      prBodyNotes: [
+        'Release references: [LinuxServer image](https://github.com/linuxserver/docker-sonarr/releases) | [Sonarr application](https://github.com/Sonarr/Sonarr/releases)',
+      ],
+    },
+    {
       description: 'Silence lookup warnings for custom local app packages',
       matchPackageNames: [
         'ghcr.io/makreeltje/3d-prints-calculator',
@@ -137,8 +185,19 @@
       description: 'Track untagged or latest-tagged images safely via SHA256 digests',
       matchFileNames: [
         'compose/media-server/compose.plex.yml',
+        'compose/media-server/compose.pinchflat.yml',
         'compose/home-automation/compose.hyperion.yml',
         'compose/network/compose.unifi-os.yml',
+      ],
+      pinDigests: true,
+    },
+    {
+      description: 'Track the untagged Alpine image safely via SHA256 digest',
+      matchFileNames: [
+        'compose/productivity/compose.firefly.yml',
+      ],
+      matchPackageNames: [
+        'alpine',
       ],
       pinDigests: true,
     },
