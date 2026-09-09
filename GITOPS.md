@@ -36,6 +36,8 @@ De GitOps controller draait **op Proxmox zelf** en ontvangt alleen een webhook n
 
 ### Path → LXC mapping
 
+De mapping wordt **dynamisch afgeleid** uit de `include:` regels in elke `lxc/<name>/compose.yml` — er is geen hardcoded tabel in de controller. Wijzig je een compose file onder `compose/<stack>/`, dan raakt dat elke LXC die een bestand uit die directory include't. De actuele indeling:
+
 | Gewijzigd pad | LXC | Container |
 |---|---|---|
 | `compose/reverse-proxy/*`, `compose/database/*` | 101 | infra |
@@ -44,9 +46,11 @@ De GitOps controller draait **op Proxmox zelf** en ontvangt alleen een webhook n
 | `compose/productivity/*` | 104 | productivity |
 | `compose/network/*` | 105 | network |
 | `compose/monitoring/*` | 106 | monitoring |
-| `compose/utilities/*` | 107 | utilities |
+| `compose/utilities/*` | meerdere — welke LXC's precies hangt af van welke `lxc/*/compose.yml` een file uit deze directory include't (op dit moment: infra, media, home, productivity, network en monitoring, elk voor een andere subset van tools) | — |
 | `lxc/<name>/*` | bijbehorende LXC | |
 | `compose/fragments/*` | **ALLE** | shared dependency |
+
+Er is geen aparte "utilities" LXC (meer) — die is opgegaan in productivity (CT 104). De losse tools in `compose/utilities/` (Portainer, IT-Tools, Spoolman, etc.) draaien nu verspreid over de LXC's die ze nodig hebben; zie `LXC_ENTRIES` in `gitops-controller.sh` voor de huidige lijst van LXC's.
 
 ## Installatie op Proxmox
 
@@ -125,7 +129,7 @@ MONGO_DBPASS=<wachtwoord>
 EOF"
 ```
 
-Herhaal voor elke LXC met de juiste variabelen (zie `.env.example` en de oude `deploy.yml` voor welke variabelen elke LXC nodig heeft).
+Herhaal voor elke LXC met de juiste variabelen (zie `.env.example` voor de volledige variabele-inventaris en welke `lxc/<name>/compose.yml` welke services — en dus welke variabelen — nodig heeft).
 
 Docker secrets (`~/docker/secrets/`) moeten ook eenmalig op de juiste LXC staan:
 - **LXC 101**: `cf_dns_api_token`, `basic_auth_credentials`
@@ -185,34 +189,6 @@ journalctl -u gitops-webhook.service -f
 2. PR wordt gemerged (handmatig of auto-merge voor patch/minor)
 3. GitHub stuurt een webhook → controller deployt de getroffen LXC
 4. Status is zichtbaar via `gitops-controller.sh status`
-
-## Wat kan opgeruimd worden na migratie
-
-Als je de GitOps controller gebruikt, zijn de volgende zaken **overbodig**:
-
-### 1. GitHub Actions deploy workflow
-
-Het bestand `.github/workflows/deploy.yml` is al vervangen door een validate-only workflow die alleen compose syntax checkt op PRs (geen secrets nodig).
-
-### 2. GitHub Secrets verwijderen
-
-Alle secrets in GitHub repo settings (Settings → Secrets and variables → Actions):
-
-**Repository/environment secrets:**
-- `TS_OAUTH_CLIENT_ID` / `TS_OAUTH_SECRET` (Tailscale)
-- `PROXMOX_SSH_KEY` / `PROXMOX_SSH_HOST` (SSH)
-- Alle wachtwoorden, API keys, database credentials per environment
-
-Dit zijn alle credentials die nu in GitHub staan. Na het verwijderen heeft GitHub geen enkele manier meer om bij je server te komen.
-
-### 3. GitHub Environments verwijderen
-
-De 7 deployment environments (Settings → Environments):
-- `prod-infra`, `prod-media`, `prod-home`, `prod-productivity`, `prod-network`, `prod-monitoring`, `prod-utilities`
-
-### 4. Tailscale OAuth client intrekken
-
-De Tailscale OAuth client die voor GitHub Actions CI was aangemaakt kan ingetrokken worden in de Tailscale admin console. De `tag:ci` ACL regel kan ook verwijderd worden.
 
 ## Endpoints
 
