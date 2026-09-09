@@ -13,7 +13,6 @@ Onderstaande plaat is gebaseerd op de actuele Proxmox/LXC- en Docker-structuur d
 
 ```
 .
-├── compose.yml                    # Root compose (alle services, voor validatie)
 ├── .env.example                   # Environment variabelen template
 ├── GITOPS.md                      # GitOps controller documentatie
 │
@@ -21,23 +20,23 @@ Onderstaande plaat is gebaseerd op de actuele Proxmox/LXC- en Docker-structuur d
 │   ├── fragments/                 # Herbruikbare base service definities
 │   │   └── common-service.yml     #   common, common-lsio, common-db, etc.
 │   ├── reverse-proxy/             # Traefik, Authentik
-│   ├── database/                  # PostgreSQL, Redis, MongoDB, Adminer
+│   ├── database/                  # PostgreSQL, Redis, MariaDB, Adminer
 │   ├── media-server/              # Plex, Sonarr, Radarr, ...
 │   ├── home-automation/           # Home Assistant, Zigbee2MQTT, ...
 │   ├── productivity/              # Immich, Paperless, Nextcloud, ...
 │   ├── network/                   # Pi-hole, UniFi
 │   ├── monitoring/                # Prometheus, Grafana, Loki, ...
-│   ├── utilities/                 # Spoolman, Printer Calculator, ...
+│   ├── utilities/                 # Losse tools (Portainer, IT-Tools, Spoolman, ...),
+│   │                               #   verspreid geïncluded over meerdere LXC's hieronder
 │   └── archive/                   # Uitgeschakelde services
 │
 ├── lxc/                           # Per-LXC container orchestratie
 │   ├── infra/compose.yml          # LXC 101 — includes reverse-proxy + database
 │   ├── media/compose.yml          # LXC 102 — includes media-server
 │   ├── home/compose.yml           # LXC 103 — includes home-automation
-│   ├── productivity/compose.yml   # LXC 104 — includes productivity
+│   ├── productivity/compose.yml   # LXC 104 — includes productivity (+ meeste utilities)
 │   ├── network/compose.yml        # LXC 105 — includes network
-│   ├── monitoring/compose.yml     # LXC 106 — includes monitoring
-│   └── utilities/compose.yml      # LXC 107 — includes utilities
+│   └── monitoring/compose.yml     # LXC 106 — includes monitoring
 │
 ├── scripts/
 │   ├── gitops/                    # GitOps controller (draait op Proxmox)
@@ -65,8 +64,7 @@ Elke service heeft zijn eigen compose file in `compose/<stack>/`. De actieve pro
 - `productivity` → documenten, foto's, cloud en finance
 - `network` → DNS en UniFi
 - `monitoring` → metrics, alerts en exporters
-- `utilities` → kleine losse tools
-- aparte LXC's voor `openclaw` en `money`
+- `compose/utilities/` bevat kleine losse tools (Portainer, IT-Tools, Spoolman, ...) die per stuk geïncluded worden door de LXC die ze nodig heeft — het grootste deel zit in `productivity`, Portainer Agent zit in vrijwel elke LXC. Er is geen aparte "utilities" LXC meer (was CT 107, opgegaan in `productivity`).
 
 Services erven van base templates in `compose/fragments/common-service.yml`:
 
@@ -145,9 +143,7 @@ include:
   - compose/media-server/compose.nieuwe-service.yml
 ```
 
-4. Voeg de include ook toe aan de root `compose.yml` (voor validatie).
-
-5. Commit, push, en merge. De GitOps controller deployt automatisch naar de juiste LXC.
+4. Commit, push, en merge. De GitOps controller deployt automatisch naar de juiste LXC.
 
 ## Base service templates
 

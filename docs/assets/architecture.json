@@ -36,9 +36,9 @@
         "Worker",
         "Postgres",
         "Redis",
-        "MongoDB",
+        "MariaDB",
         "Adminer",
-        "Mongo Express"
+        "Portainer"
       ]
     },
     {
@@ -57,7 +57,7 @@
         "Bazarr",
         "Tautulli"
       ],
-      "footer": "+ 7 more"
+      "footer": "+ 9 more"
     },
     {
       "title": "LXC 103 · home",
@@ -87,11 +87,11 @@
         "Nextcloud",
         "Backrest",
         "Firefly III",
+        "N8n",
         "IT-Tools",
-        "Omni-Tools",
-        "Spoolman",
-        "Printer Calculator"
-      ]
+        "Spoolman"
+      ],
+      "footer": "+ 4 more"
     },
     {
       "title": "LXC 105 · network",
@@ -100,7 +100,6 @@
       "subtitle": "DNS en netwerkbeheer",
       "accent": "blue",
       "services": [
-        "Pi-hole",
         "UniFi Network Application"
       ]
     },
@@ -116,29 +115,11 @@
         "Alertmanager",
         "cAdvisor",
         "Node Exporter",
-        "Smartctl Exporter",
+        "Sonarr Exporter",
+        "Radarr Exporter",
         "Mosquitto Exporter"
-      ]
-    },
-    {
-      "title": "LXC 108 · openclaw",
-      "ip": "10.10.0.80",
-      "specs": "4 vCPU · 4 GB RAM",
-      "subtitle": "Simple representation only",
-      "accent": "slate",
-      "services": [
-        "OpenClaw"
-      ]
-    },
-    {
-      "title": "LXC 109 · money",
-      "ip": "10.10.0.90",
-      "specs": "2 vCPU · 2 GB RAM",
-      "subtitle": "Simple representation only",
-      "accent": "slate",
-      "services": [
-        "Money"
-      ]
+      ],
+      "footer": "+ 2 more"
     }
   ],
   "legend": [
@@ -161,10 +142,6 @@
     {
       "label": "Monitoring / observability",
       "accent": "cyan"
-    },
-    {
-      "label": "Simple / supporting stacks",
-      "accent": "slate"
     }
   ]
 }
