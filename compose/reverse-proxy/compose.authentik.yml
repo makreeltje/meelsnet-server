@@ -67,7 +67,7 @@ services:
       retries: 3
       start_period: 30s
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock:ro
       - $CONF_DIR/authentik/certs:/certs
       - $CONF_DIR/authentik/media:/media
       - $CONF_DIR/authentik/custom-templates:/templates
