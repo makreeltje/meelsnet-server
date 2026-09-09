@@ -1,6 +1,6 @@
 # GitOps Controller
 
-Webhook-based deployment controller die luistert naar GitHub push events en automatisch de getroffen LXC containers deployt via Proxmox `pct`.
+Webhook-based deployment controller die luistert naar GitHub push events en automatisch de getroffen LXC containers deployt via Proxmox `pct` — én de host-managed scripts (`scripts/backup/**`, `scripts/gitops/**`) direct op de Proxmox host zelf bijwerkt.
 
 ## Waarom?
 
@@ -31,8 +31,8 @@ De GitOps controller draait **op Proxmox zelf** en ontvangt alleen een webhook n
 2. GitHub stuurt een push webhook naar de Proxmox webhook listener
 3. Listener verifieert de HMAC-SHA256 signature en accepteert het event
 4. Controller doet `git fetch` + `git diff` om gewijzigde files te bepalen
-5. Mapt gewijzigde files naar de juiste LXC container(s)
-6. Deployt alleen de getroffen LXC's (`pct push` + `docker compose up -d`)
+5. Mapt gewijzigde files naar de juiste LXC container(s) of host-managed pad
+6. Deployt alleen wat geraakt is: LXC's via `pct push` + `docker compose up -d`, host-managed scripts via een lokale bestandskopie (zie "Host-managed paden" hieronder)
 
 ### Path → LXC mapping
 
@@ -51,6 +51,29 @@ De mapping wordt **dynamisch afgeleid** uit de `include:` regels in elke `lxc/<n
 | `compose/fragments/*` | **ALLE** | shared dependency |
 
 Er is geen aparte "utilities" LXC (meer) — die is opgegaan in productivity (CT 104). De losse tools in `compose/utilities/` (Portainer, IT-Tools, Spoolman, etc.) draaien nu verspreid over de LXC's die ze nodig hebben; zie `LXC_ENTRIES` in `gitops-controller.sh` voor de huidige lijst van LXC's.
+
+### Host-managed paden (niet LXC-specifiek)
+
+`scripts/backup/**` en `scripts/gitops/**` horen bij geen enkele LXC — ze draaien direct op de Proxmox host. De controller heeft daarom een tweede, parallelle sync-stap naast de LXC-deploys:
+
+| Gewijzigd pad | Actie |
+|---|---|
+| `scripts/backup/*` | Gekopieerd naar `/root/scripts/backup/` (mode 755). Scripts die uit de repo verwijderd zijn worden ook lokaal verwijderd, zodat een oud script niet stil via cron kan blijven draaien. |
+| `scripts/gitops/gitops-controller.sh` | Altijd gekopieerd naar `/opt/gitops/gitops-controller.sh` — self-update. Veilig omdat het schrijven via write-temp-then-`mv` gaat: de lopende run leest de oude inode gewoon af tot z'n einde, de volgende invocation pakt de nieuwe versie op. |
+| `scripts/gitops/gitops-webhook.py` | Gekopieerd naar `/opt/gitops/gitops-webhook.py`, gevolgd door `systemctl restart gitops-webhook.service` — dit is een langlevende systemd service, dus een bestandskopie alleen verandert het gedrag niet totdat 'ie herstart. |
+| `scripts/gitops/gitops-webhook.service` | Gekopieerd naar `/etc/systemd/system/gitops-webhook.service`, gevolgd door `systemctl daemon-reload` + restart. |
+
+Elke stap logt naar `gitops.log` met een `Host sync:` prefix, en de status is zichtbaar via `gitops-controller.sh status` (aparte "Host-managed paths" sectie, analoog aan de LXC-status).
+
+Handmatig forceren kan met dedicated targets:
+
+```bash
+/opt/gitops/gitops-controller.sh deploy scripts   # alleen scripts/backup/**
+/opt/gitops/gitops-controller.sh deploy gitops    # alleen scripts/gitops/** (incl. restart)
+/opt/gitops/gitops-controller.sh deploy all       # alles, inclusief host-managed paden
+```
+
+`config.env.example` en `setup.sh` zelf worden niet gesynchroniseerd — die zijn alleen relevant bij een eenmalige installatie, er is geen "live" doel op de host om ze naartoe te kopiëren.
 
 ## Installatie op Proxmox
 
@@ -166,7 +189,11 @@ systemctl status gitops-webhook.service
 /opt/gitops/gitops-controller.sh deploy media
 /opt/gitops/gitops-controller.sh deploy 102
 
-# Alles
+# Host-managed paden
+/opt/gitops/gitops-controller.sh deploy scripts   # scripts/backup/**
+/opt/gitops/gitops-controller.sh deploy gitops    # scripts/gitops/** (restart webhook)
+
+# Alles (LXC's + host-managed paden)
 /opt/gitops/gitops-controller.sh deploy all
 ```
 

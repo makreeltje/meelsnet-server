@@ -2,7 +2,8 @@
 # postgres.sh — application-consistent dump van alle Postgres databases in CT 101
 #
 # Output: /mnt/pve/data/backups/databases/postgres/<date>_<dbname>.sql
-# Local retention: 7 dagen (Backrest doet long-term naar Azure via 'databases' plan)
+# Local retention: 1 dag. Backrest houdt de echte historische retentie bij
+# via het 'databases' plan naar Azure (keep-last-3 snapshots) — zie CLAUDE.md.
 #
 # Output policy: silent on success. Bij failure: full log via
 # `logger -p user.err -t postgres-backup`. Bekijk failures met:

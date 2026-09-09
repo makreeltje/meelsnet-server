@@ -55,8 +55,12 @@ resync_pending = threading.Event()
 def verify_signature(payload: bytes, signature_header: str) -> bool:
     """Verify GitHub HMAC-SHA256 webhook signature."""
     if not WEBHOOK_SECRET:
-        log.warning("No WEBHOOK_SECRET configured — skipping signature verification")
-        return True
+        # Fail closed: no secret configured means no request can be trusted.
+        # main() refuses to start the server without a secret, so this path
+        # should be unreachable in practice — but never treat a missing
+        # secret as "verification not required".
+        log.error("No WEBHOOK_SECRET configured — rejecting request")
+        return False
 
     if not signature_header:
         return False
@@ -221,10 +225,12 @@ class WebhookHandler(BaseHTTPRequestHandler):
 
 def main():
     if not WEBHOOK_SECRET:
-        log.warning(
-            "WEBHOOK_SECRET is not set! Webhook signature verification is DISABLED. "
-            "Set WEBHOOK_SECRET in /etc/gitops/config.env for production use."
+        log.error(
+            "WEBHOOK_SECRET is not set. Refusing to start with signature "
+            "verification disabled — set WEBHOOK_SECRET in /etc/gitops/config.env "
+            "(or the environment) before running this service."
         )
+        sys.exit(1)
 
     server = HTTPServer(("0.0.0.0", WEBHOOK_PORT), WebhookHandler)
     log.info("GitOps webhook listener started on port %d", WEBHOOK_PORT)
