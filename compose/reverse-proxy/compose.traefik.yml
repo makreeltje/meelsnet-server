@@ -77,10 +77,6 @@ services:
         published: 443
         protocol: tcp
         mode: host
-      - target: 8080
-        published: 8082
-        protocol: tcp
-        mode: host
     healthcheck:
       test: ["CMD", "traefik", "healthcheck", "--ping"]
       interval: 30s
