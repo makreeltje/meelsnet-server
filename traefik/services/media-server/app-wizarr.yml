@@ -13,4 +13,4 @@ http:
     wizarr-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_MEDIA_IP"}}:5690"
+          - url: 'http://{{env "LXC_MEDIA_IP"}}:5690'

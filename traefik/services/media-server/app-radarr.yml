@@ -28,4 +28,4 @@ http:
     radarr-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_MEDIA_IP"}}:7878"
+          - url: 'http://{{env "LXC_MEDIA_IP"}}:7878'
