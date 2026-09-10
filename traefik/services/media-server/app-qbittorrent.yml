@@ -27,4 +27,4 @@ http:
     qbittorrent-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_MEDIA_IP"}}:8083"
+          - url: 'http://{{env "LXC_MEDIA_IP"}}:8083'

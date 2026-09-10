@@ -13,4 +13,4 @@ http:
     n8n-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_PRODUCTIVITY_IP"}}:5678"
+          - url: 'http://{{env "LXC_PRODUCTIVITY_IP"}}:5678'

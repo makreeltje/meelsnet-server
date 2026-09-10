@@ -13,4 +13,4 @@ http:
     zigbee2mqtt-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_HOME_IP"}}:8080"
+          - url: 'http://{{env "LXC_HOME_IP"}}:8080'
