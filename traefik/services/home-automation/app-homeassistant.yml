@@ -13,4 +13,4 @@ http:
     haos-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_HOME_IP"}}:8123"
+          - url: 'http://{{env "LXC_HOME_IP"}}:8123'

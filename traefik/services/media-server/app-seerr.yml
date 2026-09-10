@@ -13,4 +13,4 @@ http:
     seerr-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_MEDIA_IP"}}:5055"
+          - url: 'http://{{env "LXC_MEDIA_IP"}}:5055'

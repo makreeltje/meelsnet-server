@@ -13,4 +13,4 @@ http:
     prometheus-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_MONITORING_IP"}}:9090"
+          - url: 'http://{{env "LXC_MONITORING_IP"}}:9090'

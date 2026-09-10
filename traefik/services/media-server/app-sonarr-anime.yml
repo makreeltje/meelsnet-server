@@ -27,4 +27,4 @@ http:
     sonarr-anime-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_MEDIA_IP"}}:8999"
+          - url: 'http://{{env "LXC_MEDIA_IP"}}:8999'

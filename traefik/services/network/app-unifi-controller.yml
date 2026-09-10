@@ -16,7 +16,7 @@ http:
         passHostHeader: true
         serversTransport: "pve"
         servers:
-          - url: "https://{{env "LXC_NETWORK_IP"}}:11443/"
+          - url: 'https://{{env "LXC_NETWORK_IP"}}:11443/'
   serversTransports:
     pve:
       insecureSkipVerify: true

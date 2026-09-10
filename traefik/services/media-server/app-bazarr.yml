@@ -27,4 +27,4 @@ http:
     bazarr-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_MEDIA_IP"}}:6767"
+          - url: 'http://{{env "LXC_MEDIA_IP"}}:6767'

@@ -13,4 +13,4 @@ http:
     agregarr-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_MEDIA_IP"}}:7171"
+          - url: 'http://{{env "LXC_MEDIA_IP"}}:7171'
