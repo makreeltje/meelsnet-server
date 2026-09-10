@@ -10,7 +10,7 @@ services:
       - $CLOUD_DIR/rick/files/Documents/Personal/3D prints:/mnt/3d-prints:ro
       - $CONF_DIR/prints-portal/data:/data
     ports:
-      - $LXC_PRODUCTIVITY_IP:8003:8080
+      - 8003:8080
     environment:
       Serilog__MinimumLevel__Override__Microsoft.AspNetCore.Authentication: Debug
       ASPNETCORE_URLS: http://+:8080

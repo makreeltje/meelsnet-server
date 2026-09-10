@@ -9,4 +9,4 @@ services:
     volumes:
       - $CONF_DIR/profilarr/config:/config
     ports:
-      - $LXC_MEDIA_IP:6868:6868
+      - 6868:6868

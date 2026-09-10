@@ -10,4 +10,4 @@ services:
       - $CONF_DIR/pinchflat/config:/config
       - $MEDIA_DIR/youtube:/downloads
     ports:
-      - $LXC_MEDIA_IP:8945:8945
+      - 8945:8945

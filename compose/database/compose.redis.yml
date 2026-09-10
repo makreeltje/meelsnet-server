@@ -9,7 +9,7 @@ services:
     volumes:
       - $CONF_DIR/redis/data:/data
     ports:
-      - $LXC_INFRA_IP:6379:6379
+      - 6379:6379
     healthcheck:
       interval: 30s
       retries: 5

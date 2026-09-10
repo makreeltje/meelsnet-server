@@ -19,7 +19,7 @@ services:
       - $CONF_DIR/nextcloud/config:/var/www/html
       - $CLOUD_DIR:/data
     ports:
-      - $LXC_PRODUCTIVITY_IP:8081:80
+      - 8081:80
     healthcheck:
       test: [ "CMD", "curl", "-fsSo", "/dev/null", "http://localhost:80/status.php" ]
       interval: 30s

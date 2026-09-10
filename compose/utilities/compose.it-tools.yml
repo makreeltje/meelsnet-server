@@ -7,4 +7,4 @@ services:
     image: ghcr.io/corentinth/it-tools:2024.10.22-7ca5933
     profiles: [ "utilities", "all" ]
     ports:
-      - $LXC_PRODUCTIVITY_IP:8082:80
+      - 8082:80

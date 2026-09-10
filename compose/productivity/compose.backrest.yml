@@ -21,7 +21,7 @@ services:
       - $DOCKER_DIR:/docker
       - $MNT_DIR/backups:/mnt/backups
     ports:
-      - $LXC_PRODUCTIVITY_IP:9898:9898
+      - 9898:9898
     healthcheck:
       test: [ "CMD", "wget", "-qO-", "http://localhost:9898/" ]
       interval: 60s

@@ -11,7 +11,7 @@ services:
     volumes:
       - $CONF_DIR/loki/config:/mnt/config
     ports:
-      - $LXC_MONITORING_IP:3100:3100
+      - 3100:3100
     healthcheck:
       test: [ "CMD", "wget", "-qO-", "http://localhost:3100/ready" ]
       interval: 30s
