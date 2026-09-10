@@ -1,0 +1,16 @@
+http:
+  routers:
+    pihole-rtr:
+      rule: 'Host(`pihole.{{env "DOMAINNAME_1"}}`)'
+      entryPoints:
+        - websecure
+      middlewares:
+        - chain-authentik
+      service: pihole-svc
+      tls:
+        certResolver: dns-cloudflare
+  services:
+    pihole-svc:
+      loadBalancer:
+        servers:
+          - url: "http://{{env "LXC_NETWORK_IP"}}:80/admin"

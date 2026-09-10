@@ -1,0 +1,16 @@
+http:
+  routers:
+    printer-calculator-rtr:
+      rule: 'Host(`calculator.{{env "DOMAINNAME_1"}}`)'
+      entryPoints:
+        - websecure
+      middlewares:
+        - chain-authentik
+      service: printer-calculator-svc
+      tls:
+        certResolver: dns-cloudflare
+  services:
+    printer-calculator-svc:
+      loadBalancer:
+        servers:
+          - url: "http://{{env "LXC_PRODUCTIVITY_IP"}}:5000"

@@ -1,0 +1,9 @@
+http:
+  middlewares:
+    chain-unifi:
+      chain:
+        middlewares:
+          - middlewares-rate-limit
+          - middlewares-secure-headers
+          - middlewares-unifi-headers
+          - middlewares-oauth

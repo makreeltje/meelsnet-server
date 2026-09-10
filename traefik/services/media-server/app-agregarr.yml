@@ -1,0 +1,16 @@
+http:
+  routers:
+    agregarr-rtr:
+      rule: 'Host(`agregarr.{{env "DOMAINNAME_2"}}`)'
+      entryPoints:
+        - websecure
+      middlewares:
+        - chain-authentik
+      service: agregarr-svc
+      tls:
+        certResolver: dns-cloudflare
+  services:
+    agregarr-svc:
+      loadBalancer:
+        servers:
+          - url: "http://{{env "LXC_MEDIA_IP"}}:7171"

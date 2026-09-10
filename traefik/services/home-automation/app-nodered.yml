@@ -1,0 +1,16 @@
+http:
+  routers:
+    nodered-rtr:
+      rule: 'Host(`nodered.{{env "DOMAINNAME_2"}}`)'
+      entryPoints:
+        - websecure
+      middlewares:
+        - chain-authentik
+      service: nodered-svc
+      tls:
+        certResolver: dns-cloudflare
+  services:
+    nodered-svc:
+      loadBalancer:
+        servers:
+          - url: "http://{{env "LXC_HOME_IP"}}:1880"
