@@ -246,8 +246,24 @@ sync_traefik_rules() {
   local sha="$1"
   log_info "Traefik rules changed — syncing to LXC $TRAEFIK_LXC_ID ($TRAEFIK_RULES_DEST)..."
 
-  local tar_file="/tmp/traefik-rules.tar.gz"
   cd "$REPO_DIR"
+
+  # Guard: these files are required for Traefik to function. Abort rather than
+  # sync an incomplete directory and cause an outage via the atomic swap.
+  local required_files=("traefik/tls-opts.yml")
+  local missing=0
+  for f in "${required_files[@]}"; do
+    if [[ ! -f "$f" ]]; then
+      log_error "Traefik rules: required file missing from repo: $f — aborting sync to avoid outage"
+      missing=1
+    fi
+  done
+  if [[ $missing -eq 1 ]]; then
+    record_host_sync "traefik-rules" "FAILED" "$sha"
+    return 1
+  fi
+
+  local tar_file="/tmp/traefik-rules.tar.gz"
 
   if ! tar -czf "$tar_file" -C traefik .; then
     log_error "Traefik rules: failed to create archive"
