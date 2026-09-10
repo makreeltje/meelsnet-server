@@ -1,0 +1,16 @@
+http:
+  routers:
+    musicassistant-rtr:
+      rule: 'Host(`music.{{env "DOMAINNAME_2"}}`)'
+      entryPoints:
+        - websecure
+      middlewares:
+        - chain-authentik
+      service: musicassistant-svc
+      tls:
+        certResolver: dns-cloudflare
+  services:
+    musicassistant-svc:
+      loadBalancer:
+        servers:
+          - url: 'http://{{env "LXC_HOME_IP"}}:8095'

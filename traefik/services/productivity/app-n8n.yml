@@ -1,0 +1,16 @@
+http:
+  routers:
+    n8n-rtr:
+      rule: 'Host(`n8n.{{env "DOMAINNAME_2"}}`)'
+      entryPoints:
+        - websecure
+      middlewares:
+        - chain-authentik
+      service: n8n-svc
+      tls:
+        certResolver: dns-cloudflare
+  services:
+    n8n-svc:
+      loadBalancer:
+        servers:
+          - url: 'http://{{env "LXC_PRODUCTIVITY_IP"}}:5678'

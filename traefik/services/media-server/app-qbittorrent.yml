@@ -1,0 +1,30 @@
+http:
+  routers:
+    # --- ROUTER 1: Secure the Web UI (Default) ---
+    qbittorrent-rtr:
+      rule: 'Host(`qbittorrent.{{env "DOMAINNAME_1"}}`)'
+      entryPoints:
+        - websecure
+      middlewares:
+        - chain-authentik
+      service: qbittorrent-svc
+      tls:
+        certResolver: dns-cloudflare
+
+    # --- ROUTER 2: Bypass Auth for Helmarr/Quartermaster ---
+    qbittorrent-api-rtr:
+      rule: 'Host(`qbittorrent.{{env "DOMAINNAME_1"}}`) && Header(`X-Homelab-Bypass`, `{{env "BYPASS_SECRET"}}`)'
+      priority: 100
+      entryPoints:
+        - websecure
+      middlewares:
+        - chain-no-auth
+      service: qbittorrent-svc
+      tls:
+        certResolver: dns-cloudflare
+
+  services:
+    qbittorrent-svc:
+      loadBalancer:
+        servers:
+          - url: 'http://{{env "LXC_MEDIA_IP"}}:8083'

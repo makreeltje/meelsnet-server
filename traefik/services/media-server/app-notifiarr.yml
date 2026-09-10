@@ -1,0 +1,16 @@
+http:
+  routers:
+    notifiarr-rtr:
+      rule: 'Host(`notifiarr.{{env "DOMAINNAME_2"}}`)'
+      entryPoints:
+        - websecure
+      middlewares:
+        - chain-authentik
+      service: notifiarr-svc
+      tls:
+        certResolver: dns-cloudflare
+  services:
+    notifiarr-svc:
+      loadBalancer:
+        servers:
+          - url: 'http://{{env "LXC_MEDIA_IP"}}:5454'

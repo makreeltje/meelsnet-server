@@ -1,0 +1,16 @@
+http:
+  routers:
+    prints-portal-rtr:
+      rule: 'Host(`printer.{{env "DOMAINNAME_1"}}`)'
+      entryPoints:
+        - websecure
+      middlewares:
+        - chain-no-auth
+      service: prints-portal-svc
+      tls:
+        certResolver: dns-cloudflare
+  services:
+    prints-portal-svc:
+      loadBalancer:
+        servers:
+          - url: 'http://{{env "LXC_PRODUCTIVITY_IP"}}:8003'

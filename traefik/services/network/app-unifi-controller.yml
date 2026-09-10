@@ -1,0 +1,22 @@
+http:
+  routers:
+    unifi-rtr:
+      rule: 'Host(`unifi.{{env "DOMAINNAME_1"}}`)'
+      entryPoints:
+        - websecure
+      middlewares:
+        - chain-authentik
+      service: unifi-svc
+      tls:
+        certResolver: dns-cloudflare
+        options: tls-opts@file
+  services:
+    unifi-svc:
+      loadBalancer:
+        passHostHeader: true
+        serversTransport: "pve"
+        servers:
+          - url: 'https://{{env "LXC_NETWORK_IP"}}:11443/'
+  serversTransports:
+    pve:
+      insecureSkipVerify: true
