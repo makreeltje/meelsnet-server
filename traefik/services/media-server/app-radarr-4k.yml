@@ -1,0 +1,30 @@
+http:
+  routers:
+    # --- ROUTER 1: Secure the Web UI (Default) ---
+    radarr-4k-rtr:
+      rule: 'Host(`radarr-4k.{{env "DOMAINNAME_1"}}`) || Host(`movies-4k.{{env "DOMAINNAME_1"}}`)'
+      entryPoints:
+        - websecure
+      middlewares:
+        - chain-authentik
+      service: radarr-4k-svc
+      tls:
+        certResolver: dns-cloudflare
+
+    # --- ROUTER 2: Bypass Auth for Helmarr/Quartermaster ---
+    radarr-4k-api-rtr:
+      rule: '(Host(`radarr-4k.{{env "DOMAINNAME_1"}}`) || Host(`movies-4k.{{env "DOMAINNAME_1"}}`)) && Header(`X-Homelab-Bypass`, `{{env "BYPASS_SECRET"}}`)'
+      priority: 100
+      entryPoints:
+        - websecure
+      middlewares:
+        - chain-no-auth
+      service: radarr-4k-svc
+      tls:
+        certResolver: dns-cloudflare
+
+  services:
+    radarr-4k-svc:
+      loadBalancer:
+        servers:
+          - url: "http://{{env "LXC_MEDIA_IP"}}:7879"

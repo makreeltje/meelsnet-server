@@ -1,0 +1,16 @@
+# http:
+#   routers:
+#     firefly-rtr:
+#       rule: 'Host(`firefly.{{env "DOMAINNAME_1"}}`)'
+#       entryPoints:
+#         - websecure
+#       middlewares:
+#         - chain-authentik
+#       service: firefly-svc
+#       tls:
+#         certResolver: dns-cloudflare
+#   services:
+#     firefly-svc:
+#       loadBalancer:
+#         servers:
+#           - url: "http://{{env "LXC_PRODUCTIVITY_IP"}}:8080"

@@ -1,0 +1,14 @@
+tcp:
+  routers:
+    caddy-pi-rtr:
+      rule: 'HostSNI(`z2m.mswinnen.net`) || HostSNI(`auth.mswinnen.net`) || HostSNI(`gitops.mswinnen.net`) || HostSNI(`home.mswinnen.net`)'
+      entryPoints:
+        - websecure
+      service: caddy-pi-svc
+      tls:
+        passthrough: true
+  services:
+    caddy-pi-svc:
+      loadBalancer:
+        servers:
+          - address: "192.168.2.65:443"

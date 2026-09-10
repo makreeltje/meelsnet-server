@@ -1,0 +1,16 @@
+http:
+  routers:
+    prometheus-rtr:
+      rule: 'Host(`prometheus.{{env "DOMAINNAME_1"}}`)'
+      entryPoints:
+        - websecure
+      middlewares:
+        - chain-authentik
+      service: prometheus-svc
+      tls:
+        certResolver: dns-cloudflare
+  services:
+    prometheus-svc:
+      loadBalancer:
+        servers:
+          - url: "http://{{env "LXC_MONITORING_IP"}}:9090"

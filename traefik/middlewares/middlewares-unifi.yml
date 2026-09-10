@@ -1,0 +1,6 @@
+http:
+  middlewares:
+    middlewares-unifi-headers:
+      headers:
+        customRequestHeaders:
+          Authorization: ""
