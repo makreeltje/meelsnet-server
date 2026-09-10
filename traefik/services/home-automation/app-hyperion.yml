@@ -1,0 +1,16 @@
+http:
+  routers:
+    hyperion-rtr:
+      rule: 'Host(`hyperion.{{env "DOMAINNAME_2"}}`)'
+      entryPoints:
+        - websecure
+      middlewares:
+        - chain-authentik
+      service: hyperion-svc
+      tls:
+        certResolver: dns-cloudflare
+  services:
+    hyperion-svc:
+      loadBalancer:
+        servers:
+          - url: "http://{{env "LXC_HOME_IP"}}:8090"

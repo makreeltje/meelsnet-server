@@ -1,0 +1,16 @@
+http:
+  routers:
+    omni-tools-rtr:
+      rule: 'Host(`tools.{{env "DOMAINNAME_1"}}`)'
+      entryPoints:
+        - websecure
+      middlewares:
+        - chain-authentik
+      service: omni-tools-svc
+      tls:
+        certResolver: dns-cloudflare
+  services:
+    omni-tools-svc:
+      loadBalancer:
+        servers:
+          - url: "http://{{env "LXC_PRODUCTIVITY_IP"}}:8083"

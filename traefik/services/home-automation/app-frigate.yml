@@ -1,0 +1,16 @@
+http:
+  routers:
+    frigate-rtr:
+      rule: 'Host(`frigate.{{env "DOMAINNAME_2"}}`)'
+      entryPoints:
+        - websecure
+      middlewares:
+        - chain-authentik
+      service: frigate-svc
+      tls:
+        certResolver: dns-cloudflare
+  services:
+    frigate-svc:
+      loadBalancer:
+        servers:
+          - url: "http://{{env "LXC_HOME_IP"}}:5001"

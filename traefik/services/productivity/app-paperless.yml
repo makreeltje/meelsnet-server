@@ -1,0 +1,16 @@
+http:
+  routers:
+    paperless-rtr:
+      rule: 'Host(`paperless.{{env "DOMAINNAME_1"}}`)'
+      entryPoints:
+        - websecure
+      middlewares:
+        - chain-no-auth
+      service: paperless-svc
+      tls:
+        certResolver: dns-cloudflare
+  services:
+    paperless-svc:
+      loadBalancer:
+        servers:
+          - url: "http://{{env "LXC_PRODUCTIVITY_IP"}}:8000"

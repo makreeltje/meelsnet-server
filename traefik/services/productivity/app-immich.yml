@@ -1,0 +1,16 @@
+http:
+  routers:
+    immich-rtr:
+      rule: 'Host(`photos.{{env "DOMAINNAME_2"}}`)'
+      entryPoints:
+        - websecure
+      middlewares:
+        - chain-no-auth
+      service: immich-svc
+      tls:
+        certResolver: dns-cloudflare
+  services:
+    immich-svc:
+      loadBalancer:
+        servers:
+          - url: "http://{{env "LXC_PRODUCTIVITY_IP"}}:2283"

@@ -1,0 +1,16 @@
+http:
+  routers:
+    haos-rtr:
+      rule: 'Host(`home.{{env "DOMAINNAME_2"}}`)'
+      entryPoints:
+        - websecure
+      middlewares:
+        - chain-no-auth
+      service: haos-svc
+      tls:
+        certResolver: dns-cloudflare
+  services:
+    haos-svc:
+      loadBalancer:
+        servers:
+          - url: "http://{{env "LXC_HOME_IP"}}:8123"

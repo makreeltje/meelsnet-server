@@ -28,6 +28,11 @@ GITOPS_INSTALL_DIR="${GITOPS_INSTALL_DIR:-/opt/gitops}"
 BACKUP_SCRIPTS_DIR="${BACKUP_SCRIPTS_DIR:-/root/scripts/backup}"
 SYSTEMD_DIR="${SYSTEMD_DIR:-/etc/systemd/system}"
 
+# Traefik file-provider rules — synced into the infra LXC (not the host).
+# Traefik watches this directory and hot-reloads on change, so no restart needed.
+TRAEFIK_LXC_ID="${TRAEFIK_LXC_ID:-101}"
+TRAEFIK_RULES_DEST="${TRAEFIK_RULES_DEST:-/root/docker/appdata/traefik3/rules/meelsnet}"
+
 # Load config override if present
 CONFIG_FILE="/etc/gitops/config.env"
 # shellcheck source=/dev/null
@@ -232,6 +237,52 @@ sync_gitops_install() {
 
   log_info "Host sync: gitops controller install up to date at $GITOPS_INSTALL_DIR"
   record_host_sync "gitops-install" "OK" "$sha"
+}
+
+# Syncs traefik/ from the repo into the infra LXC at $TRAEFIK_RULES_DEST.
+# Uses an atomic temp-dir swap so Traefik never reads a partial state mid-reload.
+# Handles deletions cleanly (old directory is replaced wholesale).
+sync_traefik_rules() {
+  local sha="$1"
+  log_info "Traefik rules changed — syncing to LXC $TRAEFIK_LXC_ID ($TRAEFIK_RULES_DEST)..."
+
+  local tar_file="/tmp/traefik-rules.tar.gz"
+  cd "$REPO_DIR"
+
+  if ! tar -czf "$tar_file" -C traefik .; then
+    log_error "Traefik rules: failed to create archive"
+    record_host_sync "traefik-rules" "FAILED" "$sha"
+    rm -f "$tar_file"
+    return 1
+  fi
+
+  if ! pct push "$TRAEFIK_LXC_ID" "$tar_file" /tmp/traefik-rules.tar.gz; then
+    log_error "Traefik rules: failed to transfer archive to LXC $TRAEFIK_LXC_ID"
+    rm -f "$tar_file"
+    record_host_sync "traefik-rules" "FAILED" "$sha"
+    return 1
+  fi
+
+  rm -f "$tar_file"
+
+  if ! pct exec "$TRAEFIK_LXC_ID" -- bash -c "
+    set -e
+    DEST='$TRAEFIK_RULES_DEST'
+    TMP=\$(mktemp -d \"\${DEST%/*}/.traefik-rules.XXXXXX\")
+    tar -xzf /tmp/traefik-rules.tar.gz -C \"\$TMP\"
+    rm -f /tmp/traefik-rules.tar.gz
+    rm -rf \"\${DEST}.old\"
+    mv \"\$DEST\" \"\${DEST}.old\"
+    mv \"\$TMP\" \"\$DEST\"
+    rm -rf \"\${DEST}.old\"
+  "; then
+    log_error "Traefik rules: failed to apply in LXC $TRAEFIK_LXC_ID"
+    record_host_sync "traefik-rules" "FAILED" "$sha"
+    return 1
+  fi
+
+  log_info "Traefik rules synced to LXC $TRAEFIK_LXC_ID — Traefik will hot-reload automatically"
+  record_host_sync "traefik-rules" "OK" "$sha"
 }
 
 # Dispatches to the two host-managed syncs above based on what actually
@@ -487,6 +538,15 @@ sync() {
     any_failed=1
   fi
 
+  for f in "${changed_files[@]}"; do
+    if [[ "$f" == traefik/* ]]; then
+      if ! sync_traefik_rules "$remote_sha"; then
+        any_failed=1
+      fi
+      break
+    fi
+  done
+
   for entry in "${LXC_ENTRIES[@]}"; do
     parse_lxc_entry "$entry"
 
@@ -552,7 +612,7 @@ cmd_status() {
   echo ""
   echo "Host-managed paths:"
   local host_name
-  for host_name in backup-scripts gitops-install; do
+  for host_name in backup-scripts gitops-install traefik-rules; do
     local host_state_file="$STATE_DIR/host-${host_name}-last-sync"
     if [[ -f "$host_state_file" ]]; then
       echo "  $host_name: $(cat "$host_state_file")"
@@ -578,6 +638,10 @@ cmd_deploy() {
 
   if [[ "$target" == "all" || "$target" == "gitops" ]]; then
     sync_gitops_install "$remote_sha" "scripts/gitops/gitops-webhook.py" "scripts/gitops/gitops-webhook.service"
+  fi
+
+  if [[ "$target" == "all" || "$target" == "traefik" ]]; then
+    sync_traefik_rules "$remote_sha"
   fi
 
   for entry in "${LXC_ENTRIES[@]}"; do
@@ -622,6 +686,8 @@ Targets: all, infra, media, home, productivity, network, monitoring, juice-shop
          scripts  — force-sync scripts/backup/** to $BACKUP_SCRIPTS_DIR
          gitops   — force-sync scripts/gitops/** to $GITOPS_INSTALL_DIR
                     (restarts gitops-webhook.service)
+         traefik  — force-sync traefik/** into LXC $TRAEFIK_LXC_ID at
+                    $TRAEFIK_RULES_DEST (Traefik hot-reloads automatically)
 
 Examples:
   $(basename "$0") sync              # Normal poll cycle
@@ -629,6 +695,7 @@ Examples:
   $(basename "$0") deploy media      # Force redeploy media LXC
   $(basename "$0") deploy scripts    # Force resync backup scripts
   $(basename "$0") deploy gitops     # Force resync + restart controller/webhook
+  $(basename "$0") deploy traefik    # Force resync Traefik rules
   $(basename "$0") deploy all        # Force redeploy everything
   $(basename "$0") deploy 102        # Force redeploy LXC 102
 EOF

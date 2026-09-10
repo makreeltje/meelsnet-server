@@ -1,0 +1,16 @@
+http:
+  routers:
+    it-tools-rtr:
+      rule: 'Host(`it-tools.{{env "DOMAINNAME_2"}}`)'
+      entryPoints:
+        - websecure
+      middlewares:
+        - chain-authentik
+      service: it-tools-svc
+      tls:
+        certResolver: dns-cloudflare
+  services:
+    it-tools-svc:
+      loadBalancer:
+        servers:
+          - url: "http://{{env "LXC_PRODUCTIVITY_IP"}}:8082"

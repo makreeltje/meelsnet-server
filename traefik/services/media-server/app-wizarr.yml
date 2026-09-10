@@ -1,0 +1,16 @@
+http:
+  routers:
+    wizarr-rtr:
+      rule: 'Host(`invite.{{env "DOMAINNAME_1"}}`)'
+      entryPoints:
+        - websecure
+      middlewares:
+        - chain-no-auth
+      service: wizarr-svc
+      tls:
+        certResolver: dns-cloudflare
+  services:
+    wizarr-svc:
+      loadBalancer:
+        servers:
+          - url: "http://{{env "LXC_MEDIA_IP"}}:5690"
