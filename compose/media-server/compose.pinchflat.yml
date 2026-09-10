@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: pinchflat
-    image: ghcr.io/kieraneglin/pinchflat:latest
+    image: ghcr.io/kieraneglin/pinchflat:latest@sha256:01b4f98aabaf3f5fe394213f7a32578c9e84e42080f52e2f8334021a4473b202
     profiles: [ "media", "all" ]
     volumes:
       - $CONF_DIR/pinchflat/config:/config
