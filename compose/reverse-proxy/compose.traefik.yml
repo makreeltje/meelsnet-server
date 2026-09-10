@@ -63,6 +63,13 @@ services:
       - DOMAINNAME_1
       - DOMAINNAME_2
       - BYPASS_SECRET
+      - LXC_INFRA_IP
+      - LXC_MEDIA_IP
+      - LXC_HOME_IP
+      - LXC_PRODUCTIVITY_IP
+      - LXC_NETWORK_IP
+      - LXC_MONITORING_IP
+      - LXC_JUICE_SHOP_IP
     volumes:
       - $CONF_DIR/traefik3/rules/$HOSTNAME:/rules
       - /var/run/docker.sock:/var/run/docker.sock:ro
