@@ -13,4 +13,4 @@ http:
     gitops-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "PROXMOX_IP"}}:9000"
+          - url: 'http://{{env "PROXMOX_IP"}}:9000'

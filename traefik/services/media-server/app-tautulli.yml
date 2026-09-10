@@ -27,4 +27,4 @@ http:
     tautulli-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_MEDIA_IP"}}:8181"
+          - url: 'http://{{env "LXC_MEDIA_IP"}}:8181'

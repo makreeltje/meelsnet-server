@@ -13,4 +13,4 @@ http:
     spoolman-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_PRODUCTIVITY_IP"}}:8001"
+          - url: 'http://{{env "LXC_PRODUCTIVITY_IP"}}:8001'

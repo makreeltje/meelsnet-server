@@ -13,4 +13,4 @@ http:
     backrest-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_PRODUCTIVITY_IP"}}:9898"
+          - url: 'http://{{env "LXC_PRODUCTIVITY_IP"}}:9898'
