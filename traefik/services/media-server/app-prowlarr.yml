@@ -27,4 +27,4 @@ http:
     prowlarr-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_MEDIA_IP"}}:9696"
+          - url: 'http://{{env "LXC_MEDIA_IP"}}:9696'

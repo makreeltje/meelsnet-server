@@ -13,4 +13,4 @@ http:
     omni-tools-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_PRODUCTIVITY_IP"}}:8083"
+          - url: 'http://{{env "LXC_PRODUCTIVITY_IP"}}:8083'

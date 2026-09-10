@@ -13,4 +13,4 @@ http:
     pihole-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_NETWORK_IP"}}:80/admin"
+          - url: 'http://{{env "LXC_NETWORK_IP"}}:80/admin'

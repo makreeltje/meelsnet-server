@@ -13,4 +13,4 @@ http:
     plex-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_MEDIA_IP"}}:32400"
+          - url: 'http://{{env "LXC_MEDIA_IP"}}:32400'

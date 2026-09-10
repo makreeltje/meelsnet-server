@@ -13,4 +13,4 @@
 #     pinchflat-svc:
 #       loadBalancer:
 #         servers:
-#           - url: "http://{{env "LXC_MEDIA_IP"}}:8945"
+#           - url: 'http://{{env "LXC_MEDIA_IP"}}:8945'

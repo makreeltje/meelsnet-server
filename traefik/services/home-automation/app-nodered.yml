@@ -13,4 +13,4 @@ http:
     nodered-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_HOME_IP"}}:1880"
+          - url: 'http://{{env "LXC_HOME_IP"}}:1880'
