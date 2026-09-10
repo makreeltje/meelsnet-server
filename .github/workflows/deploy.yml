@@ -30,3 +30,49 @@ jobs:
       - name: Run ShellCheck
         run: |
           find scripts/ -name '*.sh' -print0 | xargs -0 shellcheck --severity=warning
+
+  compose-validate:
+    name: Compose Validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Build dummy .env
+        run: |
+          # Replace blank/comment-only values with "dummy"
+          sed -E 's/^([A-Z_][A-Z0-9_]*)=[[:space:]]*(#.*)?$/\1=dummy/' .env.example > .env
+          # Append vars not in .env.example (networking, per-LXC IPs)
+          printf '%s\n' \
+            'LXC_IP=192.0.2.1' \
+            'LXC_INFRA_IP=192.0.2.10' \
+            'LXC_MEDIA_IP=192.0.2.20' \
+            'LXC_HOME_IP=192.0.2.30' \
+            'LXC_PRODUCTIVITY_IP=192.0.2.40' \
+            'LXC_NETWORK_IP=192.0.2.50' \
+            'LXC_MONITORING_IP=192.0.2.60' \
+            'LXC_JUICE_SHOP_IP=192.0.2.70' \
+            'PROXMOX_IP=192.0.2.1' \
+            'HOME_SUBNET=192.0.2.0/24' \
+            'UNIFI_SYSTEM_IP=192.0.2.50' \
+            'BYPASS_SECRET=dummy' \
+            'DOMAINNAME_2=example.local' \
+            >> .env
+
+      - name: Validate each LXC compose stack
+        run: |
+          failed=0
+          for lxc_compose in lxc/*/compose.yml; do
+            lxc=$(basename "$(dirname "$lxc_compose")")
+            # Copy to repo root so include paths (compose/...) resolve correctly
+            tmp=$(mktemp ./compose.validate.XXXXXX.yml)
+            cp "$lxc_compose" "$tmp"
+            if docker compose --env-file .env -f "$tmp" config --quiet 2>/dev/null; then
+              echo "OK: $lxc"
+            else
+              echo "FAIL: $lxc"
+              docker compose --env-file .env -f "$tmp" config 2>&1 | head -30
+              failed=1
+            fi
+            rm -f "$tmp"
+          done
+          exit $failed
