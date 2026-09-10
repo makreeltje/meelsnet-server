@@ -1,0 +1,16 @@
+http:
+  routers:
+    grafana-rtr:
+      rule: 'Host(`grafana.{{env "DOMAINNAME_2"}}`)'
+      entryPoints:
+        - websecure
+      middlewares:
+        - chain-authentik
+      service: grafana-svc
+      tls:
+        certResolver: dns-cloudflare
+  services:
+    grafana-svc:
+      loadBalancer:
+        servers:
+          - url: "http://{{env "LXC_MONITORING_IP"}}:3000"

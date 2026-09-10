@@ -1,0 +1,16 @@
+http:
+  routers:
+    backrest-rtr:
+      rule: 'Host(`backup.{{env "DOMAINNAME_2"}}`)'
+      entryPoints:
+        - websecure
+      middlewares:
+        - chain-authentik
+      service: backrest-svc
+      tls:
+        certResolver: dns-cloudflare
+  services:
+    backrest-svc:
+      loadBalancer:
+        servers:
+          - url: "http://{{env "LXC_PRODUCTIVITY_IP"}}:9898"
