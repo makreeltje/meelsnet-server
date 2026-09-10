@@ -13,4 +13,4 @@ http:
     notifiarr-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_MEDIA_IP"}}:5454"
+          - url: 'http://{{env "LXC_MEDIA_IP"}}:5454'

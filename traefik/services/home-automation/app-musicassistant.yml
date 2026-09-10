@@ -13,4 +13,4 @@ http:
     musicassistant-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_HOME_IP"}}:8095"
+          - url: 'http://{{env "LXC_HOME_IP"}}:8095'
