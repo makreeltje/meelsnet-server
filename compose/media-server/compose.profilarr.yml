@@ -9,4 +9,4 @@ services:
     volumes:
       - $CONF_DIR/profilarr/config:/config
     ports:
-      - 10.10.0.20:6868:6868
+      - $LXC_IP:6868:6868

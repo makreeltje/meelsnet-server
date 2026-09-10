@@ -12,4 +12,4 @@ services:
       - $CONF_DIR/alertmanager/config:/config
       - $CONF_DIR/alertmanager/data:/data
     ports:
-      - 10.10.0.60:9093:9093
+      - $LXC_IP:9093:9093

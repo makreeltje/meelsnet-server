@@ -5,5 +5,5 @@ http:
         sourceRange:
           - "127.0.0.1/32"
           - '{{env "LAN_SUBNET"}}'
-          - "192.168.2.0/24"
+          - '{{env "HOME_SUBNET"}}'
           - "172.16.0.0/12"
