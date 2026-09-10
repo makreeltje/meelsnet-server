@@ -1,0 +1,12 @@
+[Unit]
+Description=GitOps Sync - Poll GitHub and deploy any changes
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/opt/gitops/gitops-controller.sh sync
+WorkingDirectory=/opt/gitops
+EnvironmentFile=/etc/gitops/config.env
+StandardOutput=append:/var/log/gitops/gitops.log
+StandardError=append:/var/log/gitops/gitops.log
