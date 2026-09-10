@@ -1,0 +1,16 @@
+http:
+  routers:
+    gitops-rtr:
+      rule: 'Host(`gitops.{{env "DOMAINNAME_1"}}`)'
+      entryPoints:
+        - websecure
+      middlewares:
+        - chain-no-auth
+      service: gitops-svc
+      tls:
+        certResolver: dns-cloudflare
+  services:
+    gitops-svc:
+      loadBalancer:
+        servers:
+          - url: 'http://{{env "PROXMOX_IP"}}:9000'

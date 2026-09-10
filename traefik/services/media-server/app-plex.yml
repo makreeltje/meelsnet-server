@@ -1,0 +1,16 @@
+http:
+  routers:
+    plex-rtr:
+      rule: 'Host(`plex.{{env "DOMAINNAME_1"}}`)'
+      entryPoints:
+        - websecure
+      middlewares:
+        - chain-no-auth
+      service: plex-svc
+      tls:
+        certResolver: dns-cloudflare
+  services:
+    plex-svc:
+      loadBalancer:
+        servers:
+          - url: 'http://{{env "LXC_MEDIA_IP"}}:32400'

@@ -1,0 +1,16 @@
+http:
+  routers:
+    convertx-rtr:
+      rule: 'Host(`convert.{{env "DOMAINNAME_2"}}`)'
+      entryPoints:
+        - websecure
+      middlewares:
+        - chain-authentik
+      service: convertx-svc
+      tls:
+        certResolver: dns-cloudflare
+  services:
+    convertx-svc:
+      loadBalancer:
+        servers:
+          - url: 'http://{{env "LXC_PRODUCTIVITY_IP"}}:3000'

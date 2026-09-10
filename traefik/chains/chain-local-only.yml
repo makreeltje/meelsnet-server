@@ -1,0 +1,7 @@
+http:
+  middlewares:
+    chain-local-only:
+      chain:
+        middlewares:
+          - middlewares-secure-headers
+          - middlewares-local-only

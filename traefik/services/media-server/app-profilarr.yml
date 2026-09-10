@@ -1,0 +1,16 @@
+http:
+  routers:
+    profilarr-rtr:
+      rule: 'Host(`profilarr.{{env "DOMAINNAME_1"}}`)'
+      entryPoints:
+        - websecure
+      middlewares:
+        - chain-authentik
+      service: profilarr-svc
+      tls:
+        certResolver: dns-cloudflare
+  services:
+    profilarr-svc:
+      loadBalancer:
+        servers:
+          - url: 'http://{{env "LXC_MEDIA_IP"}}:6868'

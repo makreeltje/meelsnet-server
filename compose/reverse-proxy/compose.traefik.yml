@@ -70,6 +70,8 @@ services:
       - LXC_NETWORK_IP
       - LXC_MONITORING_IP
       - LXC_JUICE_SHOP_IP
+      - PROXMOX_IP
+      - LAN_SUBNET
     volumes:
       - $CONF_DIR/traefik3/rules/$HOSTNAME:/rules
       - /var/run/docker.sock:/var/run/docker.sock:ro

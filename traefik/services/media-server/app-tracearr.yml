@@ -1,0 +1,16 @@
+http:
+  routers:
+    tracearr-rtr:
+      rule: 'Host(`tracearr.{{env "DOMAINNAME_1"}}`)'
+      entryPoints:
+        - websecure
+      middlewares:
+        - chain-authentik
+      service: tracearr-svc
+      tls:
+        certResolver: dns-cloudflare
+  services:
+    tracearr-svc:
+      loadBalancer:
+        servers:
+          - url: 'http://{{env "LXC_MEDIA_IP"}}:3000'

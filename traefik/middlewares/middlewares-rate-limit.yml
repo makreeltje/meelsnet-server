@@ -1,0 +1,13 @@
+http:
+  middlewares:
+    middlewares-rate-limit:
+      rateLimit:
+        average: 100
+        burst: 50
+        period: 1s
+
+    middlewares-rate-limit-auth:
+      rateLimit:
+        average: 10
+        burst: 20
+        period: 1m
