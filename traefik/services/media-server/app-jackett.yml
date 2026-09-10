@@ -1,7 +1,7 @@
 http:
   routers:
     jackett-rtr:
-      rule: 'Host(`jackett.{{env "DOMAINNAME_2"}}`)'
+      rule: 'Host(`jacket.{{env "DOMAINNAME_2"}}`)'
       entryPoints:
         - websecure
       middlewares:
