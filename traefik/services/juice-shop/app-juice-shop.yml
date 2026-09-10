@@ -1,0 +1,16 @@
+http:
+  routers:
+    juice-shop-1-rtr:
+      rule: 'Host(`shop01.{{env "DOMAINNAME_2"}}`)'
+      entryPoints:
+        - websecure
+      middlewares:
+        - chain-no-auth
+      service: juice-shop-1-svc
+      tls:
+        certResolver: dns-cloudflare
+  services:
+    juice-shop-1-svc:
+      loadBalancer:
+        servers:
+          - url: 'http://{{env "LXC_JUICE_SHOP_IP"}}:3000'
