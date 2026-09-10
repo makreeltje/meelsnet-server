@@ -23,4 +23,4 @@ services:
       - $CONF_DIR/n8n/queue:/appdata/queue
       - $ARCHIVE_DIR/ChronicleCore:/archive
     ports:
-      - 5678:5678
+      - $LXC_IP:5678:5678

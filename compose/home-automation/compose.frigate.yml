@@ -22,10 +22,10 @@ services:
         tmpfs:
           size: 1000000000
     ports:
-      - 5001:5000
-      - 8554:8554
-      - 8555:8555/tcp
-      - 8555:8555/udp
+      - $LXC_IP:5001:5000
+      - $LXC_IP:8554:8554
+      - $LXC_IP:8555:8555/tcp
+      - $LXC_IP:8555:8555/udp
     healthcheck:
       test: [ "CMD", "wget", "-qO-", "http://localhost:5000/api/stats" ]
       interval: 30s

@@ -18,4 +18,4 @@ services:
       - /sys:/host/sys:ro
       - /:/rootfs:ro
     ports:
-      - 9100:9100
+      - $LXC_IP:9100:9100
