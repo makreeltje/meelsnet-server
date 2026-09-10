@@ -298,4 +298,3 @@ services:
       NODE_ENV: quiet
     ports:
       - 3024:3000
-
