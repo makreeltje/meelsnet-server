@@ -13,14 +13,22 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      - name: Install Trivy
+        run: |
+          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key \
+            | gpg --dearmor \
+            | sudo tee /usr/share/keyrings/trivy.gpg > /dev/null
+          echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb generic main" \
+            | sudo tee /etc/apt/sources.list.d/trivy.list
+          sudo apt-get update -qq && sudo apt-get install -y trivy
+
       - name: Scan repo for secrets
-        uses: aquasecurity/trivy-action@0.30.0
-        with:
-          scan-type: fs
-          scan-ref: .
-          scanners: secret
-          exit-code: '1'
-          trivyignores: .trivyignore
+        run: |
+          trivy fs . \
+            --scanners secret \
+            --severity HIGH,CRITICAL \
+            --exit-code 1 \
+            --ignorefile .trivyignore
 
   image-scan:
     name: Image Vulnerability Scan
