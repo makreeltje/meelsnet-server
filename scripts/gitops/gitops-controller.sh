@@ -736,6 +736,15 @@ cmd_force_deploy() {
   cmd_deploy "$target"
 }
 
+cmd_notify_test() {
+  if [[ -z "${DISCORD_WEBHOOK_URL:-}" ]]; then
+    echo "DISCORD_WEBHOOK_URL is not set in /etc/gitops/config.env"
+    exit 1
+  fi
+  notify success "GitOps: test notification" "Webhook is configured correctly."
+  echo "Test notification sent."
+}
+
 # -----------------------------------------------------------------------------
 # Entrypoint
 # -----------------------------------------------------------------------------
@@ -749,6 +758,7 @@ Commands:
   status         Show current deployment status
   deploy [target] Force deploy to target (lxc name, id, 'scripts', 'gitops',
                  or 'all')
+  notify-test    Send a test Discord notification to verify the webhook
   help           Show this help
 
 Targets: all, infra, media, home, productivity, network, monitoring, juice-shop
@@ -776,11 +786,12 @@ main() {
   shift || true
 
   case "$cmd" in
-    sync)         sync ;;
-    status)       cmd_status ;;
-    deploy)       cmd_force_deploy "${1:-all}" ;;
-    help|--help)  usage ;;
-    *)            log_error "Unknown command: $cmd"; usage; exit 1 ;;
+    sync)          sync ;;
+    status)        cmd_status ;;
+    deploy)        cmd_force_deploy "${1:-all}" ;;
+    notify-test)   cmd_notify_test ;;
+    help|--help)   usage ;;
+    *)             log_error "Unknown command: $cmd"; usage; exit 1 ;;
   esac
 }
 
