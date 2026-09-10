@@ -281,16 +281,16 @@ sync_traefik_rules() {
 
   rm -f "$tar_file"
 
+  # Extract directly into the existing directory to preserve its inode.
+  # Traefik's file watcher uses inotify and tracks the directory inode — an
+  # atomic directory swap (mv) changes the inode and silently breaks hot-reload,
+  # leaving Traefik watching the old (now-deleted) directory forever.
+  # Trade-off: files deleted from the repo are not removed here; they persist
+  # in the LXC until a manual 'deploy traefik' + Traefik restart.
   if ! pct exec "$TRAEFIK_LXC_ID" -- bash -c "
     set -e
-    DEST='$TRAEFIK_RULES_DEST'
-    TMP=\$(mktemp -d \"\${DEST%/*}/.traefik-rules.XXXXXX\")
-    tar -xzf /tmp/traefik-rules.tar.gz -C \"\$TMP\"
+    tar -xzf /tmp/traefik-rules.tar.gz -C '$TRAEFIK_RULES_DEST'
     rm -f /tmp/traefik-rules.tar.gz
-    rm -rf \"\${DEST}.old\"
-    mv \"\$DEST\" \"\${DEST}.old\"
-    mv \"\$TMP\" \"\$DEST\"
-    rm -rf \"\${DEST}.old\"
   "; then
     log_error "Traefik rules: failed to apply in LXC $TRAEFIK_LXC_ID"
     record_host_sync "traefik-rules" "FAILED" "$sha"
