@@ -220,9 +220,30 @@ sync_gitops_install() {
   if file_in_list "scripts/gitops/gitops-webhook.service" "${changed_files[@]}"; then
     install_file "scripts/gitops/gitops-webhook.service" "$SYSTEMD_DIR/gitops-webhook.service" 644
     log_info "Host sync: updated $SYSTEMD_DIR/gitops-webhook.service"
+    restart_webhook=1
+  fi
+
+  local reload_systemd=0
+  if file_in_list "scripts/gitops/gitops-sync.service" "${changed_files[@]}"; then
+    install_file "scripts/gitops/gitops-sync.service" "$SYSTEMD_DIR/gitops-sync.service" 644
+    log_info "Host sync: updated $SYSTEMD_DIR/gitops-sync.service"
+    reload_systemd=1
+  fi
+
+  if file_in_list "scripts/gitops/gitops-sync.timer" "${changed_files[@]}"; then
+    install_file "scripts/gitops/gitops-sync.timer" "$SYSTEMD_DIR/gitops-sync.timer" 644
+    log_info "Host sync: updated $SYSTEMD_DIR/gitops-sync.timer"
+    reload_systemd=1
+  fi
+
+  if [[ $reload_systemd -eq 1 || $restart_webhook -eq 1 ]]; then
     systemctl daemon-reload
     log_info "Host sync: ran systemctl daemon-reload"
-    restart_webhook=1
+  fi
+
+  if [[ $reload_systemd -eq 1 ]]; then
+    systemctl restart gitops-sync.timer 2>/dev/null || systemctl start gitops-sync.timer
+    log_info "Host sync: restarted gitops-sync.timer to apply changes"
   fi
 
   if [[ $restart_webhook -eq 1 ]]; then
