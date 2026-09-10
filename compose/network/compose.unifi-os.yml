@@ -15,7 +15,7 @@ services:
       - /var/lib/journal
       - /var/opt/unifi/tmp:size=64m
     environment:
-      UOS_SYSTEM_IP: 192.168.2.205  # Jouw 192.168.2.x IP van CT 105
+      UOS_SYSTEM_IP: $UNIFI_SYSTEM_IP
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
       - $CONF_DIR/unifi-os/persistent:/persistent
