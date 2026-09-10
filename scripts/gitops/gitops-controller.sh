@@ -73,6 +73,34 @@ log_warn()  { log "WARN"  "$@"; }
 log_error() { log "ERROR" "$@"; }
 
 # -----------------------------------------------------------------------------
+# Notifications
+# -----------------------------------------------------------------------------
+# Sends a Discord embed. Call with: notify "success"|"failure" "title" "body"
+# Requires DISCORD_WEBHOOK_URL in /etc/gitops/config.env.
+# To switch to failure-only: add [[ "$1" == "failure" ]] || return 0 at top.
+notify() {
+  local status="$1" title="$2" body="$3"
+  [[ -z "${DISCORD_WEBHOOK_URL:-}" ]] && return 0
+
+  local color
+  case "$status" in
+    success) color=3066993  ;;  # green
+    failure) color=15158332 ;;  # red
+    *)       color=9807270  ;;  # grey
+  esac
+
+  local payload
+  payload=$(printf '{"embeds":[{"title":"%s","description":"%s","color":%d}]}' \
+    "$title" "$body" "$color")
+
+  if ! curl -sf -X POST "$DISCORD_WEBHOOK_URL" \
+      -H "Content-Type: application/json" \
+      -d "$payload" > /dev/null 2>&1; then
+    log_warn "Discord notification failed (webhook unreachable?)"
+  fi
+}
+
+# -----------------------------------------------------------------------------
 # State management
 # -----------------------------------------------------------------------------
 mkdir -p "$STATE_DIR"
@@ -607,8 +635,13 @@ sync() {
   # Only update state if all deployments succeeded
   if [[ $any_failed -eq 0 ]]; then
     set_last_deployed_sha "$remote_sha"
+    local short_sha="${remote_sha:0:7}"
+    notify success "GitOps: deploy succeeded" \
+      "Commit \`$short_sha\` deployed to $deployed_count LXC(s) — ${changed_files[*]}"
   else
     log_error "Some deployments failed — state NOT updated (will retry next cycle)"
+    notify failure "GitOps: deploy FAILED" \
+      "One or more deployments failed for commit \`${remote_sha:0:7}\`. Check \`journalctl -u gitops-sync.service\` on Proxmox."
     return 1
   fi
 }
