@@ -229,100 +229,100 @@ http:
     juice-shop-01-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_JUICE_SHOP_IP"}}:3000"
+          - url: 'http://{{env "LXC_JUICE_SHOP_IP"}}:3000'
     juice-shop-02-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_JUICE_SHOP_IP"}}:3001"
+          - url: 'http://{{env "LXC_JUICE_SHOP_IP"}}:3001'
     juice-shop-03-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_JUICE_SHOP_IP"}}:3002"
+          - url: 'http://{{env "LXC_JUICE_SHOP_IP"}}:3002'
     juice-shop-04-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_JUICE_SHOP_IP"}}:3003"
+          - url: 'http://{{env "LXC_JUICE_SHOP_IP"}}:3003'
     juice-shop-05-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_JUICE_SHOP_IP"}}:3004"
+          - url: 'http://{{env "LXC_JUICE_SHOP_IP"}}:3004'
     juice-shop-06-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_JUICE_SHOP_IP"}}:3005"
+          - url: 'http://{{env "LXC_JUICE_SHOP_IP"}}:3005'
     juice-shop-07-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_JUICE_SHOP_IP"}}:3006"
+          - url: 'http://{{env "LXC_JUICE_SHOP_IP"}}:3006'
     juice-shop-08-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_JUICE_SHOP_IP"}}:3007"
+          - url: 'http://{{env "LXC_JUICE_SHOP_IP"}}:3007'
     juice-shop-09-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_JUICE_SHOP_IP"}}:3008"
+          - url: 'http://{{env "LXC_JUICE_SHOP_IP"}}:3008'
     juice-shop-10-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_JUICE_SHOP_IP"}}:3009"
+          - url: 'http://{{env "LXC_JUICE_SHOP_IP"}}:3009'
     juice-shop-11-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_JUICE_SHOP_IP"}}:3010"
+          - url: 'http://{{env "LXC_JUICE_SHOP_IP"}}:3010'
     juice-shop-12-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_JUICE_SHOP_IP"}}:3011"
+          - url: 'http://{{env "LXC_JUICE_SHOP_IP"}}:3011'
     juice-shop-13-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_JUICE_SHOP_IP"}}:3012"
+          - url: 'http://{{env "LXC_JUICE_SHOP_IP"}}:3012'
     juice-shop-14-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_JUICE_SHOP_IP"}}:3013"
+          - url: 'http://{{env "LXC_JUICE_SHOP_IP"}}:3013'
     juice-shop-15-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_JUICE_SHOP_IP"}}:3014"
+          - url: 'http://{{env "LXC_JUICE_SHOP_IP"}}:3014'
     juice-shop-16-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_JUICE_SHOP_IP"}}:3015"
+          - url: 'http://{{env "LXC_JUICE_SHOP_IP"}}:3015'
     juice-shop-17-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_JUICE_SHOP_IP"}}:3016"
+          - url: 'http://{{env "LXC_JUICE_SHOP_IP"}}:3016'
     juice-shop-18-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_JUICE_SHOP_IP"}}:3017"
+          - url: 'http://{{env "LXC_JUICE_SHOP_IP"}}:3017'
     juice-shop-19-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_JUICE_SHOP_IP"}}:3018"
+          - url: 'http://{{env "LXC_JUICE_SHOP_IP"}}:3018'
     juice-shop-20-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_JUICE_SHOP_IP"}}:3019"
+          - url: 'http://{{env "LXC_JUICE_SHOP_IP"}}:3019'
     juice-shop-21-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_JUICE_SHOP_IP"}}:3020"
+          - url: 'http://{{env "LXC_JUICE_SHOP_IP"}}:3020'
     juice-shop-22-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_JUICE_SHOP_IP"}}:3021"
+          - url: 'http://{{env "LXC_JUICE_SHOP_IP"}}:3021'
     juice-shop-23-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_JUICE_SHOP_IP"}}:3022"
+          - url: 'http://{{env "LXC_JUICE_SHOP_IP"}}:3022'
     juice-shop-24-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_JUICE_SHOP_IP"}}:3023"
+          - url: 'http://{{env "LXC_JUICE_SHOP_IP"}}:3023'
     juice-shop-25-svc:
       loadBalancer:
         servers:
-          - url: "http://{{env "LXC_JUICE_SHOP_IP"}}:3024"
+          - url: 'http://{{env "LXC_JUICE_SHOP_IP"}}:3024'
