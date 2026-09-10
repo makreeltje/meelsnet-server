@@ -1,0 +1,4 @@
+# Trivy ignore file — add CVE IDs or secret rule IDs to suppress known false positives.
+# Format: one entry per line.
+# CVE example:    CVE-2023-1234
+# Secret example: generic-api-key
