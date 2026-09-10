@@ -46,6 +46,7 @@ LXC_ENTRIES=(
   "104|productivity"
   "105|network"
   "106|monitoring"
+  "107|juice-shop"
 )
 
 # Paths that affect ALL LXCs when changed
@@ -616,8 +617,8 @@ Commands:
                  or 'all')
   help           Show this help
 
-Targets: all, infra, media, home, productivity, network, monitoring
-         Or LXC ID: 101, 102, 103, 104, 105, 106
+Targets: all, infra, media, home, productivity, network, monitoring, juice-shop
+         Or LXC ID: 101, 102, 103, 104, 105, 106, 107
          scripts  — force-sync scripts/backup/** to $BACKUP_SCRIPTS_DIR
          gitops   — force-sync scripts/gitops/** to $GITOPS_INSTALL_DIR
                     (restarts gitops-webhook.service)

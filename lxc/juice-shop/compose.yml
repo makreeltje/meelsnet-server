@@ -1,0 +1,7 @@
+networks:
+  t3_proxy:
+    name: t3_proxy
+    driver: bridge
+
+include:
+  - compose/productivity/compose.juice-shop.yml
