@@ -7,11 +7,11 @@ services:
     image: nextcloud:34.0.3
     profiles: [ "productivity", "all" ]
     environment:
-      REDIS_HOST: 10.10.0.10
+      REDIS_HOST: $LXC_INFRA_IP
       NEXTCLOUD_DATA_DIR: /data
       NEXTCLOUD_TRUSTED_DOMAIN: cloud.$DOMAINNAME_1
       TRUSTED_PROXIES: 10.2.0.0/16
-      POSTGRES_HOST: 10.10.0.10:5432
+      POSTGRES_HOST: $LXC_INFRA_IP:5432
       POSTGRES_DB: $NEXTCLOUD_DBNAME
       POSTGRES_USER: $NEXTCLOUD_DBUSER
       POSTGRES_PASSWORD: $NEXTCLOUD_DBPASS
@@ -19,7 +19,7 @@ services:
       - $CONF_DIR/nextcloud/config:/var/www/html
       - $CLOUD_DIR:/data
     ports:
-      - 10.10.0.40:8081:80
+      - $LXC_PRODUCTIVITY_IP:8081:80
     healthcheck:
       test: [ "CMD", "curl", "-fsSo", "/dev/null", "http://localhost:80/status.php" ]
       interval: 30s

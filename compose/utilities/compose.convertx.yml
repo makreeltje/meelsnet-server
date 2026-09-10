@@ -11,4 +11,4 @@ services:
     volumes:
       - $CONF_DIR/convertx/data:/app/data
     ports:
-      - 10.10.0.40:3000:3000
+      - $LXC_PRODUCTIVITY_IP:3000:3000

@@ -10,7 +10,7 @@ services:
       - $CLOUD_DIR/rick/files/Documents/Personal/3D prints:/mnt/3d-prints:ro
       - $CONF_DIR/prints-portal/data:/data
     ports:
-      - 10.10.0.40:8003:8080
+      - $LXC_PRODUCTIVITY_IP:8003:8080
     environment:
       Serilog__MinimumLevel__Override__Microsoft.AspNetCore.Authentication: Debug
       ASPNETCORE_URLS: http://+:8080
@@ -19,7 +19,7 @@ services:
       Sync__PrintsRoot: /mnt/3d-prints
       Sync__RunInitialIndexOnStartup: "true"
       Sync__EnableWatcher: "true"
-      Spoolman__BaseUrl: http://10.10.0.40:8001
+      Spoolman__BaseUrl: http://$LXC_PRODUCTIVITY_IP:8001
       LocalJwt__SigningKey: $PRINTS_PORTAL_JWT_KEY
       Bootstrap__AdminEmail: $PRINTS_PORTAL_ADMIN_EMAIL
       Bootstrap__AdminPassword: $PRINTS_PORTAL_ADMIN_PASSWORD

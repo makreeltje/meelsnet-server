@@ -11,10 +11,10 @@ services:
     command: [ "sonarr" ]
     environment:
       PORT: "9707"
-      URL: "http://10.10.0.20:8989"
+      URL: "http://$LXC_MEDIA_IP:8989"
       APIKEY: $SONARR_API_KEY
     ports:
-      - 10.10.0.60:9707:9707
+      - $LXC_MONITORING_IP:9707:9707
 
   radarr-exporter:
     extends:
@@ -25,10 +25,10 @@ services:
     command: [ "radarr" ]
     environment:
       PORT: "9708"
-      URL: http://10.10.0.20:7878
+      URL: http://$LXC_MEDIA_IP:7878
       APIKEY: $RADARR_API_KEY
     ports:
-      - 10.10.0.60:9708:9708
+      - $LXC_MONITORING_IP:9708:9708
 
   prowlarr-exporter:
     extends:
@@ -39,10 +39,10 @@ services:
     command: [ "prowlarr" ]
     environment:
       PORT: "9710"
-      URL: http://10.10.0.20:9696
+      URL: http://$LXC_MEDIA_IP:9696
       APIKEY: $PROWLARR_API_KEY
     ports:
-      - 10.10.0.60:9710:9710
+      - $LXC_MONITORING_IP:9710:9710
 
   sabnzbd-exporter:
     extends:
@@ -53,10 +53,10 @@ services:
     command: [ "sabnzbd" ]
     environment:
       PORT: "9711"
-      URL: http://10.10.0.20:8082
+      URL: http://$LXC_MEDIA_IP:8082
       APIKEY: $SABNZBD_API_KEY
     ports:
-      - 10.10.0.60:9711:9711
+      - $LXC_MONITORING_IP:9711:9711
 
   mosquitto-exporter:
     extends:
@@ -66,9 +66,9 @@ services:
     image: sapcc/mosquitto-exporter:0.8.0
     profiles: [ "monitoring", "all" ]
     command:
-      - --endpoint=tcp://10.10.0.30:1883
+      - --endpoint=tcp://$LXC_HOME_IP:1883
       - --user=$MOSQUITTO_USER
       - --pass=$MOSQUITTO_PASS
       - --client-id=mosquitto-exporter
     ports:
-      - 10.10.0.60:9234:9234
+      - $LXC_MONITORING_IP:9234:9234

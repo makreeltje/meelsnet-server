@@ -13,7 +13,7 @@ services:
       N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: true
       N8N_RESTRICT_FILE_ACCESS_TO: /appdata/queue;/archive
       DB_TYPE: postgresdb
-      DB_POSTGRESDB_HOST: 10.10.0.10
+      DB_POSTGRESDB_HOST: $LXC_INFRA_IP
       DB_POSTGRESDB_PORT: 5432
       DB_POSTGRESDB_DATABASE: $N8N_DBNAME
       DB_POSTGRESDB_USER: $N8N_DBUSER
@@ -23,4 +23,4 @@ services:
       - $CONF_DIR/n8n/queue:/appdata/queue
       - $ARCHIVE_DIR/ChronicleCore:/archive
     ports:
-      - 10.10.0.40:5678:5678
+      - $LXC_PRODUCTIVITY_IP:5678:5678

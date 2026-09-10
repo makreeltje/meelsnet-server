@@ -9,4 +9,4 @@ services:
     volumes:
       - $CONF_DIR/jackett/config:/config
     ports:
-      - 10.10.0.20:9117:9117
+      - $LXC_MEDIA_IP:9117:9117
