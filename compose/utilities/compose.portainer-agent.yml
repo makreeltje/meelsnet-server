@@ -12,7 +12,7 @@ services:
     ports:
       - $LXC_IP:9001:9001
     healthcheck:
-      test: ["CMD-SHELL", "wget --no-check-certificate --no-verbose --tries=1 --spider https://localhost:9001/ping || exit 1"]
+      test: ["CMD", "healthy"]
       interval: 30s
       timeout: 10s
       retries: 3
