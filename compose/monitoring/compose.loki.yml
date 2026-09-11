@@ -6,10 +6,12 @@ services:
     container_name: loki
     image: grafana/loki:3.7.7
     profiles: [ "monitoring", "all" ]
+    user: $PUID:$PGID
     command:
       - -config.file=/mnt/config/loki-config.yaml
     volumes:
       - $CONF_DIR/loki/config:/mnt/config
+      - $CONF_DIR/loki/data:/loki
     ports:
       - $LXC_IP:3100:3100
     healthcheck:
