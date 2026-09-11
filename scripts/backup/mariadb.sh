@@ -6,8 +6,8 @@
 # via het 'databases' plan naar Azure (keep-last-3 snapshots) — zie CLAUDE.md.
 #
 # Output policy: silent on success. Bij failure: full log via
-# `logger -p user.err -t mariadb-backup`. Bekijk failures met:
-#   journalctl -t mariadb-backup -p err
+# `logger -p user.err -t backup-mariadb`. Bekijk failures met:
+#   journalctl -t backup-mariadb -p err
 #
 # Monitoring: pingt healthchecks.io (start/success/fail) als HC_MARIADB_BACKUP
 # is gedefinieerd in /etc/default/backup-scripts. Graceful degradation:
@@ -58,7 +58,7 @@ fail() {
     echo "FAILED: $msg"
     echo "--- log ---"
     cat "$LOG" 2>/dev/null || true
-  } | logger -p user.err -t mariadb-backup
+  } | logger -p user.err -t backup-mariadb
   hc_ping "/fail" "$(tail -n 50 "$LOG" 2>/dev/null || echo "$msg")"
   exit 1
 }
