@@ -6,7 +6,7 @@ networks:
 include:
   - compose/monitoring/compose.exporters.yml
   - compose/monitoring/compose.grafana.yml
-  # - compose/monitoring/compose.loki.yml
+  - compose/monitoring/compose.loki.yml
   - compose/monitoring/compose.prometheus.yml
   - compose/monitoring/compose.alertmanager.yml
   - compose/monitoring/compose.cadvisor.yml
