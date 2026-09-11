@@ -22,5 +22,6 @@ include:
   - compose/database/compose.mariadb.yml
   - compose/database/compose.adminer.yml
   - compose/monitoring/compose.cadvisor.yml
+  - compose/monitoring/compose.alloy.yml
   - compose/utilities/compose.portainer.yml
   - compose/utilities/compose.portainer-agent.yml

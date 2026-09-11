@@ -23,4 +23,5 @@ include:
   # - compose/media-server/compose.pinchflat.yml
   - compose/media-server/compose.wizarr.yml
   - compose/monitoring/compose.cadvisor.yml
+  - compose/monitoring/compose.alloy.yml
   - compose/utilities/compose.portainer-agent.yml

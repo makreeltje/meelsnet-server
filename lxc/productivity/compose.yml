@@ -17,4 +17,5 @@ include:
   - compose/utilities/compose.convertx.yml
   - compose/utilities/compose.chromium.yml
   - compose/monitoring/compose.cadvisor.yml
+  - compose/monitoring/compose.alloy.yml
   - compose/utilities/compose.portainer-agent.yml

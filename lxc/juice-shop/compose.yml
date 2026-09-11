@@ -5,3 +5,6 @@ networks:
 
 include:
   - compose/productivity/compose.juice-shop.yml
+  - compose/productivity/compose.cadvisor.yml
+  - compose/monitoring/compose.alloy.yml
+  - compose/utilities/compose.portainer-agent.yml
