@@ -14,7 +14,7 @@ hc_ping() {
 }
 
 fail() {
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: $*" >&2
+    logger -p user.err -t backup-immich "ERROR: $*"
     hc_ping "/fail"
     exit 1
 }
@@ -25,9 +25,9 @@ run() {
 
 hc_ping "/start"
 
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] Rsync Immich library: $DATA_SRC -> $DATA_DST"
+logger -t backup-immich "Rsync Immich library: $DATA_SRC -> $DATA_DST"
 mkdir -p "$DATA_DST"
 run rsync -a --delete "$DATA_SRC/" "$DATA_DST/"
 
 hc_ping
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] Immich backup completed"
+logger -t backup-immich "Immich backup completed"

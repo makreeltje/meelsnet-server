@@ -14,17 +14,17 @@ hc_ping() {
 }
 
 fail() {
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: $*" >&2
+    logger -p user.err -t backup-paperless "ERROR: $*"
     hc_ping "/fail"
     exit 1
 }
 
 hc_ping "/start"
 
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] Running Paperless document_exporter"
+logger -t backup-paperless "Running Paperless document_exporter"
 pct exec "$CT_ID" -- docker exec "$CONTAINER" \
     document_exporter ../export \
     || fail "document_exporter failed"
 
 hc_ping
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] Paperless export completed"
+logger -t backup-paperless "Paperless export completed"

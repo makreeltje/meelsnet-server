@@ -16,7 +16,7 @@ hc_ping() {
 }
 
 fail() {
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: $*" >&2
+    logger -p user.err -t backup-homeassistant "ERROR: $*"
     hc_ping "/fail"
     exit 1
 }
@@ -31,7 +31,7 @@ LATEST=$(pct exec "$CT_ID" -- bash -c "ls -t '${HA_BACKUPS}'/*.tar 2>/dev/null |
 
 FILENAME=$(basename "$LATEST")
 
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] Kopieer HA backup: $FILENAME"
+logger -t backup-homeassistant "Kopieer HA backup: $FILENAME"
 pct exec "$CT_ID" -- bash -c "
     set -e
     mkdir -p '${DST}'
@@ -40,4 +40,4 @@ pct exec "$CT_ID" -- bash -c "
 " || fail "Kopiëren HA backup mislukt"
 
 hc_ping
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] Home Assistant backup completed: $FILENAME"
+logger -t backup-homeassistant "Home Assistant backup completed: $FILENAME"
