@@ -11,9 +11,3 @@ services:
       - /var/lib/docker/volumes:/var/lib/docker/volumes
     ports:
       - $LXC_IP:9001:9001
-    healthcheck:
-      test: ["CMD", "healthy"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 15s
