@@ -11,7 +11,7 @@ services:
     ports:
       - 8001:8000
     healthcheck:
-      test: [ "CMD", "wget", "-qO-", "http://localhost:8000/api/v1/info" ]
+      test: [ "CMD", "/home/app/spoolman/.venv/bin/python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/info')" ]
       interval: 30s
       timeout: 5s
       retries: 3

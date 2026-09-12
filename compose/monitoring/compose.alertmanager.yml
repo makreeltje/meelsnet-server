@@ -13,3 +13,9 @@ services:
       - $CONF_DIR/alertmanager/data:/data
     ports:
       - $LXC_IP:9093:9093
+    healthcheck:
+      test: [ "CMD", "wget", "-qO-", "http://localhost:9093/-/healthy" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s

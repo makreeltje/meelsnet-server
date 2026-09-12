@@ -35,3 +35,9 @@ services:
       echo \"0 3 * * * wget -qO- http://firefly:8080/api/v1/cron/$$STATIC_CRON_TOKEN;echo\" \
       | crontab - && \
       crond -f -L /dev/stdout"]
+    healthcheck:
+      test: [ "CMD", "pgrep", "crond" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
