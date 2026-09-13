@@ -1,7 +1,7 @@
 http:
   routers:
     budget-tracker-rtr:
-      rule: 'Host(`budget.{{env "DOMAINNAME_1"}}`)'
+      rule: 'Host(`budget.{{env "DOMAINNAME_2"}}`)'
       entryPoints:
         - websecure
       middlewares:
