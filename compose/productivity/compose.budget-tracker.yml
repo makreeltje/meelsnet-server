@@ -1,0 +1,30 @@
+services:
+  budget-tracker:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
+    container_name: budget-tracker
+    image: ghcr.io/makreeltje/budget-tracker:v2
+    profiles: [ "productivity", "all" ]
+    environment:
+      DATABASE_URL: postgresql+psycopg://$BUDGET_TRACKER_DBUSER:$BUDGET_TRACKER_DBPASS@$LXC_INFRA_IP:5432/$BUDGET_TRACKER_DBNAME
+      SECRET_KEY: $BUDGET_TRACKER_SECRET
+      BASE_URL: https://budget.$DOMAINNAME_1
+      COOKIE_SECURE: "true"
+      OIDC_ENABLED: "true"
+      OIDC_ISSUER: https://authentik.$DOMAINNAME_1/application/o/budget-tracker
+      OIDC_CLIENT_ID: $BUDGET_TRACKER_AUTH_CLIENT_ID
+      OIDC_CLIENT_SECRET: $BUDGET_TRACKER_AUTH_CLIENT_SECRET
+      OIDC_ALLOWED_EMAILS: $BUDGET_TRACKER_AUTH_EMAIL
+      LOCAL_AUTH_ENABLED: "true"
+      BOOTSTRAP_USERNAME: $BUDGET_TRACKER_ADMIN_USER
+      BOOTSTRAP_PASSWORD: $BUDGET_TRACKER_ADMIN_PASS
+      BOOTSTRAP_EMAIL: $BUDGET_TRACKER_AUTH_EMAIL
+    ports:
+      - $LXC_IP:8090:8000
+    healthcheck:
+      test: [ "CMD", "curl", "-fsS", "http://localhost:8000/api/health" ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
