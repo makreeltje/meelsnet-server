@@ -7,12 +7,12 @@ services:
     image: ghcr.io/makreeltje/budget-tracker:v2
     profiles: [ "productivity", "all" ]
     environment:
-      DATABASE_URL: postgresql+psycopg://$BUDGET_TRACKER_DBUSER:$BUDGET_TRACKER_DBPASS@$LXC_INFRA_IP:5432/$BUDGET_TRACKER_DBNAME
+      DATABASE_URL: postgresql+psycopg://$BUDGET_TRACKER_DBUSER:$BUDGET_TRACKER_DBPASS@$LXC_IP:5432/$BUDGET_TRACKER_DBNAME
       SECRET_KEY: $BUDGET_TRACKER_SECRET
-      BASE_URL: https://budget.$DOMAINNAME_1
+      BASE_URL: https://budget.$DOMAINNAME_2
       COOKIE_SECURE: "true"
       OIDC_ENABLED: "true"
-      OIDC_ISSUER: https://authentik.$DOMAINNAME_1/application/o/budget-tracker
+      OIDC_ISSUER: https://authentik.$DOMAINNAME_2/application/o/budget-tracker
       OIDC_CLIENT_ID: $BUDGET_TRACKER_AUTH_CLIENT_ID
       OIDC_CLIENT_SECRET: $BUDGET_TRACKER_AUTH_CLIENT_SECRET
       OIDC_ALLOWED_EMAILS: $BUDGET_TRACKER_AUTH_EMAIL
