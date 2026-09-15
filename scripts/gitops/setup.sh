@@ -16,11 +16,11 @@ echo "=== GitOps Controller Setup ==="
 echo ""
 
 # Create directories
-echo "[1/6] Creating directories..."
+echo "[1/8] Creating directories..."
 mkdir -p "$INSTALL_DIR" "$CONFIG_DIR" "$LOG_DIR" "$INSTALL_DIR/state"
 
 # Copy scripts
-echo "[2/6] Installing scripts..."
+echo "[2/8] Installing scripts..."
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 cp "$SCRIPT_DIR/gitops-controller.sh" "$INSTALL_DIR/gitops-controller.sh"
 cp "$SCRIPT_DIR/gitops-webhook.py" "$INSTALL_DIR/gitops-webhook.py"
@@ -28,32 +28,38 @@ chmod +x "$INSTALL_DIR/gitops-controller.sh"
 
 # Copy config if not exists
 if [[ ! -f "$CONFIG_DIR/config.env" ]]; then
-  echo "[3/6] Creating config from example..."
+  echo "[3/8] Creating config from example..."
   cp "$SCRIPT_DIR/config.env.example" "$CONFIG_DIR/config.env"
   echo "  -> Edit /etc/gitops/config.env with your settings"
 else
-  echo "[3/6] Config already exists, skipping..."
+  echo "[3/8] Config already exists, skipping..."
 fi
 
 # Generate webhook secret if not set
 if ! grep -q "^WEBHOOK_SECRET=.\+" "$CONFIG_DIR/config.env" 2>/dev/null; then
-  echo "[4/6] Generating webhook secret..."
+  echo "[4/8] Generating webhook secret..."
   SECRET=$(openssl rand -hex 32)
   sed -i "s/^WEBHOOK_SECRET=$/WEBHOOK_SECRET=$SECRET/" "$CONFIG_DIR/config.env"
   echo "  -> Webhook secret generated: $SECRET"
   echo "  -> Add this same secret to your GitHub webhook configuration"
 else
-  echo "[4/6] Webhook secret already set, skipping..."
+  echo "[4/8] Webhook secret already set, skipping..."
 fi
 
 # Install systemd units
-echo "[5/6] Installing systemd units..."
+echo "[5/8] Installing systemd units..."
 cp "$SCRIPT_DIR/gitops-webhook.service" /etc/systemd/system/
+cp "$SCRIPT_DIR/gitops-sync.service"   /etc/systemd/system/
+cp "$SCRIPT_DIR/gitops-sync.timer"     /etc/systemd/system/
 systemctl daemon-reload
 
 # Enable webhook service
-echo "[6/6] Enabling webhook service..."
+echo "[6/8] Enabling webhook service..."
 systemctl enable gitops-webhook.service
+
+# Enable and start the periodic sync timer
+echo "[7/8] Enabling periodic sync timer..."
+systemctl enable --now gitops-sync.timer
 
 echo ""
 echo "=== Setup Complete ==="
@@ -84,12 +90,15 @@ echo "     -> Content type: application/json"
 echo "     -> Secret: (copy from /etc/gitops/config.env)"
 echo "     -> Events: Just the push event"
 echo ""
-echo "  6. Start the webhook listener:"
+echo "  6. Start the services:"
 echo "     systemctl start gitops-webhook.service"
+echo "     systemctl start gitops-sync.timer   # periodic sync already enabled"
 echo ""
 echo "  7. Test with a manual sync:"
 echo "     /opt/gitops/gitops-controller.sh sync"
 echo ""
 echo "  8. Check status:"
 echo "     /opt/gitops/gitops-controller.sh status"
+echo "     systemctl list-timers gitops-sync.timer"
+echo "     journalctl -u gitops-sync.service -f"
 echo "     journalctl -u gitops-webhook.service -f"

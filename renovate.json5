@@ -184,10 +184,8 @@
     {
       description: 'Track untagged or latest-tagged images safely via SHA256 digests',
       matchFileNames: [
-        'compose/media-server/compose.plex.yml',
         'compose/media-server/compose.pinchflat.yml',
         'compose/home-automation/compose.hyperion.yml',
-        'compose/network/compose.unifi-os.yml',
       ],
       pinDigests: true,
     },

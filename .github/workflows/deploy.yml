@@ -7,6 +7,7 @@ on:
       - 'lxc/**'
       - 'scripts/**'
       - '.yamllint.yml'
+      - '.env.ci'
 
 jobs:
   yaml-lint:
@@ -30,3 +31,33 @@ jobs:
       - name: Run ShellCheck
         run: |
           find scripts/ -name '*.sh' -print0 | xargs -0 shellcheck --severity=warning
+
+  compose-validate:
+    name: Compose Validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Create env_file stubs
+        run: |
+          mkdir -p /tmp/ci-conf/firefly /tmp/ci-conf/immich
+          touch /tmp/ci-conf/firefly/.env /tmp/ci-conf/immich/.env
+
+      - name: Validate each LXC compose stack
+        run: |
+          failed=0
+          for lxc_compose in lxc/*/compose.yml; do
+            lxc=$(basename "$(dirname "$lxc_compose")")
+            # Copy to repo root so include paths (compose/...) resolve correctly
+            tmp=$(mktemp ./compose.validate.XXXXXX.yml)
+            cp "$lxc_compose" "$tmp"
+            if docker compose --env-file .env.ci -f "$tmp" config --quiet 2>/dev/null; then
+              echo "OK: $lxc"
+            else
+              echo "FAIL: $lxc"
+              docker compose --env-file .env.ci -f "$tmp" config 2>&1 | head -30
+              failed=1
+            fi
+            rm -f "$tmp"
+          done
+          exit $failed

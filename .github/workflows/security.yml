@@ -1,0 +1,91 @@
+name: Security
+
+on:
+  pull_request:
+  schedule:
+    - cron: '0 6 * * 1'  # Every Monday 06:00 UTC
+  workflow_dispatch:
+
+jobs:
+  secret-scan:
+    name: Secret Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install Trivy
+        run: |
+          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key \
+            | gpg --dearmor \
+            | sudo tee /usr/share/keyrings/trivy.gpg > /dev/null
+          echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb generic main" \
+            | sudo tee /etc/apt/sources.list.d/trivy.list
+          sudo apt-get update -qq && sudo apt-get install -y trivy
+
+      - name: Scan repo for secrets
+        run: |
+          trivy fs . \
+            --scanners secret \
+            --severity HIGH,CRITICAL \
+            --exit-code 1 \
+            --ignorefile .trivyignore
+
+  image-scan:
+    name: Image Vulnerability Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Determine images to scan
+        id: targets
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            # PR: only scan images added or changed in this PR
+            images=$(git diff "origin/${{ github.base_ref }}...HEAD" -- compose/ \
+              | grep '^+\s*image:' \
+              | sed 's/.*image:[[:space:]]*//' \
+              | sort -u)
+          else
+            # Schedule / manual: scan everything
+            images=$(grep -rh '^\s*image:' compose/ \
+              | sed 's/.*image:[[:space:]]*//' \
+              | sort -u)
+          fi
+          printf '%s\n' "$images" | tee /tmp/scan-targets.txt
+          count=$(grep -c . /tmp/scan-targets.txt 2>/dev/null || echo 0)
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+
+      - name: Install Trivy
+        if: steps.targets.outputs.count != '0'
+        run: |
+          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key \
+            | gpg --dearmor \
+            | sudo tee /usr/share/keyrings/trivy.gpg > /dev/null
+          echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb generic main" \
+            | sudo tee /etc/apt/sources.list.d/trivy.list
+          sudo apt-get update -qq && sudo apt-get install -y trivy
+
+      - name: Scan images
+        if: steps.targets.outputs.count != '0'
+        run: |
+          failed=0
+          while IFS= read -r image; do
+            [[ -z "$image" ]] && continue
+            echo "::group::$image"
+            if trivy image \
+                --severity CRITICAL \
+                --ignore-unfixed \
+                --exit-code 1 \
+                --no-progress \
+                --ignorefile .trivyignore \
+                "$image"; then
+              echo "::endgroup::"
+            else
+              echo "::endgroup::"
+              echo "::error::CRITICAL unfixed vulnerability in $image"
+              failed=1
+            fi
+          done < /tmp/scan-targets.txt
+          exit $failed

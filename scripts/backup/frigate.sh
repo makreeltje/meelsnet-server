@@ -17,14 +17,14 @@ hc_ping() {
 }
 
 fail() {
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: $*" >&2
+    logger -p user.err -t backup-frigate "ERROR: $*"
     hc_ping "/fail"
     exit 1
 }
 
 hc_ping "/start"
 
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] Tar Frigate config+DB: $SRC"
+logger -t backup-frigate "Tar Frigate config+DB: $SRC"
 pct exec "$CT_ID" -- bash -c "
     set -e
     mkdir -p '${DST}'
@@ -33,4 +33,4 @@ pct exec "$CT_ID" -- bash -c "
 " || fail "Frigate tar failed"
 
 hc_ping
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] Frigate backup completed"
+logger -t backup-frigate "Frigate backup completed"

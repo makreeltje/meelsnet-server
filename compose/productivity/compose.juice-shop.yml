@@ -18,6 +18,12 @@ services:
       NODE_ENV: quiet
     ports:
       - 3000:3000
+    healthcheck:
+      test: [ "CMD", "/nodejs/bin/node", "-e", "require('http').get('http://localhost:3000/', r=>process.exit(r.statusCode<500?0:1)).on('error', ()=>process.exit(1))" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
 
   juice-shop-2:
     <<: *juice-shop-resources
@@ -31,6 +37,12 @@ services:
       NODE_ENV: quiet
     ports:
       - 3001:3000
+    healthcheck:
+      test: [ "CMD", "/nodejs/bin/node", "-e", "require('http').get('http://localhost:3000/', r=>process.exit(r.statusCode<500?0:1)).on('error', ()=>process.exit(1))" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
 
   juice-shop-3:
     <<: *juice-shop-resources
@@ -44,6 +56,12 @@ services:
       NODE_ENV: quiet
     ports:
       - 3002:3000
+    healthcheck:
+      test: [ "CMD", "/nodejs/bin/node", "-e", "require('http').get('http://localhost:3000/', r=>process.exit(r.statusCode<500?0:1)).on('error', ()=>process.exit(1))" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
 
   juice-shop-4:
     <<: *juice-shop-resources
@@ -57,6 +75,12 @@ services:
       NODE_ENV: quiet
     ports:
       - 3003:3000
+    healthcheck:
+      test: [ "CMD", "/nodejs/bin/node", "-e", "require('http').get('http://localhost:3000/', r=>process.exit(r.statusCode<500?0:1)).on('error', ()=>process.exit(1))" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
 
   juice-shop-5:
     <<: *juice-shop-resources
@@ -70,6 +94,12 @@ services:
       NODE_ENV: quiet
     ports:
       - 3004:3000
+    healthcheck:
+      test: [ "CMD", "/nodejs/bin/node", "-e", "require('http').get('http://localhost:3000/', r=>process.exit(r.statusCode<500?0:1)).on('error', ()=>process.exit(1))" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
 
   juice-shop-6:
     <<: *juice-shop-resources
@@ -83,6 +113,12 @@ services:
       NODE_ENV: quiet
     ports:
       - 3005:3000
+    healthcheck:
+      test: [ "CMD", "/nodejs/bin/node", "-e", "require('http').get('http://localhost:3000/', r=>process.exit(r.statusCode<500?0:1)).on('error', ()=>process.exit(1))" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
 
   juice-shop-7:
     <<: *juice-shop-resources
@@ -96,6 +132,12 @@ services:
       NODE_ENV: quiet
     ports:
       - 3006:3000
+    healthcheck:
+      test: [ "CMD", "/nodejs/bin/node", "-e", "require('http').get('http://localhost:3000/', r=>process.exit(r.statusCode<500?0:1)).on('error', ()=>process.exit(1))" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
 
   juice-shop-8:
     <<: *juice-shop-resources
@@ -109,6 +151,12 @@ services:
       NODE_ENV: quiet
     ports:
       - 3007:3000
+    healthcheck:
+      test: [ "CMD", "/nodejs/bin/node", "-e", "require('http').get('http://localhost:3000/', r=>process.exit(r.statusCode<500?0:1)).on('error', ()=>process.exit(1))" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
 
   juice-shop-9:
     <<: *juice-shop-resources
@@ -122,6 +170,12 @@ services:
       NODE_ENV: quiet
     ports:
       - 3008:3000
+    healthcheck:
+      test: [ "CMD", "/nodejs/bin/node", "-e", "require('http').get('http://localhost:3000/', r=>process.exit(r.statusCode<500?0:1)).on('error', ()=>process.exit(1))" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
 
   juice-shop-10:
     <<: *juice-shop-resources
@@ -135,6 +189,12 @@ services:
       NODE_ENV: quiet
     ports:
       - 3009:3000
+    healthcheck:
+      test: [ "CMD", "/nodejs/bin/node", "-e", "require('http').get('http://localhost:3000/', r=>process.exit(r.statusCode<500?0:1)).on('error', ()=>process.exit(1))" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
 
   juice-shop-11:
     <<: *juice-shop-resources
@@ -148,6 +208,12 @@ services:
       NODE_ENV: quiet
     ports:
       - 3010:3000
+    healthcheck:
+      test: [ "CMD", "/nodejs/bin/node", "-e", "require('http').get('http://localhost:3000/', r=>process.exit(r.statusCode<500?0:1)).on('error', ()=>process.exit(1))" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
 
   juice-shop-12:
     <<: *juice-shop-resources
@@ -161,6 +227,12 @@ services:
       NODE_ENV: quiet
     ports:
       - 3011:3000
+    healthcheck:
+      test: [ "CMD", "/nodejs/bin/node", "-e", "require('http').get('http://localhost:3000/', r=>process.exit(r.statusCode<500?0:1)).on('error', ()=>process.exit(1))" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
 
   juice-shop-13:
     <<: *juice-shop-resources
@@ -174,6 +246,12 @@ services:
       NODE_ENV: quiet
     ports:
       - 3012:3000
+    healthcheck:
+      test: [ "CMD", "/nodejs/bin/node", "-e", "require('http').get('http://localhost:3000/', r=>process.exit(r.statusCode<500?0:1)).on('error', ()=>process.exit(1))" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
 
   juice-shop-14:
     <<: *juice-shop-resources
@@ -187,6 +265,12 @@ services:
       NODE_ENV: quiet
     ports:
       - 3013:3000
+    healthcheck:
+      test: [ "CMD", "/nodejs/bin/node", "-e", "require('http').get('http://localhost:3000/', r=>process.exit(r.statusCode<500?0:1)).on('error', ()=>process.exit(1))" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
 
   juice-shop-15:
     <<: *juice-shop-resources
@@ -200,6 +284,12 @@ services:
       NODE_ENV: quiet
     ports:
       - 3014:3000
+    healthcheck:
+      test: [ "CMD", "/nodejs/bin/node", "-e", "require('http').get('http://localhost:3000/', r=>process.exit(r.statusCode<500?0:1)).on('error', ()=>process.exit(1))" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
 
   juice-shop-16:
     <<: *juice-shop-resources
@@ -213,6 +303,12 @@ services:
       NODE_ENV: quiet
     ports:
       - 3015:3000
+    healthcheck:
+      test: [ "CMD", "/nodejs/bin/node", "-e", "require('http').get('http://localhost:3000/', r=>process.exit(r.statusCode<500?0:1)).on('error', ()=>process.exit(1))" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
 
   juice-shop-17:
     <<: *juice-shop-resources
@@ -226,6 +322,12 @@ services:
       NODE_ENV: quiet
     ports:
       - 3016:3000
+    healthcheck:
+      test: [ "CMD", "/nodejs/bin/node", "-e", "require('http').get('http://localhost:3000/', r=>process.exit(r.statusCode<500?0:1)).on('error', ()=>process.exit(1))" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
 
   juice-shop-18:
     <<: *juice-shop-resources
@@ -239,6 +341,12 @@ services:
       NODE_ENV: quiet
     ports:
       - 3017:3000
+    healthcheck:
+      test: [ "CMD", "/nodejs/bin/node", "-e", "require('http').get('http://localhost:3000/', r=>process.exit(r.statusCode<500?0:1)).on('error', ()=>process.exit(1))" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
 
   juice-shop-19:
     <<: *juice-shop-resources
@@ -252,6 +360,12 @@ services:
       NODE_ENV: quiet
     ports:
       - 3018:3000
+    healthcheck:
+      test: [ "CMD", "/nodejs/bin/node", "-e", "require('http').get('http://localhost:3000/', r=>process.exit(r.statusCode<500?0:1)).on('error', ()=>process.exit(1))" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
 
   juice-shop-20:
     <<: *juice-shop-resources
@@ -265,6 +379,12 @@ services:
       NODE_ENV: quiet
     ports:
       - 3019:3000
+    healthcheck:
+      test: [ "CMD", "/nodejs/bin/node", "-e", "require('http').get('http://localhost:3000/', r=>process.exit(r.statusCode<500?0:1)).on('error', ()=>process.exit(1))" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
 
   juice-shop-21:
     <<: *juice-shop-resources
@@ -278,6 +398,12 @@ services:
       NODE_ENV: quiet
     ports:
       - 3020:3000
+    healthcheck:
+      test: [ "CMD", "/nodejs/bin/node", "-e", "require('http').get('http://localhost:3000/', r=>process.exit(r.statusCode<500?0:1)).on('error', ()=>process.exit(1))" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
 
   juice-shop-22:
     <<: *juice-shop-resources
@@ -291,6 +417,12 @@ services:
       NODE_ENV: quiet
     ports:
       - 3021:3000
+    healthcheck:
+      test: [ "CMD", "/nodejs/bin/node", "-e", "require('http').get('http://localhost:3000/', r=>process.exit(r.statusCode<500?0:1)).on('error', ()=>process.exit(1))" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
 
   juice-shop-23:
     <<: *juice-shop-resources
@@ -304,6 +436,12 @@ services:
       NODE_ENV: quiet
     ports:
       - 3022:3000
+    healthcheck:
+      test: [ "CMD", "/nodejs/bin/node", "-e", "require('http').get('http://localhost:3000/', r=>process.exit(r.statusCode<500?0:1)).on('error', ()=>process.exit(1))" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
 
   juice-shop-24:
     <<: *juice-shop-resources
@@ -317,6 +455,12 @@ services:
       NODE_ENV: quiet
     ports:
       - 3023:3000
+    healthcheck:
+      test: [ "CMD", "/nodejs/bin/node", "-e", "require('http').get('http://localhost:3000/', r=>process.exit(r.statusCode<500?0:1)).on('error', ()=>process.exit(1))" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
 
   juice-shop-25:
     <<: *juice-shop-resources
@@ -330,3 +474,9 @@ services:
       NODE_ENV: quiet
     ports:
       - 3024:3000
+    healthcheck:
+      test: [ "CMD", "/nodejs/bin/node", "-e", "require('http').get('http://localhost:3000/', r=>process.exit(r.statusCode<500?0:1)).on('error', ()=>process.exit(1))" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s

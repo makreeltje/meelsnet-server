@@ -12,4 +12,5 @@ include:
   - compose/home-automation/compose.hyperion.yml
   - compose/home-automation/compose.frigate.yml
   - compose/monitoring/compose.cadvisor.yml
+  - compose/monitoring/compose.alloy.yml
   - compose/utilities/compose.portainer-agent.yml

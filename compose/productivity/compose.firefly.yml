@@ -10,9 +10,9 @@ services:
     volumes:
       - $CONF_DIR/firefly/upload:/var/www/html/storage/upload
     ports:
-      - 10.10.0.40:8080:8080
+      - $LXC_IP:8080:8080
     healthcheck:
-      test: [ "CMD", "wget", "-qO-", "http://localhost:8080/" ]
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/" ]
       interval: 60s
       timeout: 10s
       retries: 3
@@ -28,10 +28,16 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: firefly_cron
-    image: alpine
+    image: alpine@sha256:28bd5fe8b56d1bd048e5babf5b10710ebe0bae67db86916198a6eec434943f8b
     env_file: $CONF_DIR/firefly/.env
     command: ["sh", "-c", "apk add tzdata && \
       (ln -s /usr/share/zoneinfo/$$TZ /etc/localtime || true) && \
       echo \"0 3 * * * wget -qO- http://firefly:8080/api/v1/cron/$$STATIC_CRON_TOKEN;echo\" \
       | crontab - && \
       crond -f -L /dev/stdout"]
+    healthcheck:
+      test: [ "CMD", "pgrep", "crond" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s

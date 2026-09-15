@@ -73,6 +73,34 @@ log_warn()  { log "WARN"  "$@"; }
 log_error() { log "ERROR" "$@"; }
 
 # -----------------------------------------------------------------------------
+# Notifications
+# -----------------------------------------------------------------------------
+# Sends a Discord embed. Call with: notify "success"|"failure" "title" "body"
+# Requires DISCORD_WEBHOOK_URL in /etc/gitops/config.env.
+# To switch to failure-only: add [[ "$1" == "failure" ]] || return 0 at top.
+notify() {
+  local status="$1" title="$2" body="$3"
+  [[ -z "${DISCORD_WEBHOOK_URL:-}" ]] && return 0
+
+  local color
+  case "$status" in
+    success) color=3066993  ;;  # green
+    failure) color=15158332 ;;  # red
+    *)       color=9807270  ;;  # grey
+  esac
+
+  local payload
+  payload=$(printf '{"embeds":[{"title":"%s","description":"%s","color":%d}]}' \
+    "$title" "$body" "$color")
+
+  if ! curl -sf -X POST "$DISCORD_WEBHOOK_URL" \
+      -H "Content-Type: application/json" \
+      -d "$payload" > /dev/null 2>&1; then
+    log_warn "Discord notification failed (webhook unreachable?)"
+  fi
+}
+
+# -----------------------------------------------------------------------------
 # State management
 # -----------------------------------------------------------------------------
 mkdir -p "$STATE_DIR"
@@ -220,9 +248,30 @@ sync_gitops_install() {
   if file_in_list "scripts/gitops/gitops-webhook.service" "${changed_files[@]}"; then
     install_file "scripts/gitops/gitops-webhook.service" "$SYSTEMD_DIR/gitops-webhook.service" 644
     log_info "Host sync: updated $SYSTEMD_DIR/gitops-webhook.service"
+    restart_webhook=1
+  fi
+
+  local reload_systemd=0
+  if file_in_list "scripts/gitops/gitops-sync.service" "${changed_files[@]}"; then
+    install_file "scripts/gitops/gitops-sync.service" "$SYSTEMD_DIR/gitops-sync.service" 644
+    log_info "Host sync: updated $SYSTEMD_DIR/gitops-sync.service"
+    reload_systemd=1
+  fi
+
+  if file_in_list "scripts/gitops/gitops-sync.timer" "${changed_files[@]}"; then
+    install_file "scripts/gitops/gitops-sync.timer" "$SYSTEMD_DIR/gitops-sync.timer" 644
+    log_info "Host sync: updated $SYSTEMD_DIR/gitops-sync.timer"
+    reload_systemd=1
+  fi
+
+  if [[ $reload_systemd -eq 1 || $restart_webhook -eq 1 ]]; then
     systemctl daemon-reload
     log_info "Host sync: ran systemctl daemon-reload"
-    restart_webhook=1
+  fi
+
+  if [[ $reload_systemd -eq 1 ]]; then
+    systemctl restart gitops-sync.timer 2>/dev/null || systemctl start gitops-sync.timer
+    log_info "Host sync: restarted gitops-sync.timer to apply changes"
   fi
 
   if [[ $restart_webhook -eq 1 ]]; then
@@ -586,8 +635,13 @@ sync() {
   # Only update state if all deployments succeeded
   if [[ $any_failed -eq 0 ]]; then
     set_last_deployed_sha "$remote_sha"
+    local short_sha="${remote_sha:0:7}"
+    notify success "GitOps: deploy succeeded" \
+      "Commit \`$short_sha\` deployed to $deployed_count LXC(s) — ${changed_files[*]}"
   else
     log_error "Some deployments failed — state NOT updated (will retry next cycle)"
+    notify failure "GitOps: deploy FAILED" \
+      "One or more deployments failed for commit \`${remote_sha:0:7}\`. Check \`journalctl -u gitops-sync.service\` on Proxmox."
     return 1
   fi
 }
@@ -682,6 +736,15 @@ cmd_force_deploy() {
   cmd_deploy "$target"
 }
 
+cmd_notify_test() {
+  if [[ -z "${DISCORD_WEBHOOK_URL:-}" ]]; then
+    echo "DISCORD_WEBHOOK_URL is not set in /etc/gitops/config.env"
+    exit 1
+  fi
+  notify success "GitOps: test notification" "Webhook is configured correctly."
+  echo "Test notification sent."
+}
+
 # -----------------------------------------------------------------------------
 # Entrypoint
 # -----------------------------------------------------------------------------
@@ -695,6 +758,7 @@ Commands:
   status         Show current deployment status
   deploy [target] Force deploy to target (lxc name, id, 'scripts', 'gitops',
                  or 'all')
+  notify-test    Send a test Discord notification to verify the webhook
   help           Show this help
 
 Targets: all, infra, media, home, productivity, network, monitoring, juice-shop
@@ -722,11 +786,12 @@ main() {
   shift || true
 
   case "$cmd" in
-    sync)         sync ;;
-    status)       cmd_status ;;
-    deploy)       cmd_force_deploy "${1:-all}" ;;
-    help|--help)  usage ;;
-    *)            log_error "Unknown command: $cmd"; usage; exit 1 ;;
+    sync)          sync ;;
+    status)        cmd_status ;;
+    deploy)        cmd_force_deploy "${1:-all}" ;;
+    notify-test)   cmd_notify_test ;;
+    help|--help)   usage ;;
+    *)             log_error "Unknown command: $cmd"; usage; exit 1 ;;
   esac
 }
 

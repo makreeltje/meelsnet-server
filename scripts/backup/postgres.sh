@@ -6,8 +6,8 @@
 # via het 'databases' plan naar Azure (keep-last-3 snapshots) — zie CLAUDE.md.
 #
 # Output policy: silent on success. Bij failure: full log via
-# `logger -p user.err -t postgres-backup`. Bekijk failures met:
-#   journalctl -t postgres-backup -p err
+# `logger -p user.err -t backup-postgres`. Bekijk failures met:
+#   journalctl -t backup-postgres -p err
 #
 # Monitoring: pingt healthchecks.io (start/success/fail) als HC_POSTGRES_BACKUP
 # is gedefinieerd in /etc/default/backup-scripts. Graceful degradation:
@@ -50,7 +50,7 @@ fail() {
     echo "FAILED: $msg"
     echo "--- log ---"
     cat "$LOG" 2>/dev/null || true
-  } | logger -p user.err -t postgres-backup
+  } | logger -p user.err -t backup-postgres
   hc_ping "/fail" "$(tail -n 50 "$LOG" 2>/dev/null || echo "$msg")"
   exit 1
 }

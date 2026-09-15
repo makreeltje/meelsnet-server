@@ -7,6 +7,11 @@ services:
       - t3_proxy
     environment:
       TZ: $TZ
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   # Base for host mode containers
   common-host:
@@ -14,6 +19,11 @@ services:
     network_mode: host
     environment:
       TZ: $TZ
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   # Base for LinuxServer.io containers (adds PUID/PGID)
   common-lsio:
@@ -24,6 +34,11 @@ services:
       PUID: $PUID
       PGID: $PGID
       TZ: $TZ
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   # Base for non-LSIO containers that depend on postgres + redis
   common-db:
@@ -32,6 +47,11 @@ services:
       - t3_proxy
     environment:
       TZ: $TZ
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     depends_on:
       postgres:
         condition: service_healthy
@@ -47,6 +67,11 @@ services:
       PUID: $PUID
       PGID: $PGID
       TZ: $TZ
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     depends_on:
       postgres:
         condition: service_healthy

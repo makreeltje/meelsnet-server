@@ -24,7 +24,7 @@ hc_ping() {
 }
 
 fail() {
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: $*" >&2
+    logger -p user.err -t backup-nextcloud "ERROR: $*"
     # Maintenance mode uitzetten als het aanstond
     pct exec "$CT_ID" -- docker exec "$NC_CONTAINER" \
         php occ maintenance:mode --off 2>/dev/null || true
@@ -40,12 +40,12 @@ run() {
 hc_ping "/start"
 
 # 1. Maintenance mode aan
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] Nextcloud maintenance mode ON"
+logger -t backup-nextcloud "Nextcloud maintenance mode ON"
 run pct exec "$CT_ID" -- docker exec "$NC_CONTAINER" \
     php occ maintenance:mode --on
 
 # 2. Rsync data (direct op host, --delete spiegelt huidige staat)
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] Rsync data: $DATA_SRC -> $DATA_DST"
+logger -t backup-nextcloud "Rsync data: $DATA_SRC -> $DATA_DST"
 mkdir -p "$DATA_DST"
 run rsync -a --delete \
     --exclude=".DS_Store" \
@@ -53,7 +53,7 @@ run rsync -a --delete \
     "$DATA_SRC/" "$DATA_DST/"
 
 # 3. Config tar (via pct exec zodat rootfs bereikbaar is)
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] Config tar -> $CONFIG_DST_DIR"
+logger -t backup-nextcloud "Config tar -> $CONFIG_DST_DIR"
 pct exec "$CT_ID" -- bash -c "
     set -e
     mkdir -p '${CONFIG_DST_DIR}'
@@ -62,10 +62,10 @@ pct exec "$CT_ID" -- bash -c "
 "  || fail "Config tar failed"
 
 # 4. Maintenance mode uit
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] Nextcloud maintenance mode OFF"
+logger -t backup-nextcloud "Nextcloud maintenance mode OFF"
 run pct exec "$CT_ID" -- docker exec "$NC_CONTAINER" \
     php occ maintenance:mode --off
 
 # --- Done ---
 hc_ping
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] Nextcloud backup completed"
+logger -t backup-nextcloud "Nextcloud backup completed"

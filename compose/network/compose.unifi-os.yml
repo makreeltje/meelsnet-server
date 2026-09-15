@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: unifi-os
-    image: ghcr.io/lemker/unifi-os-server:latest@sha256:1a6a7167082d005f714b33757af74972aeac890c156ea37136c863ca606bacf9
+    image: ghcr.io/lemker/unifi-os-server:v1.6.0
     profiles: [ "network", "all" ]
     cgroup: host
     privileged: true
@@ -15,7 +15,7 @@ services:
       - /var/lib/journal
       - /var/opt/unifi/tmp:size=64m
     environment:
-      UOS_SYSTEM_IP: 192.168.2.205  # Jouw 192.168.2.x IP van CT 105
+      UOS_SYSTEM_IP: $UNIFI_SYSTEM_IP
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
       - $CONF_DIR/unifi-os/persistent:/persistent

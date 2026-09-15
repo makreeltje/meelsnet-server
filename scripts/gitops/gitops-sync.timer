@@ -1,0 +1,12 @@
+[Unit]
+Description=GitOps Sync Timer - Periodic safety net for missed webhooks
+Requires=gitops-sync.service
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=15min
+AccuracySec=30s
+Persistent=true
+
+[Install]
+WantedBy=timers.target
