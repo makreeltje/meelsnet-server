@@ -5,7 +5,7 @@ http:
       entryPoints:
         - websecure
       middlewares:
-        - chain-no-auth
+        - chain-authentik
       service: juice-shop-1-svc
       tls:
         certResolver: dns-cloudflare
