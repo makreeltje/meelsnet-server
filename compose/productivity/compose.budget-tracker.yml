@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: budget-tracker
-    image: ghcr.io/makreeltje/budget-tracker:v26
+    image: ghcr.io/makreeltje/budget-tracker:v27
     profiles: [ "productivity", "all" ]
     environment:
       DATABASE_URL: postgresql+psycopg://$BUDGET_TRACKER_DBUSER:$BUDGET_TRACKER_DBPASS@$LXC_INFRA_IP:5432/$BUDGET_TRACKER_DBNAME
