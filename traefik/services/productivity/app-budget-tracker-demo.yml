@@ -1,7 +1,7 @@
 http:
   routers:
     budget-tracker-demo-rtr:
-      rule: 'Host(`budget-demo.{{env "BUDGET_TRACKER_DOMAIN"}}`)'
+      rule: 'Host(`budget-demo.{{env "DOMAINNAME_2"}}`)'
       entryPoints:
         - websecure
       middlewares:
