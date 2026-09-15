@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: budget-tracker
-    image: ghcr.io/makreeltje/budget-tracker:v30
+    image: ghcr.io/makreeltje/budget-tracker:v31
     profiles: [ "productivity", "all" ]
     environment:
       DATABASE_URL: postgresql+psycopg://$BUDGET_TRACKER_DBUSER:$BUDGET_TRACKER_DBPASS@$LXC_INFRA_IP:5432/$BUDGET_TRACKER_DBNAME
@@ -37,7 +37,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: budget-tracker-demo
-    image: ghcr.io/makreeltje/budget-tracker:v30
+    image: ghcr.io/makreeltje/budget-tracker:v31
     profiles: [ "productivity", "all" ]
     environment:
       # Its OWN database on the shared PostgreSQL, with its own role. This line is the
