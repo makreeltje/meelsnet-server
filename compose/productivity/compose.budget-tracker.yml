@@ -54,7 +54,7 @@ services:
       # "demo" account without a login, and refuses the destructive and billable calls.
       DEMO_MODE: "true"
       # How much history to invent. More months means a fuller trend and wealth chart.
-      DEMO_MONTHS: "14"
+      DEMO_MONTHS: "65"
 
       # No login at all: a public demo has nobody to authenticate. Both switched off so
       # there is no account to brute force and no bootstrap to claim.
