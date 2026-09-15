@@ -1,0 +1,16 @@
+http:
+  routers:
+    budget-tracker-demo-rtr:
+      rule: 'Host(`budget-demo.{{env "BUDGET_TRACKER_DOMAIN"}}`)'
+      entryPoints:
+        - websecure
+      middlewares:
+        - chain-no-auth
+      service: budget-tracker-demo-svc
+      tls:
+        certResolver: dns-cloudflare
+  services:
+    budget-tracker-demo-svc:
+      loadBalancer:
+        servers:
+          - url: 'http://{{env "LXC_PRODUCTIVITY_IP"}}:8091'
