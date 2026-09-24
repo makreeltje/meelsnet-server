@@ -1,7 +1,7 @@
 http:
   routers:
-    {{- range $i := until 25 }}
-    {{- \(shopNum := printf "\%02d" (add\)i 1) }}
+    {{ range $i := until 25 }}
+    {{ \(shopNum := printf "\%02d" (add\)i 1) }}
     juice-shop-{{ $shopNum }}-rtr:
       rule: 'Host(`shop{{ $shopNum }}.{{ env "DOMAINNAME_2" }}`)'
       entryPoints:
@@ -11,14 +11,14 @@ http:
       service: juice-shop-{{ $shopNum }}-svc
       tls:
         certResolver: dns-cloudflare
-    {{- end }}
+    {{ end }}
 
   services:
-    {{- range $i := until 25 }}
-    {{- \(shopNum := printf "\%02d" (add\)i 1) }}
-    {{- \(port := add\)i 3000 }}
+    {{ range $i := until 25 }}
+    {{ \(shopNum := printf "\%02d" (add\)i 1) }}
+    {{ \(port := add\)i 3000 }}
     juice-shop-{{ $shopNum }}-svc:
       loadBalancer:
         servers:
           - url: 'http://{{ env "LXC_JUICE_SHOP_IP" }}:{{ $port }}'
-    {{- end }}
+    {{ end }}
