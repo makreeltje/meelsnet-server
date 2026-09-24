@@ -1,7 +1,7 @@
 http:
   routers:
     {{ range $i := until 25 }}
-    {{ \(shopNum := printf "\%02d" (add\)i 1) }}
+    {{ \(shopNum := printf "%02d" (add\)i 1) }}
     juice-shop-{{ $shopNum }}-rtr:
       rule: 'Host(`shop{{ $shopNum }}.{{ env "DOMAINNAME_2" }}`)'
       entryPoints:
