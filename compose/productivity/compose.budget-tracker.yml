@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: budget-tracker
-    image: ghcr.io/makreeltje/budget-tracker:v26
+    image: ghcr.io/makreeltje/budget-tracker:v68
     profiles: [ "productivity", "all" ]
     environment:
       DATABASE_URL: postgresql+psycopg://$BUDGET_TRACKER_DBUSER:$BUDGET_TRACKER_DBPASS@$LXC_INFRA_IP:5432/$BUDGET_TRACKER_DBNAME
@@ -31,3 +31,45 @@ services:
       timeout: 5s
       retries: 3
       start_period: 30s
+
+  budget-tracker-demo:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
+    container_name: budget-tracker-demo
+    image: ghcr.io/makreeltje/budget-tracker:v68
+    profiles: [ "productivity", "all" ]
+    environment:
+      # Its OWN database on the shared PostgreSQL, with its own role. This line is the
+      # security boundary of the whole demo: the process cannot reach the real data
+      # because it has no credentials for it. Do not point this at $BUDGET_TRACKER_DBNAME,
+      # and do not reuse $BUDGET_TRACKER_DBUSER - a role that can read both databases
+      # would throw the guarantee away.
+      DATABASE_URL: postgresql+psycopg://$BUDGET_TRACKER_DEMO_DBUSER:$BUDGET_TRACKER_DEMO_DBPASS@$LXC_INFRA_IP:5432/$BUDGET_TRACKER_DEMO_DBNAME
+      SECRET_KEY: $BUDGET_TRACKER_DEMO_SECRET
+      BASE_URL: https://budget-demo.$DOMAINNAME_2
+      COOKIE_SECURE: "true"
+
+      # Wipes and regenerates every table on each start, hands every visitor the same
+      # "demo" account without a login, and refuses the destructive and billable calls.
+      DEMO_MODE: "true"
+      # How much history to invent. More months means a fuller trend and wealth chart.
+      DEMO_MONTHS: "65"
+
+      # No login at all: a public demo has nobody to authenticate. Both switched off so
+      # there is no account to brute force and no bootstrap to claim.
+      OIDC_ENABLED: "false"
+      LOCAL_AUTH_ENABLED: "false"
+
+      # Deliberately absent: GEMINI_API_KEY. AI categorisation bills per call, and this
+      # URL is public. The app refuses /api/ai-suggestions/generate in demo mode as well,
+      # so a copy-paste slip here cannot start spending money either.
+      AI_CATEGORIZATION_ENABLED: "false"
+    ports:
+      - $LXC_IP:8091:8000
+    healthcheck:
+      test: [ "CMD", "curl", "-fsS", "http://localhost:8000/api/health" ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
