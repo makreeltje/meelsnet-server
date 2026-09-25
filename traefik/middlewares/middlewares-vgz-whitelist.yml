@@ -3,5 +3,5 @@ http:
     middlewares-vgz-whitelist:
       ipAllowList:
         sourceRange:
-          - "162.120.187.75/32"
+          - "77.161.9.198/32"
           - "2a02:a442:15a5::/64"
