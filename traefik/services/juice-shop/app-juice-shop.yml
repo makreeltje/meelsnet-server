@@ -23,7 +23,7 @@ http:
       entryPoints:
         - websecure
       middlewares:
-        - chain-authentik
+        - chain-vgz-whitelist
       service: juice-shop-03-svc
       tls:
         certResolver: dns-cloudflare

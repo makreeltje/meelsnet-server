@@ -1,0 +1,6 @@
+http:
+  middlewares:
+    middlewares-vgz-whitelist:
+      ipAllowList:
+        sourceRange:
+          - "162.120.187.75/32"
