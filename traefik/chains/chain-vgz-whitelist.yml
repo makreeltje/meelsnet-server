@@ -1,6 +1,6 @@
 http:
   middlewares:
-    chain-no-auth:
+    chain-vgz-whitelist:
       chain:
         middlewares:
           - middlewares-rate-limit
