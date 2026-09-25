@@ -5,6 +5,4 @@ http:
         middlewares:
           - middlewares-rate-limit
           - middlewares-secure-headers
-          - middlewares-cloudflare-whitelist
-          - middlewares-local-whitelist
           - middlewares-vgz-whitelist

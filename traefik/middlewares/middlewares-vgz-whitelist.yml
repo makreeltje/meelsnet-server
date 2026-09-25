@@ -5,4 +5,6 @@ http:
         sourceRange:
           - "2a02:a442:15a5::/64"
           - "77.161.9.198/32"
+        ipStrategy:
+          depth: 1
         rejectStatusCode: 404
