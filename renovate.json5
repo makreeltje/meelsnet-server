@@ -162,6 +162,7 @@
       description: 'Silence lookup warnings for custom local app packages',
       matchPackageNames: [
         'ghcr.io/makreeltje/3d-prints-calculator',
+        'ghcr.io/makreeltje/budget-tracker',
       ],
       enabled: false,
     },
