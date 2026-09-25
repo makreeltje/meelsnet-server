@@ -3,8 +3,31 @@ http:
     middlewares-vgz-whitelist:
       ipAllowList:
         sourceRange:
+          # Personal
           - "2a02:a442:15a5::/64"
           - "77.161.9.198/32"
+
+          # Azure Firewall Frankfurt
+          - "4.182.83.94/32"
+          - "4.182.82.65/32"
+          - "4.182.83.147/32"
+          - "4.182.82.110/32"
+          - "4.182.130.59/32"
+
+          # VGZ Firewall
+          - "195.42.134.9/32"
+          - "195.42.134.4/32"
+
+          # VOW Proxy
+          - "13.80.156.237/32"
+          - "52.142.206.100/32"
+
+          # Azure workplace firewall
+          - "20.82.21.47/32"
+          - "20.82.20.128/32"
+          - "20.76.250.110/32"
+          - "20.82.62.76/32"
+          - "20.82.20.125/32"
         ipStrategy:
           depth: 1
         rejectStatusCode: 404
