@@ -1,0 +1,9 @@
+http:
+  middlewares:
+    middlewares-local-whitelist:
+      ipAllowList:
+        sourceRange:
+          - "127.0.0.1/32"
+          - "192.168.2.0/24"
+          - "10.10.0.0/24"
+        rejectStatusCode: 404
