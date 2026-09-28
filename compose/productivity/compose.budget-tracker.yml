@@ -37,7 +37,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: budget-tracker-demo
-    image: ghcr.io/makreeltje/budget-tracker:v81.9
+    image: ghcr.io/makreeltje/budget-tracker:v82.11
     profiles: [ "productivity", "all" ]
     environment:
       # Its OWN database on the shared PostgreSQL, with its own role. This line is the
