@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: prints-portal-2
-    image: ghcr.io/makreeltje/prints-portal:0.1.0-6
+    image: ghcr.io/makreeltje/prints-portal:0.1.0-8
     profiles: [ "utilities", "all" ]
     volumes:
       - $CLOUD_DIR/rick/files/Documents/Personal/3D prints:/prints:ro
@@ -15,6 +15,11 @@ services:
       LOG_LEVEL: info
       # Optional; leave out for SQLite at /data/prints-portal.db
       # DATABASE_URL: postgres://prints_portal:<password>@<host>:5432/prints_portal
+      INDEX_ON_STARTUP: true
+      WATCH_ENABLED: true
+      WATCH_DEBOUNCE_MS: 2000
+      WATCH_POLLING: false # turn this on only if changes in your Nextcloud folder aren't picked up.
+      WATCH_POLL_INTERVAL_MS: 5000
     healthcheck:
       test: [ "CMD", "node", "-e", "fetch('http://127.0.0.1:8080/healthz').then(r => process.exit(r.ok ? 0 : 1), () => process.exit(1))" ]
       interval: 30s
