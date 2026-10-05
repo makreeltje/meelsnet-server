@@ -1,0 +1,23 @@
+services:
+  prints-portal-2:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
+    container_name: prints-portal-2
+    image: ghcr.io/makreeltje/prints-portal:0.1.0-4
+    profiles: [ "utilities", "all" ]
+    volumes:
+      - $CLOUD_DIR/rick/files/Documents/Personal/3D prints:/prints:ro
+      - $CONF_DIR/prints-portal-2/data:/data
+    ports:
+      - $LXC_IP:8004:8080
+    environment:
+      LOG_LEVEL: info
+      # Optional; leave out for SQLite at /data/prints-portal.db
+      # DATABASE_URL: postgres://prints_portal:<password>@<host>:5432/prints_portal
+    healthcheck:
+      test: [ "CMD", "node", "-e", "fetch('http://127.0.0.1:8080/healthz').then(r => process.exit(r.ok ? 0 : 1), () => process.exit(1))" ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s

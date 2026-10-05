@@ -15,6 +15,7 @@ include:
   - compose/utilities/compose.omni-tools.yml
   - compose/utilities/compose.spoolman.yml
   - compose/utilities/compose.prints-portal.yml
+  - compose/utilities/compose.prints-portal-2.yml
   - compose/utilities/compose.convertx.yml
   - compose/utilities/compose.chromium.yml
   - compose/monitoring/compose.cadvisor.yml
