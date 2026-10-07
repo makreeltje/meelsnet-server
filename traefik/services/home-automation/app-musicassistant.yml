@@ -5,7 +5,7 @@ http:
       entryPoints:
         - websecure
       middlewares:
-        - chain-authentik
+        - chain-no-auth
       service: musicassistant-svc
       tls:
         certResolver: dns-cloudflare
