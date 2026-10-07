@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: prints-portal-2
-    image: ghcr.io/makreeltje/prints-portal:0.1.0-20
+    image: ghcr.io/makreeltje/prints-portal:0.1.0-27
     profiles: [ "utilities", "all" ]
     volumes:
       - $CLOUD_DIR/rick/files/Documents/Personal/3D prints:/prints:ro
@@ -25,11 +25,11 @@ services:
       ADMIN_PASSWORD: $PRINTS_PORTAL_ADMIN_PASSWORD_2
       SPOOLMAN_URL: http://$LXC_PRODUCTIVITY_IP:8001
       TRUSTED_PROXIES: $LXC_INFRA_IP
-      # PUBLIC_URL: 
-      # OIDC_ISSUER:
-      # OIDC_CLIENT_ID: 
-      # OIDC_CLIENT_SECRET: 
-      # OIDC_ADMIN_GROUP:
+      PUBLIC_URL: $PRINTS_PORTAL_2_PUBLIC_URL
+      OIDC_ISSUER: $PRINTS_PORTAL_2_OIDC_ISSUER
+      OIDC_CLIENT_ID: $PRINTS_PORTAL_2_CLIENT_ID
+      OIDC_CLIENT_SECRET: $PRINTS_PORTAL_2_CLIENT_SECRET
+      OIDC_ADMIN_GROUP: $PRINTS_PORTAL_2_ADMIN_GROUP
     healthcheck:
       test: [ "CMD", "node", "-e", "fetch('http://127.0.0.1:8080/healthz').then(r => process.exit(r.ok ? 0 : 1), () => process.exit(1))" ]
       interval: 30s
