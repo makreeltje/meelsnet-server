@@ -163,6 +163,7 @@
       matchPackageNames: [
         'ghcr.io/makreeltje/3d-prints-calculator',
         'ghcr.io/makreeltje/budget-tracker',
+        'ghcr.io/makreeltje/prints-portal',
       ],
       enabled: false,
     },
