@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: prints-portal-2
-    image: ghcr.io/makreeltje/prints-portal:0.1.0-27
+    image: ghcr.io/makreeltje/prints-portal:1.0.0-72
     profiles: [ "utilities", "all" ]
     volumes:
       - $CLOUD_DIR/rick/files/Documents/Personal/3D prints:/prints:ro
