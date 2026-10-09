@@ -39,17 +39,17 @@
       ],
     },
     {
-      description: 'Minor versions require manual review',
+      description: 'Automerge minor updates instantly',
       matchDatasources: [
         'docker',
       ],
       matchUpdateTypes: [
         'minor',
       ],
-      automerge: false,
-      labels: [
-        'minor-update',
-        'needs-review',
+      automerge: true,
+      automergeType: 'pr',
+      schedule: [
+        'at any time',
       ],
     },
     {
