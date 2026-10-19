@@ -1,0 +1,16 @@
+http:
+  routers:
+    paperclip-rtr:
+      rule: 'Host(`paperclip.{{env "DOMAINNAME_2"}}`)'
+      entryPoints:
+        - websecure
+      middlewares:
+        - chain-authentik
+      service: paperclip-svc
+      tls:
+        certResolver: dns-cloudflare
+  services:
+    paperclip-svc:
+      loadBalancer:
+        servers:
+          - url: 'http://{{env "LXC_PAPERCLIP_IP"}}:3100'
