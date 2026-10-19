@@ -12,7 +12,7 @@ services:
     ports:
       - 8082:8080
     healthcheck:
-      test: [ "CMD", "curl", "-fsSo", "/dev/null", "http://localhost:8080/api?mode=version&output=json&apikey=$SABNZBD_API_KEY" ]
+      test: [ "CMD", "curl", "-fsSo", "/dev/null", "http://localhost:8080/api?mode=version&output=json" ]
       interval: 30s
       timeout: 10s
       retries: 3
