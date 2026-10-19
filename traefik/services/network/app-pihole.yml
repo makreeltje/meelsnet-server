@@ -1,16 +1,22 @@
-http:
-  routers:
-    pihole-rtr:
-      rule: 'Host(`pihole.{{env "DOMAINNAME_1"}}`)'
-      entryPoints:
-        - websecure
-      middlewares:
-        - chain-authentik
-      service: pihole-svc
-      tls:
-        certResolver: dns-cloudflare
-  services:
-    pihole-svc:
-      loadBalancer:
-        servers:
-          - url: 'http://{{env "LXC_NETWORK_IP"}}:80/admin'
+# Pi-hole is deliberately offline; a login followed by a 502 is worse than no route.
+# Commented out in place instead of deleted: the GitOps controller extracts traefik/
+# over the live directory, so files deleted from the repo are NOT removed on the LXC
+# and the router would keep being served. Do not "tidy up" by deleting this file.
+# Restore by uncommenting once Pi-hole is back.
+#
+# http:
+#   routers:
+#     pihole-rtr:
+#       rule: 'Host(`pihole.{{env "DOMAINNAME_1"}}`)'
+#       entryPoints:
+#         - websecure
+#       middlewares:
+#         - chain-authentik
+#       service: pihole-svc
+#       tls:
+#         certResolver: dns-cloudflare
+#   services:
+#     pihole-svc:
+#       loadBalancer:
+#         servers:
+#           - url: 'http://{{env "LXC_NETWORK_IP"}}:80/admin'
