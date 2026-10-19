@@ -1,0 +1,36 @@
+groups:
+  - name: baseline
+    interval: 1m
+    rules:
+      - alert: TargetDown
+        expr: up == 0
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Target down: {{ $labels.job }} {{ $labels.instance }}"
+          description: "{{ $labels.job }} op {{ $labels.instance }} wordt al 10 minuten niet gescraped."
+
+      - alert: HostDiskSpaceLow
+        expr: |
+          node_filesystem_avail_bytes{fstype!~"tmpfs|overlay|squashfs|ramfs"}
+          / node_filesystem_size_bytes{fstype!~"tmpfs|overlay|squashfs|ramfs"} < 0.10
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Schijf bijna vol: {{ $labels.instance }} {{ $labels.mountpoint }}"
+          description: "Minder dan 10% vrij op {{ $labels.mountpoint }} ({{ $labels.instance }})."
+
+      # Imports that Sonarr cannot finish (download_status warning/failed).
+      # At the time of writing 124 items sit in importPending/warning, so this
+      # fires about 6h after deploy; that is a real backlog, not a bad rule.
+      - alert: SonarrQueueStuck
+        expr: |
+          sum by (instance) (sonarr_queue_total{download_status=~"warning|failed"}) > 0
+        for: 6h
+        labels:
+          severity: warning
+        annotations:
+          summary: "Sonarr queue loopt vast"
+          description: "{{ $value }} items in de Sonarr-queue hebben al 6 uur status warning of failed."

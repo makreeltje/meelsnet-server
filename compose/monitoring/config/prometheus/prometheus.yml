@@ -6,6 +6,11 @@ global:
   external_labels:
     monitor: 'codelab-monitor'
 
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: ['10.10.0.60:9093']
+
 # A scrape configuration containing exactly one endpoint to scrape:
 # Here it's Prometheus itself.
 rule_files:
@@ -45,9 +50,6 @@ scrape_configs:
       - targets: ['10.10.0.60:8888']
         labels:
           lxc: 'monitoring'
-      - targets: ['10.10.0.70:8888']
-        labels:
-          lxc: 'juice-shop'
 
   - job_name: 'smartctl'
     static_configs:
