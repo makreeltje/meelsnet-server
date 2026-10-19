@@ -26,10 +26,8 @@ services:
       - --api.dashboard=true
       - --entrypoints.websecure.forwardedHeaders.trustedIPs=$CLOUDFLARE_IPS,$LOCAL_IPS
       - --log=true
-      - --log.filePath=/logs/traefik.log
       - --log.level=DEBUG # DEBUG, INFO, WARN, ERROR, FATAL, PANIC
       - --accessLog=true
-      - --accessLog.filePath=/logs/access.log
       - --accessLog.bufferingSize=100
       - --accessLog.filters.statusCodes=204-299,300-399,400-499,500-599
       - --metrics.prometheus=true
@@ -77,7 +75,6 @@ services:
       - $CONF_DIR/traefik3/rules/$HOSTNAME:/rules
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - $CONF_DIR/traefik3/acme/acme.json:/acme.json
-      - $DOCKER_DIR/logs/$HOSTNAME/traefik:/logs
     ports:
       - target: 80
         published: 80
