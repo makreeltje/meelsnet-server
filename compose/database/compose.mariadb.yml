@@ -11,6 +11,7 @@ services:
       MARIADB_DATABASE: $MARIADB_DBNAME
       MARIADB_USER: $MARIADB_DBUSER
       MARIADB_PASSWORD: $MARIADB_DBPASS
+      MARIADB_AUTO_UPGRADE: 1
     volumes:
       - $CONF_DIR/mariadb/data:/var/lib/mysql
       - $CONF_DIR/mariadb/conf.d:/etc/mysql/conf.d:ro
