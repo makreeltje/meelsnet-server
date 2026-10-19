@@ -9,6 +9,16 @@ http:
       service: paperclip-svc
       tls:
         certResolver: dns-cloudflare
+    paperclip-api-rtr:
+      rule: 'Host(`paperclip.{{env "DOMAINNAME_2"}}`) && (PathPrefix(`/api`) || PathPrefix(`/mcp`))'
+      priority: 100
+      entryPoints:
+        - websecure
+      middlewares:
+        - chain-no-auth
+      service: paperclip-svc
+      tls:
+        certResolver: dns-cloudflare
   services:
     paperclip-svc:
       loadBalancer:
