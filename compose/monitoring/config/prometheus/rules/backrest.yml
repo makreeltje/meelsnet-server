@@ -1,0 +1,44 @@
+groups:
+  - name: backrest
+    interval: 5m
+    rules:
+      - alert: BackrestBackupNotRunning
+        expr: |
+          increase(backrest_tasks_run_total{task_type="backup", status="success"}[36h]) < 1
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Backrest backup niet gedraaid: {{ $labels.plan_id }}"
+          description: "Plan {{ $labels.plan_id }} heeft al meer dan 36 uur geen succesvolle backup gehad."
+
+      - alert: BackrestBackupNotRunningCritical
+        expr: |
+          increase(backrest_tasks_run_total{task_type="backup", status="success"}[72h]) < 1
+        for: 10m
+        labels:
+          severity: critical
+        annotations:
+          summary: "KRITIEK: Backrest backup niet gedraaid: {{ $labels.plan_id }}"
+          description: "Plan {{ $labels.plan_id }} heeft al meer dan 72 uur geen succesvolle backup gehad."
+
+      - alert: BackrestFileWarnings
+        expr: backrest_backup_file_warnings > 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Backrest file warnings: {{ $labels.plan_id }}"
+          description: "Plan {{ $labels.plan_id }} heeft {{ $value }} file warnings bij de laatste backup."
+
+      - alert: BackrestBackupDurationAnomaly
+        expr: |
+          backrest_tasks_duration_secs{task_type="backup"} > 2 *
+          avg_over_time(backrest_tasks_duration_secs{task_type="backup"}[7d])
+          and backrest_tasks_duration_secs{task_type="backup"} > 120
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Backrest backup duurt ongewoon lang: {{ $labels.plan_id }}"
+          description: "Plan {{ $labels.plan_id }} duurde {{ $value | humanizeDuration }}, meer dan 2x het 7-daags gemiddelde."

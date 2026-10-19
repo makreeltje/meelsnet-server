@@ -1,0 +1,82 @@
+global:
+  scrape_interval:     15s # By default, scrape targets every 15 seconds.
+
+  # Attach these labels to any time series or alerts when communicating with
+  # external systems (federation, remote storage, Alertmanager).
+  external_labels:
+    monitor: 'codelab-monitor'
+
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it's Prometheus itself.
+rule_files:
+  - /etc/prometheus/rules/*.yml
+
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: 'prometheus'
+
+    # Override the global default and scrape targets from this job every 5 seconds.
+    scrape_interval: 5s
+
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['10.10.0.60:9100']
+
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['10.10.0.10:8888']
+        labels:
+          lxc: 'infra'
+      - targets: ['10.10.0.20:8888']
+        labels:
+          lxc: 'media'
+      - targets: ['10.10.0.30:8888']
+        labels:
+          lxc: 'home'
+      - targets: ['10.10.0.40:8888']
+        labels:
+          lxc: 'productivity'
+      - targets: ['10.10.0.50:8888']
+        labels:
+          lxc: 'network'
+      - targets: ['10.10.0.60:8888']
+        labels:
+          lxc: 'monitoring'
+      - targets: ['10.10.0.70:8888']
+        labels:
+          lxc: 'juice-shop'
+
+  - job_name: 'smartctl'
+    static_configs:
+      - targets: ['10.10.0.1:9633']
+
+  - job_name: 'mosquitto'
+    static_configs:
+      - targets: ['10.10.0.60:9234']
+
+  - job_name: 'sonarr'
+    static_configs:
+      - targets: ['10.10.0.60:9707']
+
+  - job_name: 'radarr'
+    static_configs:
+      - targets: ['10.10.0.60:9708']
+
+  - job_name: 'prowlarr'
+    static_configs:
+      - targets: ['10.10.0.60:9710']
+
+  - job_name: 'sabnzbd'
+    static_configs:
+      - targets: ['10.10.0.60:9711']
+
+  - job_name: 'alertmanager'
+    static_configs:
+      - targets: ['10.10.0.60:9093']
+
+  - job_name: 'backrest'
+    static_configs:
+      - targets: ['10.10.0.40:9898']

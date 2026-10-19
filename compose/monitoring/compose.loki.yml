@@ -10,7 +10,7 @@ services:
     command:
       - -config.file=/mnt/config/loki-config.yaml
     volumes:
-      - $CONF_DIR/loki/config:/mnt/config
+      - ./config/loki:/mnt/config:ro
       - $CONF_DIR/loki/data:/loki
     ports:
       - $LXC_IP:3100:3100

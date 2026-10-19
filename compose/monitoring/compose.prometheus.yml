@@ -16,7 +16,8 @@ services:
       - --web.enable-lifecycle
     volumes:
       - $CONF_DIR/prometheus:/prometheus
-      - $CONF_DIR/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./config/prometheus/rules:/etc/prometheus/rules:ro
     ports:
       - $LXC_IP:9090:9090
     healthcheck:
