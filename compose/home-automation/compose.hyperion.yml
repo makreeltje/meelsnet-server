@@ -4,10 +4,10 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: hyperion
-    image: amd989/hyperion.ng:main@sha256:b5d7d14b8a0dbc41cb57bc782c77b43243b71a449505c957b713d28d309cf69b
+    image: foorschtbar/hyperion:latest@sha256:091a0fc4b11e310535ded1e9b799dae0f316568dafdfa29116767240149ac716
     profiles: [ "home", "all" ]
     volumes:
-      - $CONF_DIR/hyperion/config:/config
+      - $CONF_DIR/hyperion/config:/root/.hyperion
     ports:
       - "19400:19400"
       - "19444:19444"
