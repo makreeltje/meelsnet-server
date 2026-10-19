@@ -13,7 +13,7 @@ services:
     ports:
       - 9696:9696
     healthcheck:
-      test: [ "CMD", "curl", "-fsSo", "/dev/null", "http://localhost:9696/api/v1/system/status?apikey=$PROWLARR_API_KEY" ]
+      test: [ "CMD", "curl", "-fsSo", "/dev/null", "http://localhost:9696/ping" ]
       interval: 30s
       timeout: 10s
       retries: 3
