@@ -69,7 +69,7 @@ services:
       - LXC_PRODUCTIVITY_IP
       - LXC_NETWORK_IP
       - LXC_MONITORING_IP
-      - LXC_JUICE_SHOP_IP
+      - LXC_PAPERCLIP_IP
       - PROXMOX_IP
       - LAN_SUBNET
       - HOME_SUBNET
