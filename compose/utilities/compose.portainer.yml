@@ -9,4 +9,4 @@ services:
     volumes:
       - $CONF_DIR/portainer/data:/data
     ports:
-      - 9000:9000
+      - $LXC_IP:9000:9000
