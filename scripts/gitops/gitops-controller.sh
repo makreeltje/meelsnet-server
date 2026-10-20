@@ -21,6 +21,10 @@ STATE_DIR="${STATE_DIR:-/opt/gitops/state}"
 LOG_DIR="${LOG_DIR:-/var/log/gitops}"
 DOCKER_BASE="${DOCKER_BASE:-/root/docker}"
 
+# Seconds `docker compose up --wait` blocks per LXC for containers to become
+# running/healthy before the deploy counts as failed.
+HEALTH_TIMEOUT="${HEALTH_TIMEOUT:-300}"
+
 # Host-managed paths: repo content deployed directly onto the Proxmox host
 # itself (not into any LXC) — the controller/webhook install and the backup
 # scripts. See sync_host_managed_paths() below.
@@ -501,9 +505,10 @@ deploy_to_lxc() {
     export HOME=/root
     cd $DOCKER_BASE
     set -a; source .env 2>/dev/null || true; set +a
-    docker compose --profile all up -d --remove-orphans 2>&1
+    docker compose --profile all up -d --wait --wait-timeout $HEALTH_TIMEOUT --remove-orphans 2>&1
   "; then
-    log_error "LXC $lxc_id ($lxc_name): failed to update services"
+    log_error "LXC $lxc_id ($lxc_name): failed to update services or containers not healthy within ${HEALTH_TIMEOUT}s"
+    pct exec "$lxc_id" -- bash -c "cd $DOCKER_BASE && docker compose --profile all ps --format '{{.Name}}: {{.State}} {{.Health}}' | grep -vE ': running (healthy)?\$'" 2>&1 | while read -r l; do log_error "LXC $lxc_id ($lxc_name):   $l"; done || true
     record_lxc_deploy "$lxc_id" "FAILED" "$sha"
     return 1
   fi
