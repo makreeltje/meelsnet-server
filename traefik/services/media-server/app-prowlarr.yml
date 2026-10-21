@@ -11,18 +11,6 @@ http:
       tls:
         certResolver: dns-cloudflare
 
-    # --- ROUTER 2: Bypass Auth for Helmarr/Quartermaster ---
-    prowlarr-api-rtr:
-      rule: 'Host(`prowlarr.{{env "DOMAINNAME_1"}}`) && Header(`X-Homelab-Bypass`, `{{env "BYPASS_SECRET"}}`)'
-      priority: 9999
-      entryPoints:
-        - websecure
-      middlewares:
-        - chain-no-auth
-      service: prowlarr-svc
-      tls:
-        certResolver: dns-cloudflare
-
   services:
     prowlarr-svc:
       loadBalancer:

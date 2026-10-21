@@ -11,18 +11,6 @@ http:
       tls:
         certResolver: dns-cloudflare
 
-    # --- ROUTER 2: Bypass Auth for Helmarr/Quartermaster ---
-    bazarr-api-rtr:
-      rule: 'Host(`subtitles.{{env "DOMAINNAME_2"}}`) && Header(`X-Homelab-Bypass`, `{{env "BYPASS_SECRET"}}`)'
-      priority: 9999
-      entryPoints:
-        - websecure
-      middlewares:
-        - chain-no-auth
-      service: bazarr-svc
-      tls:
-        certResolver: dns-cloudflare
-
   services:
     bazarr-svc:
       loadBalancer:
