@@ -11,18 +11,6 @@ http:
       tls:
         certResolver: dns-cloudflare
 
-    # --- ROUTER 2: Bypass Auth via Header ---
-    portainer-api-rtr:
-      rule: 'Host(`portainer.{{env "DOMAINNAME_1"}}`) && Header(`X-Homelab-Bypass`, `{{env "BYPASS_SECRET"}}`)'
-      priority: 9999
-      entryPoints:
-        - websecure
-      middlewares:
-        - chain-no-auth
-      service: portainer-svc
-      tls:
-        certResolver: dns-cloudflare
-
   services:
     portainer-svc:
       loadBalancer:
