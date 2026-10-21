@@ -1,0 +1,17 @@
+http:
+  routers:
+    nextcloud-rtr:
+      # TEMPORARY: dual-domain during migration to DOMAINNAME_2, revert to single Host() once cutover is done
+      rule: 'Host(`cloud.{{env "DOMAINNAME_1"}}`) || Host(`cloud.{{env "DOMAINNAME_2"}}`)'
+      entryPoints:
+        - websecure
+      middlewares:
+        - chain-nextcloud
+      service: nextcloud-svc
+      tls:
+        certResolver: dns-cloudflare
+  services:
+    nextcloud-svc:
+      loadBalancer:
+        servers:
+          - url: 'http://{{env "LXC_PRODUCTIVITY_IP"}}:8081'
