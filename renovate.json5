@@ -111,6 +111,20 @@
       ],
     },
     {
+      description: 'Group Arr stack minor and patch updates into one PR (majors stay separate for review)',
+      matchDatasources: [
+        'docker',
+      ],
+      matchUpdateTypes: [
+        'minor',
+        'patch',
+      ],
+      matchPackageNames: [
+        '/^(lscr\\.io\\/)?linuxserver\\/(sonarr|radarr|prowlarr|bazarr)$/',
+      ],
+      groupName: 'Arr Stack',
+    },
+    {
       description: 'Add Bazarr release references',
       matchDatasources: ['docker'],
       matchPackageNames: ['lscr.io/linuxserver/bazarr'],
