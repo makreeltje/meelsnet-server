@@ -2,19 +2,12 @@ services:
   hyperion:
     extends:
       file: ../fragments/common-service.yml
-      service: common
+      service: common-host
     container_name: hyperion
     image: foorschtbar/hyperion:latest@sha256:091a0fc4b11e310535ded1e9b799dae0f316568dafdfa29116767240149ac716
     profiles: [ "home", "all" ]
     volumes:
       - $CONF_DIR/hyperion/config:/root/.hyperion
-    ports:
-      - "19400:19400"
-      - "19444:19444"
-      - "19445:19445"
-      - "2100:2100"
-      - "8090:8090"
-      - "8092:8092"
     healthcheck:
       test: [ "CMD", "wget", "-qO-", "http://localhost:8090/" ]
       interval: 30s
