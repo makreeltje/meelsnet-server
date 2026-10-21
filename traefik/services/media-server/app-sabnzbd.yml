@@ -11,18 +11,6 @@ http:
       tls:
         certResolver: dns-cloudflare
 
-    # --- ROUTER 2: Bypass Auth for Helmarr/Quartermaster ---
-    sabnzbd-api-rtr:
-      rule: 'Host(`sab.{{env "DOMAINNAME_1"}}`) && Header(`X-Homelab-Bypass`, `{{env "BYPASS_SECRET"}}`)'
-      priority: 100
-      entryPoints:
-        - websecure
-      middlewares:
-        - chain-no-auth
-      service: sabnzbd-svc
-      tls:
-        certResolver: dns-cloudflare
-
   services:
     sabnzbd-svc:
       loadBalancer:

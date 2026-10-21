@@ -11,19 +11,6 @@ http:
       tls:
         certResolver: dns-cloudflare
 
-    # --- ROUTER 2: Bypass Auth for Helmarr/Quartermaster ---
-    radarr-api-rtr:
-      # Injecting the BYPASS_SECRET environment variable directly into the Header check
-      rule: '(Host(`radarr.{{env "DOMAINNAME_1"}}`) || Host(`movies.{{env "DOMAINNAME_1"}}`)) && Header(`X-Homelab-Bypass`, `{{env "BYPASS_SECRET"}}`)'
-      priority: 100 
-      entryPoints:
-        - websecure
-      middlewares:
-        - chain-no-auth 
-      service: radarr-svc
-      tls:
-        certResolver: dns-cloudflare
-
   services:
     radarr-svc:
       loadBalancer:
