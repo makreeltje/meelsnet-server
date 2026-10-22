@@ -94,4 +94,4 @@ services:
       - "traefik.http.routers.traefik-rtr.entrypoints=websecure"
       - "traefik.http.routers.traefik-rtr.rule=Host(`traefik.$DOMAINNAME_1`)"
       - "traefik.http.routers.traefik-rtr.service=api@internal"
-      - "traefik.http.routers.traefik-rtr.middlewares=chain-authentik@file"
+      - "traefik.http.routers.traefik-rtr.middlewares=chain-authentik-local@file"
