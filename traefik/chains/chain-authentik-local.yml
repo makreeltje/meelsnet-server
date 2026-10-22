@@ -1,0 +1,9 @@
+http:
+  middlewares:
+    chain-authentik-local:
+      chain:
+        middlewares:
+          - middlewares-local-only
+          - middlewares-rate-limit
+          - middlewares-secure-headers
+          - middlewares-authentik
