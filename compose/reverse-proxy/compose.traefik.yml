@@ -60,7 +60,6 @@ services:
       - HTPASSWD_FILE=/run/secrets/basic_auth_credentials
       - DOMAINNAME_1
       - DOMAINNAME_2
-      - BYPASS_SECRET
       - LXC_INFRA_IP
       - LXC_MEDIA_IP
       - LXC_HOME_IP
