@@ -7,7 +7,7 @@ services:
     image: adminer:6.1.2-standalone
     profiles: [ "database", "infra", "all" ]
     ports:
-      - 8083:8080
+      - $LXC_IP:8083:8080
     healthcheck:
       test: [ "CMD-SHELL", "nc -z localhost 8080 || exit 1" ]
       interval: 30s
