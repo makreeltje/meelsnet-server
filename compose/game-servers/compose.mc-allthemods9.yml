@@ -26,6 +26,6 @@ services:
       - $CONF_DIR/minecraft/data/allthemods9:/data
     ports:
       - 25965:25565
-      - 25975:25575
+      - 127.0.0.1:25975:25575
     stdin_open: true
     tty: true
