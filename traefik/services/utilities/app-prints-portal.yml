@@ -1,7 +1,7 @@
 http:
   routers:
     prints-portal-2-rtr:
-      rule: 'Host(`printer-2.{{env "DOMAINNAME_2"}}`)'
+      rule: 'Host(`printer-2.{{env "DOMAINNAME_2"}}`) || Host(`printer.{{env "DOMAINNAME_2"}}`)'
       entryPoints:
         - websecure
       middlewares:
