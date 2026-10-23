@@ -9,13 +9,11 @@ services:
     depends_on:
       tracearr-db:
         condition: service_healthy
-      tracearr-redis:
-        condition: service_healthy
     environment:
       LOG_LEVEL: debug
       TRUST_PROXY: true
       DATABASE_URL: postgres://tracearr:$TRACEARR_DBPASS@tracearr-db:5432/tracearr
-      REDIS_URL: redis://tracearr-redis:6379
+      REDIS_URL: redis://$LXC_INFRA_IP:6379/7
       JWT_SECRET: $TRACEARR_JWT_SECRET
       COOKIE_SECRET: $TRACEARR_COOKIE_SECRET
     volumes:
@@ -34,7 +32,7 @@ services:
       retries: 3
 
   # Tracearr needs TimescaleDB (hypertables); the shared infra PostgreSQL
-  # (vectorchord image) does not ship it, so this is a dedicated instance.
+  # (Immich vectorchord image) does not ship it, so this is a dedicated instance.
   tracearr-db:
     extends:
       file: ../fragments/common-service.yml
@@ -72,26 +70,4 @@ services:
       interval: 10s
       timeout: 5s
       start_period: 30s
-      retries: 5
-
-  # BullMQ job queue; dedicated so the shared infra Redis (no auth, other
-  # apps' eviction settings) is not a dependency. noeviction is required by BullMQ.
-  tracearr-redis:
-    extends:
-      file: ../fragments/common-service.yml
-      service: common
-    container_name: tracearr-redis
-    image: redis:8.10-alpine
-    profiles: [ "media", "all" ]
-    command: [ "redis-server", "--appendonly", "yes", "--maxmemory", "96mb", "--maxmemory-policy", "noeviction" ]
-    volumes:
-      - $CONF_DIR/tracearr/redis-data:/data
-    deploy:
-      resources:
-        limits:
-          memory: 128M
-    healthcheck:
-      test: [ "CMD-SHELL", "redis-cli ping | grep PONG" ]
-      interval: 10s
-      timeout: 3s
       retries: 5
