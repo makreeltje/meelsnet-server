@@ -8,7 +8,7 @@ services:
     profiles: [ "monitoring", "all" ]
     user: $PUID:$PGID
     environment:
-      ALLOY_HOST_LABEL: $HOSTNAME
+      ALLOY_HOST_LABEL: ${ALLOY_HOST_LABEL:-$HOSTNAME}
     volumes:
       - $CONF_DIR/alloy/config:/etc/alloy
       - $CONF_DIR/alloy/data:/var/lib/alloy/data
