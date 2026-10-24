@@ -6,7 +6,7 @@ http:
       entryPoints:
         - websecure
       middlewares:
-        - chain-authentik
+        - chain-authentik-local
       service: radarr-svc
       tls:
         certResolver: dns-cloudflare
