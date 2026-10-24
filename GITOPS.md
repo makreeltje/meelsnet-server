@@ -4,7 +4,7 @@ Webhook-based deployment controller die luistert naar GitHub push events en auto
 
 ## Waarom?
 
-De oude GitHub Actions workflow (`deploy.yml`) is **push-based**: GitHub heeft via Tailscale OAuth + SSH directe toegang tot de Proxmox server. Als iemand toegang krijgt tot de GitHub repo, heeft diegene ook toegang tot de server.
+De oorspronkelijke opzet (een GitHub Actions deploy-workflow) was **push-based**: GitHub had via Tailscale OAuth + SSH directe toegang tot de Proxmox server. Die workflow is vervangen: `.github/workflows/deploy.yml` (workflow *Validate*) valideert nu alleen nog (yamllint, shellcheck, `docker compose config`) en deployt niets. Als iemand toegang krijgt tot de GitHub repo, heeft diegene ook toegang tot de server.
 
 De GitOps controller draait **op Proxmox zelf** en ontvangt alleen een webhook notificatie. GitHub heeft geen SSH, geen Tailscale, en geen credentials. Het enige dat GitHub kent is een webhook URL met een gedeeld HMAC secret.
 
@@ -28,11 +28,11 @@ De GitOps controller draait **op Proxmox zelf** en ontvangt alleen een webhook n
 ## Hoe werkt het?
 
 1. PR wordt gemerged naar `main` (handmatig of via Renovate auto-merge)
-2. GitHub stuurt een push webhook naar de Proxmox webhook listener
+2. GitHub stuurt een push webhook naar de Proxmox webhook listener. Als vangnet voor gemiste webhooks draait `gitops-sync.timer` elke 15 minuten `gitops-controller.sh sync`
 3. Listener verifieert de HMAC-SHA256 signature en accepteert het event
 4. Controller doet `git fetch` + `git diff` om gewijzigde files te bepalen
-5. Mapt gewijzigde files naar de juiste LXC container(s) of host-managed pad
-6. Deployt alleen wat geraakt is: LXC's via `pct push` + `docker compose up -d`, host-managed scripts via een lokale bestandskopie (zie "Host-managed paden" hieronder)
+5. Mapt gewijzigde files naar de juiste LXC container(s), de Traefik-regels of een host-managed pad
+6. Deployt alleen wat geraakt is: LXC's via `pct push` + `docker compose up -d`, Traefik-regels via een sync naar LXC 101, host-managed scripts via een lokale bestandskopie (zie hieronder)
 
 ### Path → LXC mapping
 
@@ -48,9 +48,16 @@ De mapping wordt **dynamisch afgeleid** uit de `include:` regels in elke `lxc/<n
 | `compose/monitoring/*` | 106 | monitoring |
 | `compose/utilities/*` | meerdere — welke LXC's precies hangt af van welke `lxc/*/compose.yml` een file uit deze directory include't (op dit moment: infra, media, home, productivity, network en monitoring, elk voor een andere subset van tools) | — |
 | `lxc/<name>/*` | bijbehorende LXC | |
+| `traefik/**` | geen LXC-deploy; synct naar infra (101), zie "Traefik-regels" | |
 | `compose/fragments/*` | **ALLE** | shared dependency |
 
 Er is geen aparte "utilities" LXC (meer) — die is opgegaan in productivity (CT 104). De losse tools in `compose/utilities/` (Portainer, IT-Tools, Spoolman, etc.) draaien nu verspreid over de LXC's die ze nodig hebben; zie `LXC_ENTRIES` in `gitops-controller.sh` voor de huidige lijst van LXC's.
+
+### Traefik-regels
+
+`traefik/**` wordt als tar via `pct push` naar LXC 101 gestuurd en **in de bestaande map uitgepakt** (`/root/docker/appdata/traefik3/rules/meelsnet`). Dat gebeurt bewust in place: een map-swap verandert de inode en dan stopt Traefik's file watcher met herladen. Traefik herlaadt dus zelf; een restart is niet nodig. De sync breekt af als `traefik/tls-opts.yml` ontbreekt. Forceren: `gitops-controller.sh deploy traefik`.
+
+**Let op: een uit de repo verwijderd bestand verdwijnt niet van de LXC.** Een route die je uitzet, comment je daarom uit *in het bestand zelf* (zoals `traefik/services/network/app-pihole.yml`) in plaats van het bestand te verwijderen. Een bestand echt weghalen kan alleen handmatig op LXC 101 plus een Traefik-restart.
 
 ### Host-managed paden (niet LXC-specifiek)
 
@@ -139,6 +146,7 @@ TZ=Europe/Amsterdam
 PUID=1000
 PGID=1000
 DOMAINNAME_1=jouwdomein.nl
+DOMAINNAME_2=jouwtweededomein.net
 HOSTNAME=infra
 PSQL_DBPASS=<wachtwoord>
 AUTHENTIK_DBNAME=authentik
@@ -156,7 +164,8 @@ Herhaal voor elke LXC met de juiste variabelen (zie `.env.example` voor de volle
 
 Docker secrets (`~/docker/secrets/`) moeten ook eenmalig op de juiste LXC staan:
 - **LXC 101**: `cf_dns_api_token`, `basic_auth_credentials`
-- **LXC 102**: `plex_claim_token`
+
+Overige tokens (zoals `PLEX_CLAIM_TOKEN`) staan als variabele in de `.env`. Voeg ook `DOMAINNAME_2` toe: een deel van de apps hangt onder het tweede domein (zie [docs/SERVICES.md](docs/SERVICES.md)).
 
 ### 6. Eerste sync en starten
 
@@ -231,6 +240,8 @@ scripts/gitops/
 ├── gitops-controller.sh      # Deploy logica (draait op Proxmox)
 ├── gitops-webhook.py          # Webhook listener (Python, geen dependencies)
 ├── gitops-webhook.service     # systemd service voor webhook listener
+├── gitops-sync.service        # oneshot: gitops-controller.sh sync
+├── gitops-sync.timer          # elke 15 min, vangnet voor gemiste webhooks
 ├── config.env.example         # Configuratie template
 └── setup.sh                   # Installatie script voor Proxmox
 ```

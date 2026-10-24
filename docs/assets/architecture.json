@@ -57,7 +57,7 @@
         "Bazarr",
         "Tautulli"
       ],
-      "footer": "+ 9 more"
+      "footer": "+ 12 more"
     },
     {
       "title": "LXC 103 · home",
@@ -84,23 +84,23 @@
       "services": [
         "Immich",
         "Paperless",
-        "Nextcloud",
         "Backrest",
-        "Firefly III",
-        "N8n",
+        "n8n",
+        "Budget tracker",
+        "Spoolman",
         "IT-Tools",
-        "Spoolman"
+        "ConvertX"
       ],
-      "footer": "+ 4 more"
+      "footer": "+ 5 more"
     },
     {
       "title": "LXC 105 · network",
       "ip": "10.10.0.50",
       "specs": "1 vCPU · 2 GB RAM",
-      "subtitle": "DNS en netwerkbeheer",
+      "subtitle": "Netwerkbeheer (UniFi)",
       "accent": "blue",
       "services": [
-        "UniFi Network Application"
+        "UniFi OS Server"
       ]
     },
     {
@@ -112,14 +112,14 @@
       "services": [
         "Prometheus",
         "Grafana",
+        "Loki",
         "Alertmanager",
-        "cAdvisor",
         "Node Exporter",
-        "Sonarr Exporter",
-        "Radarr Exporter",
-        "Mosquitto Exporter"
+        "Exportarr (4×)",
+        "Mosquitto Exporter",
+        "cAdvisor"
       ],
-      "footer": "+ 2 more"
+      "footer": "+ Alloy, Portainer Agent"
     }
   ],
   "legend": [

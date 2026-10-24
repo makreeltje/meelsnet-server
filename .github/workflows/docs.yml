@@ -1,0 +1,28 @@
+name: Docs
+
+on:
+  pull_request:
+    paths:
+      - 'compose/**'
+      - 'lxc/**'
+      - 'traefik/**'
+      - 'docs/SERVICES.md'
+      - 'scripts/check-docs.py'
+  push:
+    branches: [main]
+    paths:
+      - 'compose/**'
+      - 'lxc/**'
+      - 'traefik/**'
+      - 'docs/SERVICES.md'
+      - 'scripts/check-docs.py'
+
+jobs:
+  services-doc:
+    name: SERVICES.md matches config
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Check docs/SERVICES.md against lxc/ compose and traefik/ routes
+        run: python3 scripts/check-docs.py
