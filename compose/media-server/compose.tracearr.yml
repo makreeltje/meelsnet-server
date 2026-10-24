@@ -33,12 +33,15 @@ services:
 
   # Tracearr needs TimescaleDB (hypertables); the shared infra PostgreSQL
   # (Immich vectorchord image) does not ship it, so this is a dedicated instance.
+  # TEMPORARY tag ts2.28.3: the dump from the old bundled DB is TimescaleDB 2.28.3 and
+  # can only be restored into the same version. After the restore, run
+  # ALTER EXTENSION timescaledb UPDATE and move this tag back to pg18.4-ts2.29.1.
   tracearr-db:
     extends:
       file: ../fragments/common-service.yml
       service: common
     container_name: tracearr-db
-    image: timescale/timescaledb-ha:pg18.4-ts2.29.1
+    image: timescale/timescaledb-ha:pg18.4-ts2.28.3
     profiles: [ "media", "all" ]
     environment:
       POSTGRES_USER: tracearr
