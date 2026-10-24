@@ -6,6 +6,9 @@ services:
     container_name: radarr
     image: linuxserver/radarr:6.4.4
     profiles: [ "media", "all" ]
+    environment:
+      PUID: 1000
+      PGID: 1000
     volumes:
       - $CONF_DIR/radarr/config:/config
       - $MEDIA_DIR:/media
@@ -27,6 +30,9 @@ services:
     container_name: radarr-4k
     image: linuxserver/radarr:6.4.4
     profiles: [ "media", "all" ]
+    environment:
+      PUID: 1000
+      PGID: 1000
     volumes:
       - $CONF_DIR/radarr-4k/config:/config
       - $MEDIA_DIR:/media
