@@ -2,7 +2,7 @@ http:
   routers:
     # --- ROUTER 1: Secure the Web UI (Default) ---
     sonarr-anime-rtr:
-      rule: 'Host(`anime.{{env "DOMAINNAME_1"}}`)'
+      rule: 'Host(`anime.{{env "DOMAINNAME_2"}}`)'
       entryPoints:
         - websecure
       middlewares:
