@@ -182,14 +182,14 @@
       enabled: false,
     },
     {
-      description: 'Extract semantic version from Tracearr supervised tags',
-      matchDatasources: [
-        'docker',
-      ],
-      matchPackageNames: [
-        'ghcr.io/connorgallopo/tracearr',
-      ],
-      versionCompatibility: '^(?<compatibility>supervised)-(?<version>.*)$',
+      description: 'Tracearr app runs DB migrations on start: never automerge',
+      matchPackageNames: ['ghcr.io/connorgallopo/tracearr'],
+      automerge: false,
+    },
+    {
+      description: 'Tracearr TimescaleDB: major PG / extension bumps need a manual dump-restore or ALTER EXTENSION UPDATE',
+      matchPackageNames: ['timescale/timescaledb-ha'],
+      enabled: false,
     },
     {
       description: 'Extract semantic version from Firefly tags',
