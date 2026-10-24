@@ -55,7 +55,15 @@ services:
       - -c
       - effective_cache_size=512MB
       - -c
-      - max_connections=150
+      - max_connections=50
+      - -c
+      - work_mem=8MB
+      - -c
+      - maintenance_work_mem=128MB
+      - -c
+      - max_worker_processes=12
+      - -c
+      - timescaledb.max_background_workers=4
       - -c
       - max_locks_per_transaction=4096
       - -c
@@ -68,7 +76,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 1G
+          memory: 2G
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U tracearr -d tracearr" ]
       interval: 10s
