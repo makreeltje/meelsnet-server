@@ -31,8 +31,8 @@ services:
       # DNS: service net + LXC LAN address (vmbr0), never 0.0.0.0 / the systemd-resolved stub
       - $LXC_IP:53:53/tcp
       - $LXC_IP:53:53/udp
-      - ${LXC_LAN_IP:?LXC_LAN_IP must be set}:53:53/tcp
-      - ${LXC_LAN_IP:?LXC_LAN_IP must be set}:53:53/udp
+      - $LXC_LAN_IP:53:53/tcp
+      - $LXC_LAN_IP:53:53/udp
     healthcheck:
       test: [ "CMD", "curl", "-fsSo", "/dev/null", "http://localhost:80/admin/" ]
       interval: 30s
