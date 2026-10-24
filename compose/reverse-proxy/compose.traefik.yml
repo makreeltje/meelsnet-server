@@ -29,7 +29,7 @@ services:
       - --log.level=DEBUG # DEBUG, INFO, WARN, ERROR, FATAL, PANIC
       - --accessLog=true
       - --accessLog.bufferingSize=100
-      - --accessLog.filters.statusCodes=204-299,300-399,400-499,500-599
+      - --accessLog.filters.statusCodes=400-499,500-599
       - --metrics.prometheus=true
       - --metrics.prometheus.buckets=0.1,0.3,1.2,5.0
       - --providers.docker=true
