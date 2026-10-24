@@ -117,9 +117,9 @@ Foto's, documenten, automatisering, back-up en losse tools. Entrypoint: `lxc/pro
 | `budget-tracker-demo` | Demo-instantie | 8091 | `budget-demo.`D2 | local-only |
 | `spoolman` | Filament-beheer | 8001 | `spoolman.`D1 | authentik-local |
 | `prints-portal-2` | Printportaal (eigen image) | 8004 (LXC-IP) | `printer.`D2, `printer-2.`D2 | no-auth |
-| `convertx` | Bestandsconversie | 3000 (LXC-IP) | `convert.`D2 | authentik |
-| `it-tools` | IT-Tools | 8082 | `it-tools.`D2 | authentik |
-| `omni-tools` | Omni-Tools | 8083 | `tools.`D1 | authentik |
+| `convertx` | Bestandsconversie | 3000 (LXC-IP) | `convert.`D2 | authentik-local |
+| `it-tools` | IT-Tools | 8082 | `it-tools.`D2 | authentik-local |
+| `omni-tools` | Omni-Tools | 8083 | `tools.`D1 | authentik-local |
 | `chromium` | Headless Chromium (browserless) | 3001 | geen route | — |
 | `cadvisor`, `alloy`, `portainer-agent` | standaardcontainers | | | |
 
