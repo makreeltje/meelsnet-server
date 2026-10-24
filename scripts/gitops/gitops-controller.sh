@@ -33,6 +33,12 @@ SYSTEMD_DIR="${SYSTEMD_DIR:-/etc/systemd/system}"
 TRAEFIK_LXC_ID="${TRAEFIK_LXC_ID:-101}"
 TRAEFIK_RULES_DEST="${TRAEFIK_RULES_DEST:-/root/docker/appdata/traefik3/rules/meelsnet}"
 
+# Pruning of files that were deleted from the repo (see "Deletion pruning").
+#   on       remove them from the LXCs (default)
+#   dry-run  log what would be removed, remove nothing
+#   off      never remove anything (the old behaviour)
+PRUNE_MODE="${PRUNE_MODE:-on}"
+
 # Load config override if present
 CONFIG_FILE="/etc/gitops/config.env"
 # shellcheck source=/dev/null
@@ -167,6 +173,155 @@ pull_latest() {
 }
 
 # -----------------------------------------------------------------------------
+# Deletion pruning
+# -----------------------------------------------------------------------------
+# The deploys above extract tarballs *over* the live directories, which never
+# removes anything. Files deleted from the repo therefore linger on the LXCs.
+#
+# Safety model (this is destructive, so it is deliberately narrow):
+#   * The list of files to remove comes ONLY from the git diff between the
+#     previous deployed commit and the new one (--diff-filter=D, --no-renames so
+#     the old path of a rename shows up as a delete). The live directory is
+#     never compared with the repo, so appdata, databases, .env, secrets and
+#     any other non-repo file can never be selected.
+#   * Only these repo prefixes are eligible, mapped to their live location:
+#       traefik/**                 -> $TRAEFIK_RULES_DEST on LXC $TRAEFIK_LXC_ID
+#       compose/<dir>/**, lxc/**   -> $DOCKER_BASE on the LXCs that deploy <dir>
+#     Nothing else (e.g. scripts/**) is pruned here.
+#   * Only regular files are removed (rm -f, never -r). Directories stay.
+#   * Fail safe: no previous commit, a previous commit that is not an ancestor
+#     of the new one, a git error, or a path that fails validation means that
+#     nothing (or just that path) is removed. A file that still exists in the
+#     new checkout is never removed.
+#   * Every decision is logged as "Prune: ..." lines in gitops.log (Loki:
+#     {host="srv-mn"} |= "Prune:").
+
+DELETED_FILES=()
+
+# Fills DELETED_FILES with repo-relative paths deleted between two commits.
+# Returns 1 (leaving the array empty) whenever the range can't be trusted.
+compute_deleted_files() {
+  local from_sha="$1" to_sha="$2"
+  DELETED_FILES=()
+
+  if [[ -z "$from_sha" ]]; then
+    log_info "Prune: no previous deployed commit — nothing will be removed"
+    return 1
+  fi
+  if ! git -C "$REPO_DIR" cat-file -e "${from_sha}^{commit}" 2>/dev/null; then
+    log_warn "Prune: previous commit $from_sha not found in clone — nothing will be removed"
+    return 1
+  fi
+  if ! git -C "$REPO_DIR" merge-base --is-ancestor "$from_sha" "$to_sha" 2>/dev/null; then
+    log_warn "Prune: $from_sha is not an ancestor of $to_sha (history rewritten?) — nothing will be removed"
+    return 1
+  fi
+
+  local out
+  if ! out=$(git -C "$REPO_DIR" diff --no-renames --diff-filter=D --name-only -z "$from_sha" "$to_sha" | tr '\0' '\n'); then
+    log_warn "Prune: git diff failed — nothing will be removed"
+    return 1
+  fi
+  [[ -n "$out" ]] && mapfile -t DELETED_FILES <<< "$out"
+  return 0
+}
+
+# A repo-relative path is only acceptable if it is plain: no traversal, no
+# absolute path, and a conservative character set (no quotes, globs, spaces).
+prune_path_is_safe() {
+  local p="$1"
+  [[ "$p" =~ ^[A-Za-z0-9._@+/-]+$ ]] || return 1
+  [[ "$p" == /* || "$p" == ../* || "$p" == */../* || "$p" == */.. || "$p" == *//* ]] && return 1
+  return 0
+}
+
+# Runs inside the LXC. Args: ROOT MODE LISTFILE. LISTFILE holds paths relative
+# to ROOT. Prints one "<STATE> <path>" line per entry; the controller logs them.
+read -r -d '' PRUNE_REMOTE_SCRIPT <<'REMOTE' || true
+root="$1"; mode="$2"; list="$3"
+[[ -d "$root" ]] || { echo "ERROR root-missing $root"; exit 1; }
+root=$(realpath "$root")
+while IFS= read -r rel; do
+  [[ -n "$rel" ]] || continue
+  target="$root/$rel"
+  parent=$(realpath -m "$(dirname "$target")")
+  case "$parent/" in
+    "$root"/*) ;;
+    *) echo "SKIP $rel (resolves outside $root)"; continue ;;
+  esac
+  if [[ -L "$target" ]]; then echo "SKIP $rel (symlink)"; continue; fi
+  if [[ ! -e "$target" ]]; then echo "ABSENT $rel"; continue; fi
+  if [[ ! -f "$target" ]]; then echo "SKIP $rel (not a regular file)"; continue; fi
+  if [[ "$mode" == "on" ]]; then
+    if rm -f -- "$target"; then echo "REMOVED $rel"; else echo "FAILED $rel"; fi
+  else
+    echo "WOULD-REMOVE $rel"
+  fi
+done < "$list"
+REMOTE
+
+# prune_lxc_files LXC_ID ROOT LABEL PREFIX_TO_STRIP FILE...
+# Filters the given repo paths, validates them and removes them on the LXC.
+# Returns non-zero only if the remote call itself failed.
+prune_lxc_files() {
+  local lxc_id="$1" root="$2" label="$3" strip="$4"; shift 4
+  local -a rels=()
+  local f
+
+  [[ "$PRUNE_MODE" == "off" ]] && return 0
+
+  for f in "$@"; do
+    if [[ "$PRUNE_MODE" != "on" && "$PRUNE_MODE" != "dry-run" ]]; then
+      log_warn "Prune: unknown PRUNE_MODE '$PRUNE_MODE' — nothing will be removed"
+      return 0
+    fi
+    if ! prune_path_is_safe "$f"; then
+      log_warn "Prune: $label: skipping $f (unsafe path)"
+      continue
+    fi
+    if [[ -e "$REPO_DIR/$f" || -L "$REPO_DIR/$f" ]]; then
+      log_warn "Prune: $label: skipping $f (still present in the new checkout)"
+      continue
+    fi
+    rels+=("${f#"$strip"}")
+  done
+  [[ ${#rels[@]} -eq 0 ]] && return 0
+
+  local list_local list_remote="/tmp/gitops-prune-list" line rc=0 out
+  list_local=$(mktemp)
+  printf '%s\n' "${rels[@]}" > "$list_local"
+
+  log_info "Prune: $label: ${#rels[@]} candidate(s) deleted from the repo, mode=$PRUNE_MODE"
+  if ! pct push "$lxc_id" "$list_local" "$list_remote"; then
+    log_error "Prune: $label: failed to transfer file list to LXC $lxc_id — nothing removed"
+    rm -f "$list_local"
+    return 1
+  fi
+  rm -f "$list_local"
+
+  out=$(pct exec "$lxc_id" -- bash -c "$PRUNE_REMOTE_SCRIPT" _ "$root" "$PRUNE_MODE" "$list_remote" 2>&1) || rc=$?
+  pct exec "$lxc_id" -- rm -f "$list_remote" >/dev/null 2>&1 || true
+  while IFS= read -r line; do
+    [[ -n "$line" ]] && log_info "Prune: $label: $line"
+  done <<< "$out"
+  if [[ $rc -ne 0 ]]; then
+    log_error "Prune: $label: remote prune on LXC $lxc_id exited with $rc"
+    return 1
+  fi
+  return 0
+}
+
+# Deleted files that fall under any of the given repo path prefixes.
+deleted_files_under() {
+  local f p
+  for f in "${DELETED_FILES[@]}"; do
+    for p in "$@"; do
+      [[ "$f" == "$p"/* ]] && { printf '%s\n' "$f"; break; }
+    done
+  done
+}
+
+# -----------------------------------------------------------------------------
 # Host-managed path deployment
 # -----------------------------------------------------------------------------
 # scripts/backup/** and scripts/gitops/** don't belong to any LXC — they run
@@ -288,8 +443,8 @@ sync_gitops_install() {
 }
 
 # Syncs traefik/ from the repo into the infra LXC at $TRAEFIK_RULES_DEST.
-# Uses an atomic temp-dir swap so Traefik never reads a partial state mid-reload.
-# Handles deletions cleanly (old directory is replaced wholesale).
+# Extracts in place (no directory swap, see below); deletions are pruned
+# separately from the git diff.
 sync_traefik_rules() {
   local sha="$1"
   log_info "Traefik rules changed — syncing to LXC $TRAEFIK_LXC_ID ($TRAEFIK_RULES_DEST)..."
@@ -333,8 +488,8 @@ sync_traefik_rules() {
   # Traefik's file watcher uses inotify and tracks the directory inode — an
   # atomic directory swap (mv) changes the inode and silently breaks hot-reload,
   # leaving Traefik watching the old (now-deleted) directory forever.
-  # Trade-off: files deleted from the repo are not removed here; they persist
-  # in the LXC until a manual 'deploy traefik' + Traefik restart.
+  # Files deleted from the repo are pruned afterwards from the git diff (see
+  # "Deletion pruning"), not by replacing the directory.
   if ! pct exec "$TRAEFIK_LXC_ID" -- bash -c "
     set -e
     tar -xzf /tmp/traefik-rules.tar.gz -C '$TRAEFIK_RULES_DEST'
@@ -343,6 +498,15 @@ sync_traefik_rules() {
     log_error "Traefik rules: failed to apply in LXC $TRAEFIK_LXC_ID"
     record_host_sync "traefik-rules" "FAILED" "$sha"
     return 1
+  fi
+
+  # Remove files that were deleted from traefik/ in this commit range. A failed
+  # prune does not fail the sync: the rules themselves were applied.
+  local -a del=()
+  mapfile -t del < <(deleted_files_under traefik)
+  if [[ ${#del[@]} -gt 0 ]]; then
+    prune_lxc_files "$TRAEFIK_LXC_ID" "$TRAEFIK_RULES_DEST" "traefik" "traefik/" "${del[@]}" \
+      || log_warn "Prune: traefik: prune step failed — rules were synced, stale files may remain"
   fi
 
   log_info "Traefik rules synced to LXC $TRAEFIK_LXC_ID — Traefik will hot-reload automatically"
@@ -482,6 +646,14 @@ deploy_to_lxc() {
     return 1
   fi
 
+  # Remove compose/lxc files deleted from the repo, limited to this LXC's dirs.
+  local -a del=()
+  mapfile -t del < <(deleted_files_under "${dirs[@]}" "compose/fragments")
+  if [[ ${#del[@]} -gt 0 ]]; then
+    prune_lxc_files "$lxc_id" "$DOCKER_BASE" "LXC $lxc_id ($lxc_name)" "" "${del[@]}" \
+      || log_warn "Prune: LXC $lxc_id ($lxc_name): prune step failed — deploy continues"
+  fi
+
   log_info "LXC $lxc_id ($lxc_name): pulling container images..."
   if ! pct exec "$lxc_id" -- bash -c "
     set -e
@@ -593,6 +765,12 @@ sync() {
 
   # Pull the latest code
   pull_latest
+
+  # Which files were deleted in this range (empty + warning if untrustworthy)
+  compute_deleted_files "$last_sha" "$remote_sha" || true
+  if [[ ${#DELETED_FILES[@]} -gt 0 ]]; then
+    log_info "Prune: deleted in repo this range (mode=$PRUNE_MODE): ${DELETED_FILES[*]}"
+  fi
 
   # Determine affected LXCs and deploy
   local any_failed=0
