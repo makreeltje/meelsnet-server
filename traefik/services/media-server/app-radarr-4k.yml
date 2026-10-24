@@ -2,7 +2,7 @@ http:
   routers:
     # --- ROUTER 1: Secure the Web UI (Default) ---
     radarr-4k-rtr:
-      rule: 'Host(`radarr-4k.{{env "DOMAINNAME_1"}}`) || Host(`movies-4k.{{env "DOMAINNAME_1"}}`)'
+      rule: 'Host(`movies-4k.{{env "DOMAINNAME_2"}}`)'
       entryPoints:
         - websecure
       middlewares:
