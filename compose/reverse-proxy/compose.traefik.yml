@@ -71,7 +71,7 @@ services:
       - LAN_SUBNET
       - HOME_SUBNET
     volumes:
-      - $CONF_DIR/traefik3/rules/$HOSTNAME:/rules
+      - $CONF_DIR/traefik3/rules/meelsnet:/rules
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - $CONF_DIR/traefik3/acme/acme.json:/acme.json
     ports:
