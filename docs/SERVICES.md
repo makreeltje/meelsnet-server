@@ -137,10 +137,10 @@ Netwerkbeheer. Entrypoint: `lxc/network/compose.yml`.
 | Container | Rol | Poorten (host) | Hostname | Chain |
 |---|---|---|---|---|
 | `unifi-os` | UniFi OS Server (bevat MongoDB) | o.a. 8080 (device inform), 8443, 11443→443, 3478/udp, 10001, 10003 | `unifi.`D1 (→ `https://<LXC>:11443`) | authentik-local |
-| `pihole` | DNS voor Tailscale split DNS (wildcard D1 en D2 → Traefik op infra) | 53 tcp/udp (LXC-IP en LAN-adres), 80 (LXC-IP) | geen route | — |
+| `pihole` | DNS voor Tailscale split DNS (wildcard D1 en D2 → Traefik op infra) | 53 tcp/udp en 80 (LXC-IP en LAN-adres) | geen route | — |
 | `cadvisor`, `alloy`, `portainer-agent` | standaardcontainers | | | |
 
-- **Pi-hole** is alleen DNS voor Tailscale-apparaten (split DNS); de Experia Box blijft DNS voor de rest van het huis. Het LAN-adres van de LXC en het LAN-adres van infra (`LXC_LAN_IP`, `LXC_INFRA_LAN_IP`) staan alleen in de `.env`, niet in de repo. De web-UI staat alleen op het service-net; de route `traefik/services/network/app-pihole.yml` is bewust volledig uitgecommentarieerd (niet verwijderen: de controller haalt verwijderde bestanden niet van de LXC, zie [GITOPS.md](../GITOPS.md#traefik-regels)).
+- **Pi-hole** is alleen DNS voor Tailscale-apparaten (split DNS); de Experia Box blijft DNS voor de rest van het huis. Het LAN-adres van de LXC en het LAN-adres van infra (`LXC_LAN_IP`, `LXC_INFRA_LAN_IP`) staan alleen in de `.env`, niet in de repo. De web-UI (poort 80) luistert op het service-net en op het LAN-adres van de LXC; de route `traefik/services/network/app-pihole.yml` is bewust volledig uitgecommentarieerd (niet verwijderen: de controller haalt verwijderde bestanden niet van de LXC, zie [GITOPS.md](../GITOPS.md#traefik-regels)).
 - De oude losse UniFi Network Application staat alleen nog in `compose/archive/compose.unifi.yml`.
 
 ## LXC 106 — monitoring (10.10.0.60)
