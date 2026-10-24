@@ -28,7 +28,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: firefly_cron
-    image: alpine@sha256:71e9b7bae160ba167fa17414401b94cbcdaf3c32feeab9298bd794a2a0614c35
+    image: alpine@sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c0371ea2c9a
     env_file: $CONF_DIR/firefly/.env
     command: ["sh", "-c", "apk add tzdata && \
       (ln -s /usr/share/zoneinfo/$$TZ /etc/localtime || true) && \
