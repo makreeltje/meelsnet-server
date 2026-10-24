@@ -31,7 +31,7 @@ SYSTEMD_DIR="${SYSTEMD_DIR:-/etc/systemd/system}"
 # Traefik file-provider rules — synced into the infra LXC (not the host).
 # Traefik watches this directory and hot-reloads on change, so no restart needed.
 TRAEFIK_LXC_ID="${TRAEFIK_LXC_ID:-101}"
-TRAEFIK_RULES_DEST="${TRAEFIK_RULES_DEST:-/root/docker/appdata/traefik3/rules/meelsnet}"
+TRAEFIK_RULES_DEST="${TRAEFIK_RULES_DEST:-/root/docker/appdata/traefik3/rules/infra}"
 
 # Load config override if present
 CONFIG_FILE="/etc/gitops/config.env"

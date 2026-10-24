@@ -46,7 +46,7 @@ Ingress, authenticatie en gedeelde datastores. Entrypoint: `lxc/infra/compose.ym
 - `authentik` en `authentik-worker` → `postgres` + `redis` (via compose-netwerk, `depends_on` healthy). Server en worker moeten dezelfde versie hebben; Renovate groepeert ze daarom ("Authentik Stack").
 - `postgres` bedient andere LXC's: databases voor authentik, immich, paperless, n8n, budget_tracker, budget_tracker_demo, printer_calculator (en nextcloud, tijdelijk uitgeschakeld, en firefly, uitgeschakeld). `redis` wordt gebruikt door authentik, paperless en tracearr (db 7).
 - Traefik-secrets via Docker secrets uit `/root/docker/secrets/` (`cf_dns_api_token`, `basic_auth_credentials`).
-- De Traefik-regels uit `traefik/` worden door de GitOps-controller naar `/root/docker/appdata/traefik3/rules/meelsnet` op deze LXC gesynct; Traefik herlaadt zelf.
+- De Traefik-regels uit `traefik/` worden door de GitOps-controller naar `/root/docker/appdata/traefik3/rules/infra` op deze LXC gesynct; Traefik herlaadt zelf.
 - Routes die op infra staan maar naar elders wijzen: `gitops.`D1 → Proxmox-host:9000 (webhook, `chain-no-auth`, authenticatie via HMAC) en `paperclip.`D2 (`chain-authentik`; alleen `/api` en `/mcp` op `chain-no-auth`).
 
 ## LXC 102 — media (10.10.0.20)

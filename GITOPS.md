@@ -55,7 +55,7 @@ Er is geen aparte "utilities" LXC (meer) — die is opgegaan in productivity (CT
 
 ### Traefik-regels
 
-`traefik/**` wordt als tar via `pct push` naar LXC 101 gestuurd en **in de bestaande map uitgepakt** (`/root/docker/appdata/traefik3/rules/meelsnet`). Dat gebeurt bewust in place: een map-swap verandert de inode en dan stopt Traefik's file watcher met herladen. Traefik herlaadt dus zelf; een restart is niet nodig. De sync breekt af als `traefik/tls-opts.yml` ontbreekt. Forceren: `gitops-controller.sh deploy traefik`.
+`traefik/**` wordt als tar via `pct push` naar LXC 101 gestuurd en **in de bestaande map uitgepakt** (`/root/docker/appdata/traefik3/rules/infra`). Dat gebeurt bewust in place: een map-swap verandert de inode en dan stopt Traefik's file watcher met herladen. Traefik herlaadt dus zelf; een restart is niet nodig. De sync breekt af als `traefik/tls-opts.yml` ontbreekt. Forceren: `gitops-controller.sh deploy traefik`.
 
 **Let op: een uit de repo verwijderd bestand verdwijnt niet van de LXC.** Een route die je uitzet, comment je daarom uit *in het bestand zelf* (zoals `traefik/services/network/app-pihole.yml`) in plaats van het bestand te verwijderen. Een bestand echt weghalen kan alleen handmatig op LXC 101 plus een Traefik-restart.
 
