@@ -2,7 +2,7 @@ http:
   routers:
     # --- ROUTER 1: Secure the Web UI (Default) ---
     radarr-rtr:
-      rule: 'Host(`radarr.{{env "DOMAINNAME_1"}}`) || Host(`movies.{{env "DOMAINNAME_1"}}`)'
+      rule: 'Host(`movies.{{env "DOMAINNAME_2"}}`)'
       entryPoints:
         - websecure
       middlewares:
