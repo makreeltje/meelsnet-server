@@ -2,7 +2,7 @@ http:
   routers:
     # --- ROUTER 1: Secure the Web UI (Default) ---
     sonarr-rtr:
-      rule: 'Host(`sonarr.{{env "DOMAINNAME_1"}}`) || Host(`series.{{env "DOMAINNAME_1"}}`)'
+      rule: 'Host(`series.{{env "DOMAINNAME_1"}}`)'
       entryPoints:
         - websecure
       middlewares:
