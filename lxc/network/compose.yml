@@ -5,7 +5,7 @@ networks:
 
 include:
   - compose/network/compose.unifi-os.yml
-  # - compose/network/compose.pihole.yml
+  - compose/network/compose.pihole.yml
   - compose/monitoring/compose.cadvisor.yml
   - compose/monitoring/compose.alloy.yml
   - compose/utilities/compose.portainer-agent.yml
