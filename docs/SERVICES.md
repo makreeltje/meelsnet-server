@@ -57,10 +57,10 @@ Streaming, downloads en Arr-ecosysteem. Entrypoint: `lxc/media/compose.yml`.
 |---|---|---|---|---|
 | `plex` | Mediaserver | 32400 e.a. | `plex.`D1 | no-auth |
 | `jellyfin` | Mediaserver | 8096 | `jellyfin.`D1 | no-auth |
-| `sonarr` | Series | 8989 | `sonarr.`D1, `series.`D1 | authentik |
-| `sonarr-anime` | Series (anime) | 8999 | `anime.`D1 | authentik-local |
+| `sonarr` | Series | 8989 | `series.`D2 | authentik |
+| `sonarr-anime` | Series (anime) | 8999 | `anime.`D2 | authentik-local |
 | `radarr` | Films | 7878 | `radarr.`D1, `movies.`D1 | authentik |
-| `radarr-4k` | Films 4K | 7879 | `radarr-4k.`D1, `movies-4k.`D1 | authentik-local |
+| `radarr-4k` | Films 4K | 7879 | `movies-4k.`D2 | authentik-local |
 | `prowlarr` | Indexer-beheer | 9696 | `prowlarr.`D1 | authentik-local |
 | `jackett` | Indexer-proxy | 9117 (LXC-IP) | `jackett.`D2 | authentik-local |
 | `sabnzbd` | Usenet-client | 8082 | `sab.`D1 | authentik-local |
