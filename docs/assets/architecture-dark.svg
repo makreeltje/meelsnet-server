@@ -88,7 +88,7 @@
 <text x="864" y="504" class="service">Watchstate</text>
 <text x="864" y="522" class="serviceMuted">Bazarr</text>
 <text x="864" y="540" class="serviceMuted">Tautulli</text>
-<text x="612" y="554" class="footer">+ 9 more</text>
+<text x="612" y="554" class="footer">+ 12 more</text>
 </g><g>
 <rect x="1128" y="360" width="504" height="212" rx="22" fill="url(#panel)" stroke="#fb923c" stroke-width="2.0" filter="url(#shadow)"/>
 <path d="M 1150 360 H 1610 Q 1632 360 1632 382 V 414 H 1128 V 382 Q 1128 360 1150 360 Z" fill="#6a3415" stroke="#fb923c" stroke-width="0"/>
@@ -112,21 +112,21 @@
 <text x="74" y="700" class="meta">Persoonlijke apps, documents, storage en finance</text>
 <text x="74" y="728" class="service">Immich</text>
 <text x="74" y="746" class="service">Paperless</text>
-<text x="74" y="764" class="serviceMuted">Nextcloud</text>
-<text x="74" y="782" class="serviceMuted">Backrest</text>
-<text x="326" y="728" class="service">Firefly III</text>
-<text x="326" y="746" class="service">N8n</text>
+<text x="74" y="764" class="serviceMuted">Backrest</text>
+<text x="74" y="782" class="serviceMuted">n8n</text>
+<text x="326" y="728" class="service">Budget tracker</text>
+<text x="326" y="746" class="service">Spoolman</text>
 <text x="326" y="764" class="serviceMuted">IT-Tools</text>
-<text x="326" y="782" class="serviceMuted">Spoolman</text>
-<text x="74" y="796" class="footer">+ 4 more</text>
+<text x="326" y="782" class="serviceMuted">ConvertX</text>
+<text x="74" y="796" class="footer">+ 5 more</text>
 </g><g>
 <rect x="590" y="602" width="504" height="212" rx="22" fill="url(#panel)" stroke="#60a5fa" stroke-width="2.0" filter="url(#shadow)"/>
 <path d="M 612 602 H 1072 Q 1094 602 1094 624 V 656 H 590 V 624 Q 590 602 612 602 Z" fill="#22356f" stroke="#60a5fa" stroke-width="0"/>
 <text x="612" y="635" class="title2">LXC 105 · network</text>
 <text x="1072" y="635" class="ip" text-anchor="end">10.10.0.50</text>
 <text x="612" y="680" class="specs">1 vCPU · 2 GB RAM</text>
-<text x="612" y="700" class="meta">DNS en netwerkbeheer</text>
-<text x="612" y="728" class="service">UniFi Network Applicati…</text>
+<text x="612" y="700" class="meta">Netwerkbeheer (UniFi)</text>
+<text x="612" y="728" class="service">UniFi OS Server</text>
 </g><g>
 <rect x="1128" y="602" width="504" height="212" rx="22" fill="url(#panel)" stroke="#38bdf8" stroke-width="2.0" filter="url(#shadow)"/>
 <path d="M 1150 602 H 1610 Q 1632 602 1632 624 V 656 H 1128 V 624 Q 1128 602 1150 602 Z" fill="#155e86" stroke="#38bdf8" stroke-width="0"/>
@@ -136,11 +136,11 @@
 <text x="1150" y="700" class="meta">Metrics, dashboards, alerts en exporters</text>
 <text x="1150" y="728" class="service">Prometheus</text>
 <text x="1150" y="746" class="service">Grafana</text>
-<text x="1150" y="764" class="serviceMuted">Alertmanager</text>
-<text x="1150" y="782" class="serviceMuted">cAdvisor</text>
+<text x="1150" y="764" class="serviceMuted">Loki</text>
+<text x="1150" y="782" class="serviceMuted">Alertmanager</text>
 <text x="1402" y="728" class="service">Node Exporter</text>
-<text x="1402" y="746" class="service">Sonarr Exporter</text>
-<text x="1402" y="764" class="serviceMuted">Radarr Exporter</text>
-<text x="1402" y="782" class="serviceMuted">Mosquitto Exporter</text>
-<text x="1150" y="796" class="footer">+ 2 more</text>
+<text x="1402" y="746" class="service">Exportarr (4×)</text>
+<text x="1402" y="764" class="serviceMuted">Mosquitto Exporter</text>
+<text x="1402" y="782" class="serviceMuted">cAdvisor</text>
+<text x="1150" y="796" class="footer">+ Alloy, Portainer Agent</text>
 </g></svg>
