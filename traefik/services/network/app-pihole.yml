@@ -1,8 +1,7 @@
 # Pi-hole is deliberately offline; a login followed by a 502 is worse than no route.
-# Commented out in place instead of deleted: the GitOps controller extracts traefik/
-# over the live directory, so files deleted from the repo are NOT removed on the LXC
-# and the router would keep being served. Do not "tidy up" by deleting this file.
-# Restore by uncommenting once Pi-hole is back.
+# Commented out in place instead of deleted so it can be restored by uncommenting
+# once Pi-hole is back. (The GitOps controller now also prunes deleted files, but
+# only from the git diff of a deploy; see GITOPS.md "Verwijderingen opruimen".)
 #
 # http:
 #   routers:

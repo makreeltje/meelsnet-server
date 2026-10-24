@@ -57,7 +57,25 @@ Er is geen aparte "utilities" LXC (meer) — die is opgegaan in productivity (CT
 
 `traefik/**` wordt als tar via `pct push` naar LXC 101 gestuurd en **in de bestaande map uitgepakt** (`/root/docker/appdata/traefik3/rules/meelsnet`). Dat gebeurt bewust in place: een map-swap verandert de inode en dan stopt Traefik's file watcher met herladen. Traefik herlaadt dus zelf; een restart is niet nodig. De sync breekt af als `traefik/tls-opts.yml` ontbreekt. Forceren: `gitops-controller.sh deploy traefik`.
 
-**Let op: een uit de repo verwijderd bestand verdwijnt niet van de LXC.** Een route die je uitzet, comment je daarom uit *in het bestand zelf* (zoals `traefik/services/network/app-pihole.yml`) in plaats van het bestand te verwijderen. Een bestand echt weghalen kan alleen handmatig op LXC 101 plus een Traefik-restart.
+**Verwijderde bestanden worden meegenomen** (zie "Verwijderingen opruimen" hieronder). Het uitpakken zelf blijft in place; de opruimstap verwijdert daarna de bestanden die in deze commit-range uit `traefik/` zijn gehaald. Een route tijdelijk uitzetten kan nog steeds door te commentariëren (zoals `traefik/services/network/app-pihole.yml`), handig als je 'm later wilt terugzetten.
+
+### Verwijderingen opruimen
+
+De deploys pakken tarballs *over* de live mappen uit en verwijderen dus niets. Daarom ruimt de controller na een deploy bestanden op die uit de repo zijn gehaald:
+
+- **Bepaling:** uitsluitend uit `git diff --diff-filter=D --no-renames <vorige gedeployde sha> <nieuwe sha>` (renames tellen mee als delete van het oude pad). De live map wordt nooit met de repo vergeleken, dus appdata, databases, `.env`, secrets en andere niet-repo-bestanden kunnen niet geraakt worden.
+- **Allowlist:**
+
+  | Repo-pad | Live locatie |
+  |---|---|
+  | `traefik/**` | `$TRAEFIK_RULES_DEST` (`/root/docker/appdata/traefik3/rules/meelsnet`) op LXC 101 |
+  | `compose/<dir>/**`, `compose/fragments/**`, `lxc/<name>/**` | `$DOCKER_BASE` (`/root/docker`) op de LXC('s) die die map deployen |
+
+  Alles daarbuiten (o.a. `scripts/**`, `compose.yml` in de root van `$DOCKER_BASE`) wordt hier nooit verwijderd. Alleen reguliere bestanden (`rm -f`, nooit `-r`); mappen blijven staan.
+- **Faal veilig:** geen vorige sha, een sha die niet in de clone zit, of een sha die geen voorouder is van de nieuwe (herschreven history) → er wordt niets verwijderd. Paden met afwijkende tekens, `..` of een absoluut pad worden overgeslagen, net als bestanden die in de nieuwe checkout nog bestaan, symlinks, en paden die via een symlink buiten de doelmap uitkomen. Een mislukte opruimstap laat de deploy zelf niet falen.
+- **Handmatige `deploy <target>`** ruimt niets op (er is dan geen vorige sha).
+- **Logging:** elk bestand komt als `Prune: ...` regel in `gitops.log` (`REMOVED`, `WOULD-REMOVE`, `ABSENT`, `SKIP`, `FAILED`). In Loki: `{host="srv-mn"} |= "Prune:"`.
+- **Modus** via `PRUNE_MODE` in `/etc/gitops/config.env`: `on` (standaard), `dry-run` (alleen loggen wat er verwijderd zou worden) of `off` (oud gedrag).
 
 ### Host-managed paden (niet LXC-specifiek)
 
