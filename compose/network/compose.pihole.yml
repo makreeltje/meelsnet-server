@@ -10,9 +10,14 @@ services:
     cap_add:
       - SYS_NICE
     environment:
-      FTLCONF_webserver_api_password: $PIHOLE_PASS
+      FTLCONF_webserver_api_password: ${PIHOLE_WEB_PASS:?PIHOLE_WEB_PASS must be set}
       FTLCONF_dns_upstreams: 1.1.1.1;1.0.0.1
+      # Bridge mode: queries arrive from the docker gateway / Proxmox SNAT address
+      # (Tailscale subnet routing), not from a "local" subnet. Port 53 is only
+      # published on the LXC LAN IP below, so "all" does not widen exposure.
       FTLCONF_dns_listeningMode: all
+      # Wildcard for Tailscale split DNS: every host under both domains -> Traefik on LXC infra.
+      FTLCONF_misc_dnsmasq_lines: address=/meels.net/$LXC_INFRA_IP;address=/meelsnet.nl/$LXC_INFRA_IP
     volumes:
       - $CONF_DIR/pihole/data:/etc/pihole
     dns:
@@ -20,9 +25,9 @@ services:
       - 1.0.0.1
     ports:
       - $LXC_IP:80:80/tcp
-      # DNS Ports
-      - "53:53/tcp"
-      - "53:53/udp"
+      # DNS ports, LAN IP only (not 0.0.0.0, not the systemd-resolved stub)
+      - $LXC_IP:53:53/tcp
+      - $LXC_IP:53:53/udp
     healthcheck:
       test: [ "CMD", "curl", "-fsSo", "/dev/null", "http://localhost:80/admin/" ]
       interval: 30s
