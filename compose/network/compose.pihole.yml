@@ -28,6 +28,7 @@ services:
     ports:
       # Admin UI: service net only (not exposed on the LAN)
       - $LXC_IP:80:80/tcp
+      - $LXC_LAN_IP:80:80/tcp
       # DNS: service net + LXC LAN address (vmbr0), never 0.0.0.0 / the systemd-resolved stub
       - $LXC_IP:53:53/tcp
       - $LXC_IP:53:53/udp
