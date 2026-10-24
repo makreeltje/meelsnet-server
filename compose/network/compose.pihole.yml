@@ -19,7 +19,9 @@ services:
       # Wildcard for Tailscale split DNS: every host under both domains -> Traefik on LXC infra.
       # Clients are on the LAN/Tailscale, so answer with infra's LAN (vmbr0) address, not
       # $LXC_INFRA_IP (service net, 10.10.0.x, not routable from the LAN).
-      FTLCONF_misc_dnsmasq_lines: address=/meels.net/${LXC_INFRA_LAN_IP:?LXC_INFRA_LAN_IP must be set};address=/meelsnet.nl/${LXC_INFRA_LAN_IP:?LXC_INFRA_LAN_IP must be set}
+      # The "::" entries answer AAAA locally; without them AAAA is forwarded upstream and
+      # returns the Cloudflare IPv6 address, which clients prefer over the A record.
+      FTLCONF_misc_dnsmasq_lines: address=/meels.net/${LXC_INFRA_LAN_IP:?LXC_INFRA_LAN_IP must be set};address=/meels.net/::;address=/meelsnet.nl/${LXC_INFRA_LAN_IP:?LXC_INFRA_LAN_IP must be set};address=/meelsnet.nl/::
     volumes:
       - $CONF_DIR/pihole/data:/etc/pihole
     dns:
