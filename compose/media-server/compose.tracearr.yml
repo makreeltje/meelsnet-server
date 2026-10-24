@@ -37,6 +37,10 @@ services:
   # only be restored into the same versions. This image ships 2.28.3 alongside newer
   # versions plus toolkit 1.26.0, so restore with CREATE EXTENSION ... VERSION '2.28.3',
   # then ALTER EXTENSION timescaledb UPDATE. The tag stays; no second tag change needed.
+  #
+  # No memory limit on purpose (MEE-110): the 1G cap caused OOM kills and a crash
+  # recovery loop. Settings follow Tracearr's upstream docker-compose.pg18.yml; the
+  # right limits are to be measured over a week and set afterwards.
   tracearr-db:
     extends:
       file: ../fragments/common-service.yml
@@ -55,15 +59,7 @@ services:
       - -c
       - effective_cache_size=512MB
       - -c
-      - max_connections=50
-      - -c
-      - work_mem=8MB
-      - -c
-      - maintenance_work_mem=128MB
-      - -c
-      - max_worker_processes=12
-      - -c
-      - timescaledb.max_background_workers=4
+      - max_connections=150
       - -c
       - max_locks_per_transaction=4096
       - -c
@@ -72,11 +68,11 @@ services:
       - timescaledb.telemetry_level=off
     volumes:
       - $CONF_DIR/tracearr/timescale:/home/postgres/pgdata
-    shm_size: 256M
-    deploy:
-      resources:
-        limits:
-          memory: 2G
+    shm_size: 512M
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U tracearr -d tracearr" ]
       interval: 10s
