@@ -21,7 +21,7 @@ Wat hier **niet** staat, omdat het te snel verloopt: image-versies (Renovate beh
 | `chain-authentik-local` | als hierboven, maar eerst `local-only` (alleen LAN-, thuis- en Docker-subnetten) | Beheer-UI's, alleen lokaal |
 | `chain-local-only` | secure headers + local-only, geen login | Apps met eigen toegangsbeperking |
 | `chain-no-auth` | rate-limit + secure headers | Apps met eigen login (Plex, Immich, HA, ...) of publieke endpoints |
-| `chain-nextcloud` | rate-limit + Nextcloud-headers/redirects | Nextcloud (tijdelijk uitgeschakeld, security: php2shell) |
+| `chain-nextcloud` | rate-limit + Nextcloud-headers/redirects | Nextcloud |
 | `chain-basic-auth`, `chain-oauth`, `chain-unifi`, `chain-vgz-whitelist` | zie `traefik/chains/` | Nu door geen enkele actieve route gebruikt |
 
 Authentik zelf (`authentik.$DOMAINNAME_1`) draait op `chain-no-auth`. Apps met eigen OIDC-login tegen Authentik (Paperless, budget-tracker) hebben geen Traefik-chain met Authentik nodig.
@@ -44,7 +44,7 @@ Ingress, authenticatie en gedeelde datastores. Entrypoint: `lxc/infra/compose.ym
 
 **Afhankelijkheden**
 - `authentik` en `authentik-worker` → `postgres` + `redis` (via compose-netwerk, `depends_on` healthy). Server en worker moeten dezelfde versie hebben; Renovate groepeert ze daarom ("Authentik Stack").
-- `postgres` bedient andere LXC's: databases voor authentik, immich, paperless, n8n, budget_tracker, budget_tracker_demo, printer_calculator (en nextcloud, tijdelijk uitgeschakeld, en firefly, uitgeschakeld). `redis` wordt gebruikt door authentik, paperless en tracearr (db 7).
+- `postgres` bedient andere LXC's: databases voor authentik, immich, paperless, n8n, budget_tracker, budget_tracker_demo, printer_calculator (en nextcloud, en firefly, uitgeschakeld). `redis` wordt gebruikt door authentik, paperless en tracearr (db 7).
 - Traefik-secrets via Docker secrets uit `/root/docker/secrets/` (`cf_dns_api_token`, `basic_auth_credentials`).
 - De Traefik-regels uit `traefik/` worden door de GitOps-controller naar `/root/docker/appdata/traefik3/rules/meelsnet` op deze LXC gesynct; Traefik herlaadt zelf.
 - Routes die op infra staan maar naar elders wijzen: `gitops.`D1 → Proxmox-host:9000 (webhook, `chain-no-auth`, authenticatie via HMAC) en `paperclip.`D2 (`chain-authentik`; alleen `/api` en `/mcp` op `chain-no-auth`).
@@ -127,7 +127,7 @@ Foto's, documenten, automatisering, back-up en losse tools. Entrypoint: `lxc/pro
 - `paperless`, `n8n`, `budget-tracker` en `budget-tracker-demo` gebruiken PostgreSQL op infra (`LXC_INFRA_IP:5432`); `budget-tracker` en de demo hebben elk een eigen database en rol. `paperless` gebruikt ook Redis op infra. `immich` gebruikt via een env-file eveneens de gedeelde PostgreSQL (Immich-variant op infra).
 - Opslag: Immich-bibliotheek op `/mnt/photos/library`; Paperless `consume` en `media` op `/mnt/paperless`, export naar `/mnt/backups/app-data/paperless/export`; `n8n` mount `/mnt/archive/ChronicleCore`; `prints-portal-2` leest uit `/mnt/cloud`.
 - `backrest` mount `/root/docker` (alle compose en appdata) en `/mnt/backups`; zie [Back-up en restore](OPERATIONS.md#back-up-en-restore).
-- **Nextcloud: tijdelijk uitgeschakeld (security, php2shell).** Bewust uitgezet vanwege de PHP-kwetsbaarheid "php2shell"; de eigenaar zet hem later weer aan. De include is daarom uitgecommentarieerd in `lxc/productivity/compose.yml`. De Traefik-route (`traefik/services/productivity/app-nextcloud.yml`, `cloud.`D1 en `cloud.`D2 → poort 8081) blijft **bewust** actief staan, zodat er bij heractivering niets aan routing hoeft te veranderen; zolang Nextcloud uit staat luistert er niets op die poort. Dit is geen drift en vraagt geen actie.
+- **Nextcloud: weer ingeschakeld op gepatchte PHP (php2shell).** `nextcloud:35.0.2` (digest-gepind) draait PHP 8.5.12, de gepatchte versie; controleer na een deploy met `docker exec nextcloud php -v`. De Traefik-route (`traefik/services/productivity/app-nextcloud.yml`, poort 8081) was al actief.
 - Uitgeschakeld (include uitgecommentarieerd): **Firefly III**.
 
 ## LXC 105 — network (10.10.0.50)
@@ -167,7 +167,7 @@ Metrics, dashboards, logs en alerts. Entrypoint: `lxc/monitoring/compose.yml`.
 | `compose/archive/` | Uitgeschakelde services (EMQX, Firefly III, Homarr, mdns-repeater, Mongo, Mydia, Ollama, OpenChat, Tdarr, UniFi Network Application). Renovate negeert dit pad. |
 | `compose/game-servers/` | Minecraft-server, niet geïncludet. Renovate negeert dit pad. |
 | `compose/media-server/compose.pinchflat.yml` | Uitgecommentarieerd in `lxc/media`; route in `traefik/inactive/`. |
-| `compose/productivity/compose.nextcloud.yml` | **Tijdelijk uitgeschakeld** (security, php2shell); uitgecommentarieerd in `lxc/productivity`, route blijft actief. Wordt weer aangezet. |
+| `compose/productivity/compose.nextcloud.yml` | Actief; gepind op `35.0.2` met digest (PHP 8.5.12, php2shell-fix). |
 | `compose/productivity/compose.firefly.yml` | Uitgecommentarieerd in `lxc/productivity`. |
 | `compose/monitoring/compose.promtail.yml` | Niet geïncludet; vervangen door `alloy`. |
 | `compose/utilities/compose.prints-portal.yml` | Niet geïncludet; `prints-portal-2` is de actieve variant. |

@@ -20,7 +20,7 @@ De repo is de bron van waarheid; wijzigingen op een server worden door de GitOps
 | Paperless | `scripts/backup/paperless.sh` (document_exporter) | `/mnt/backups/app-data/paperless/export` (binnen LXC 104) |
 | Home Assistant, Frigate | `scripts/backup/homeassistant.sh`, `frigate.sh` | `/mnt/backups/app-data/{homeassistant,frigate}`, 1 dag lokaal |
 | Immich-bibliotheek | `scripts/backup/immich.sh` (bestandskopie) | `/mnt/pve/data/backups/app-data/immich/library` |
-| Nextcloud | `scripts/backup/nextcloud.sh` (uitgeschakelde service; script bestaat nog) | `/mnt/pve/data/backups/app-data/nextcloud` |
+| Nextcloud | `scripts/backup/nextcloud.sh` | `/mnt/pve/data/backups/app-data/nextcloud` |
 | Alle appdata + compose van LXC 104, plus `/mnt/backups` | Backrest (restic) in `backrest`, naar Azure Blob | Plannen en retentie in de Backrest-UI (`backup.`$DOMAINNAME_2); de databasedumps gaan met het plan *databases* mee (keep-last-3 snapshots, volgens de scriptcommentaar) |
 
 Alle scripts melden start/succes/fout aan healthchecks.io als de bijbehorende `HC_*`-variabele in `/etc/default/backup-scripts` op de Proxmox-host staat; zonder variabele draait de back-up gewoon zonder ping. Fouten komen in de journal: `journalctl -t backup-<naam> -p err`.
