@@ -26,3 +26,21 @@ services:
       timeout: 10s
       retries: 3
       start_period: 60s
+
+  # Runs cron.php every 5 minutes (official image pattern). Keep the image tag in step with nextcloud.
+  nextcloud-cron:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
+    container_name: nextcloud-cron
+    image: nextcloud:35.0.2
+    profiles: [ "productivity", "all" ]
+    entrypoint: /cron.sh
+    environment:
+      NEXTCLOUD_DATA_DIR: /data
+    volumes:
+      - $CONF_DIR/nextcloud/config:/var/www/html
+      - $CLOUD_DIR:/data
+    depends_on:
+      nextcloud:
+        condition: service_healthy

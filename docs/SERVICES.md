@@ -112,6 +112,7 @@ Foto's, documenten, automatisering, back-up en losse tools. Entrypoint: `lxc/pro
 | `immich-machine-learning` | Immich ML | — | — | — |
 | `paperless` | Documentbeheer | 8000 (LXC-IP) | `paperless.`D1 | no-auth (eigen OIDC-login) |
 | `nextcloud` | Bestanden en samenwerking | 8081 (LXC-IP) | `cloud.`D1, `cloud.`D2 | nextcloud |
+| `nextcloud-cron` | Nextcloud achtergrondtaken (`cron.php` elke 5 min, zelfde image als `nextcloud`) | — | — | — |
 | `n8n` | Workflows | 5678 (LXC-IP) | `n8n.`D2 | authentik |
 | `backrest` | Back-ups (restic) | 9898 (LXC-IP) | `backup.`D2 | authentik-local |
 | `budget-tracker` | Budget-app (eigen image) | 8090 | `budget.`D2 | local-only |
@@ -129,6 +130,7 @@ Foto's, documenten, automatisering, back-up en losse tools. Entrypoint: `lxc/pro
 - Opslag: Immich-bibliotheek op `/mnt/photos/library`; Paperless `consume` en `media` op `/mnt/paperless`, export naar `/mnt/backups/app-data/paperless/export`; `n8n` mount `/mnt/archive/ChronicleCore`; `prints-portal-2` leest uit `/mnt/cloud`.
 - `backrest` mount `/root/docker` (alle compose en appdata) en `/mnt/backups`; zie [Back-up en restore](OPERATIONS.md#back-up-en-restore).
 - **Nextcloud: weer ingeschakeld op gepatchte PHP (php2shell).** `nextcloud:35.0.2` draait PHP 8.5.12, de gepatchte versie; controleer na een deploy met `docker exec nextcloud php -v`. Gebruikt PostgreSQL en Redis op infra. De Traefik-route (`traefik/services/productivity/app-nextcloud.yml`, poort 8081) was al actief.
+- `nextcloud-cron` deelt image en volumes met `nextcloud` en draait `/cron.sh`; Renovate groepeert beide ("Nextcloud Stack") zodat de versies gelijk blijven. De achtergrondmodus staat al op `cron`.
 - Uitgeschakeld (include uitgecommentarieerd): **Firefly III**.
 
 ## LXC 105 — network (10.10.0.50)
