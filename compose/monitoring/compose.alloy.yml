@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: alloy
-    image: grafana/alloy:v1.21.2
+    image: grafana/alloy:v1.21.3
     profiles: [ "monitoring", "all" ]
     user: $PUID:$PGID
     environment:
