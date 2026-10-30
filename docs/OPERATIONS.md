@@ -19,6 +19,7 @@ De repo is de bron van waarheid; wijzigingen op een server worden door de GitOps
 | PostgreSQL (alle databases) en MariaDB | `scripts/backup/postgres.sh`, `mariadb.sh` op de Proxmox-host (dumps uit LXC 101) | `/mnt/pve/data/backups/databases/{postgres,mariadb}/<datum>_<db>.sql`, lokaal 1 dag bewaard |
 | Paperless | `scripts/backup/paperless.sh` (document_exporter) | `/mnt/backups/app-data/paperless/export` (binnen LXC 104) |
 | Home Assistant, Frigate | `scripts/backup/homeassistant.sh`, `frigate.sh` | `/mnt/backups/app-data/{homeassistant,frigate}`, 1 dag lokaal |
+| UniFi OS Server (LXC 105) | `scripts/backup/unifi.sh` (kopie van de nieuwste native `.unf` uit `unifi-os/var-lib-unifi/backup`; de native autobackup draait maandelijks, dus de kopie kan tot ~30 dagen oud zijn) | `/mnt/backups/app-data/unifi-os`, 1 dag lokaal |
 | Immich-bibliotheek | `scripts/backup/immich.sh` (bestandskopie) | `/mnt/pve/data/backups/app-data/immich/library` |
 | Nextcloud | `scripts/backup/nextcloud.sh` | `/mnt/pve/data/backups/app-data/nextcloud` |
 | Alle appdata + compose van LXC 104, plus `/mnt/backups` | Backrest (restic) in `backrest`, naar Azure Blob | Plannen en retentie in de Backrest-UI (`backup.`$DOMAINNAME_2); de databasedumps gaan met het plan *databases* mee (keep-last-3 snapshots, volgens de scriptcommentaar) |
