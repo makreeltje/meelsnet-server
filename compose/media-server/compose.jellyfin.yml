@@ -15,6 +15,10 @@ services:
     ports:
       - 8096:8096/tcp
       - 7359:7359/udp
+    deploy:
+      resources:
+        limits:
+          memory: 3G
     healthcheck:
       test: [ "CMD", "curl", "-fsSo", "/dev/null", "http://localhost:8096/health" ]
       interval: 30s

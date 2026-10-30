@@ -16,6 +16,10 @@ services:
       - $DOWNLOAD_DIR:/downloads
     ports:
       - 8989:8989
+    deploy:
+      resources:
+        limits:
+          memory: 5G
     healthcheck:
       test: [ "CMD", "curl", "-fsSo", "/dev/null", "http://localhost:8989/ping" ]
       interval: 30s

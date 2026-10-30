@@ -15,6 +15,10 @@ services:
       - $DOWNLOAD_DIR:/downloads
     ports:
       - 8082:8080
+    deploy:
+      resources:
+        limits:
+          memory: 4G
     healthcheck:
       test: [ "CMD", "curl", "-fsSo", "/dev/null", "http://localhost:8080/api?mode=version&output=json" ]
       interval: 30s
