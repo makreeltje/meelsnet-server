@@ -1,51 +1,69 @@
 services:
-  qbittorrent:
+  gluetun:
     extends:
       file: ../fragments/common-service.yml
       service: common
-    container_name: qbittorrent
-    image: binhex/arch-qbittorrentvpn:5.2.3-3-01
+    container_name: gluetun
+    image: qmcgaw/gluetun:v3.41.3
     cap_add:
       - NET_ADMIN
-    sysctls:
-      - net.ipv4.conf.all.src_valid_mark=1
+    devices:
+      - /dev/net/tun
     profiles: [ "media", "all" ]
+    environment:
+      VPN_SERVICE_PROVIDER: private internet access
+      VPN_TYPE: openvpn
+      OPENVPN_USER: $VPN_USERNAME
+      OPENVPN_PASSWORD: $VPN_PASSWORD
+      # Must be a PIA region that supports port forwarding
+      SERVER_REGIONS: $VPN_REGION
+      VPN_PORT_FORWARDING: "on"
+      # Push the forwarded port into qBittorrent (needs localhost auth bypass in the WebUI)
+      VPN_PORT_FORWARDING_UP_COMMAND: /bin/sh -c 'wget -O- --retry-connrefused --post-data "json={\"listen_port\":{{PORTS}}}" http://127.0.0.1:8080/api/v2/app/setPreferences 2>&1'
+      FIREWALL_OUTBOUND_SUBNETS: "$LAN_SUBNET,$HOME_SUBNET,172.16.0.0/12"
+      DOT: "off"
+      DNS_ADDRESS: 1.1.1.1
+    networks:
+      t3_proxy:
+        # Keeps http://qbittorrent:8080 working for the *arr apps
+        aliases:
+          - qbittorrent
+    ports:
+      - 8083:8080
+    healthcheck:
+      test: [ "CMD", "/gluetun-entrypoint", "healthcheck" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  qbittorrent:
+    container_name: qbittorrent
+    image: ghcr.io/hotio/qbittorrent:release-5.2.3
+    restart: unless-stopped
+    network_mode: service:gluetun
+    profiles: [ "media", "all" ]
+    depends_on:
+      gluetun:
+        condition: service_healthy
     environment:
       PUID: 1000
       PGID: 1000
-      UMASK: 0
-      VPN_ENABLED: "yes"
-      VPN_USER: $VPN_USERNAME
-      VPN_PASS: $VPN_PASSWORD
-      VPN_PROV: $VPN_PROVIDER
-      VPN_CLIENT: wireguard
-      VPN_INPUT_PORTS: 1234
-      VPN_OUTPUT_PORTS: 5678
-      ENABLE_STARTUP_SCRIPTS: "no"
-      ENABLE_PRIVOXY: "yes"
-      STRICT_PORT_FORWARD: "yes"
-      USERSPACE_WIREGUARD: "no"
-      ENABLE_SOCKS: "yes"
-      SOCKS_USER: $QBITTORRENT_USER
-      SOCKS_PASS: $QBITTORRENT_PASS
-      LAN_NETWORK: "$LAN_SUBNET,$HOME_SUBNET,172.16.0.0/12"
-      NAME_SERVERS: 1.1.1.1,1.0.0.1
-      WEBUI_PORT: 8080
+      UMASK: "000"
+      TZ: $TZ
+      WEBUI_PORTS: 8080/tcp
     volumes:
       - $DOWNLOAD_DIR:/data
       - $CONF_DIR/qbittorrent/config:/config
       - /etc/localtime:/etc/localtime:ro
-    ports:
-      - 8083:8080
-      - 8118:8118
-      - 9118:9118
-      - 58946:58946
-      - 58946:58946/udp
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     healthcheck:
       test: [ "CMD", "curl", "-fsSo", "/dev/null", "http://localhost:8080/api/v2/app/version" ]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 30s
-    devices:
-      - /dev/net/tun

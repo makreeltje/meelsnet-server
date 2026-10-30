@@ -64,7 +64,8 @@ Streaming, downloads en Arr-ecosysteem. Entrypoint: `lxc/media/compose.yml`.
 | `prowlarr` | Indexer-beheer | 9696 | `prowlarr.`D1 | authentik-local |
 | `jackett` | Indexer-proxy | 9117 (LXC-IP) | `jackett.`D2 | authentik-local |
 | `sabnzbd` | Usenet-client | 8082 | `sab.`D1 | authentik-local |
-| `qbittorrent` | Torrent-client (via VPN-image) | 8083 (UI) | `qbittorrent.`D1 | authentik-local |
+| `gluetun` | VPN-tunnel en killswitch voor qbittorrent (PIA, OpenVPN) | 8083 (qbittorrent-UI) | n.v.t. | n.v.t. |
+| `qbittorrent` | Torrent-client (via gluetun) | 8083 (UI) | `qbittorrent.`D1 | authentik-local |
 | `bazarr` | Ondertitels | 6767 | `subtitles.`D2 | authentik-local |
 | `seerr` | Aanvragen | 5055 | `request.`D1 | no-auth (eigen login) |
 | `wizarr` | Uitnodigingen | 5690 | `invite.`D1 | no-auth |
