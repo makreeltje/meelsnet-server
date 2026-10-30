@@ -38,9 +38,13 @@ services:
   # versions plus toolkit 1.26.0, so restore with CREATE EXTENSION ... VERSION '2.28.3',
   # then ALTER EXTENSION timescaledb UPDATE. The tag stays; no second tag change needed.
   #
-  # No memory limit on purpose (MEE-110): the 1G cap caused OOM kills and a crash
-  # recovery loop. Settings follow Tracearr's upstream docker-compose.pg18.yml; the
-  # right limits are to be measured over a week and set afterwards.
+  # Memory limit (MEE-110/MEE-111): the earlier 1G cap caused OOM kills and a crash
+  # recovery loop. Over ~6 days without a limit the cgroup peak was 2.61 GB, mostly
+  # reclaimable page cache; no OOM kills or restarts. 3584M = peak + ~30%, a guard
+  # against the media LXC running out of memory, not a tuning knob. Settings otherwise
+  # follow Tracearr's upstream docker-compose.pg18.yml. max_connections stays at 150:
+  # Tracearr's pool defaults to 50 (DATABASE_POOL_MAX) and observed usage is only a
+  # snapshot, so there is no data to justify lowering it.
   tracearr-db:
     extends:
       file: ../fragments/common-service.yml
@@ -73,6 +77,10 @@ services:
       nofile:
         soft: 65536
         hard: 65536
+    deploy:
+      resources:
+        limits:
+          memory: 3584M
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U tracearr -d tracearr" ]
       interval: 10s
