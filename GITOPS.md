@@ -158,8 +158,8 @@ De `.env` bestanden met secrets staan nu direct op elke LXC (niet meer in GitHub
 ```bash
 # Voorbeeld voor LXC 101 (infra)
 pct exec 101 -- bash -c "cat > ~/docker/.env << 'EOF'
-DOCKER_DIR=~/docker
-CONF_DIR=~/docker/appdata
+DOCKER_DIR=/root/docker
+CONF_DIR=/root/docker/appdata
 TZ=Europe/Amsterdam
 PUID=1000
 PGID=1000
@@ -177,6 +177,8 @@ MONGO_DBUSER=<user>
 MONGO_DBPASS=<wachtwoord>
 EOF"
 ```
+
+> **Let op:** gebruik in `.env` absolute paden. Compose expandeert `~` niet in `.env`-waarden; dat maakt een letterlijke map `~` aan.
 
 Herhaal voor elke LXC met de juiste variabelen (zie `.env.example` voor de volledige variabele-inventaris en welke `lxc/<name>/compose.yml` welke services — en dus welke variabelen — nodig heeft).
 
