@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: tracearr
-    image: ghcr.io/connorgallopo/tracearr:3.1.1
+    image: ghcr.io/connorgallopo/tracearr:3.1.3
     profiles: [ "media", "all" ]
     depends_on:
       tracearr-db:
