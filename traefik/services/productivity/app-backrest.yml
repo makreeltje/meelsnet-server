@@ -1,11 +1,11 @@
 http:
   routers:
     backrest-rtr:
-      rule: 'Host(`backup.{{env "DOMAINNAME_2"}}`)'
+      rule: 'Host(`backup.int.{{env "DOMAINNAME_2"}}`)'
       entryPoints:
         - websecure
       middlewares:
-        - chain-authentik-local
+        - chain-local-only
       service: backrest-svc
       tls:
         certResolver: dns-cloudflare

@@ -1,11 +1,11 @@
 http:
   routers:
     profilarr-rtr:
-      rule: 'Host(`profilarr.{{env "DOMAINNAME_1"}}`)'
+      rule: 'Host(`profilarr.int.{{env "DOMAINNAME_2"}}`)'
       entryPoints:
         - websecure
       middlewares:
-        - chain-authentik-local
+        - chain-local-only
       service: profilarr-svc
       tls:
         certResolver: dns-cloudflare

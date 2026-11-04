@@ -2,11 +2,11 @@ http:
   routers:
     # --- ROUTER 1: Secure the Web UI (Default) ---
     radarr-4k-rtr:
-      rule: 'Host(`movies-4k.{{env "DOMAINNAME_2"}}`)'
+      rule: 'Host(`movies-4k.int.{{env "DOMAINNAME_2"}}`)'
       entryPoints:
         - websecure
       middlewares:
-        - chain-authentik-local
+        - chain-local-only
       service: radarr-4k-svc
       tls:
         certResolver: dns-cloudflare

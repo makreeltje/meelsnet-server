@@ -1,0 +1,16 @@
+name: No literal domains
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  no-literal-domains:
+    name: No literal domains in tracked files
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Fail on literal public domains (public repo)
+        run: python3 scripts/check-no-literal-domains.py

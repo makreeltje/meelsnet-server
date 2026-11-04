@@ -2,11 +2,11 @@ http:
   routers:
     # --- ROUTER 1: Secure the Web UI (Default) ---
     prowlarr-rtr:
-      rule: 'Host(`prowlarr.{{env "DOMAINNAME_1"}}`)'
+      rule: 'Host(`prowlarr.int.{{env "DOMAINNAME_2"}}`)'
       entryPoints:
         - websecure
       middlewares:
-        - chain-authentik-local
+        - chain-local-only
       service: prowlarr-svc
       tls:
         certResolver: dns-cloudflare

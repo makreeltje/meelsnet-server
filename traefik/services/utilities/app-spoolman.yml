@@ -1,11 +1,11 @@
 http:
   routers:
     spoolman-rtr:
-      rule: 'Host(`spoolman.{{env "DOMAINNAME_1"}}`)'
+      rule: 'Host(`spoolman.int.{{env "DOMAINNAME_2"}}`)'
       entryPoints:
         - websecure
       middlewares:
-        - chain-authentik-local
+        - chain-local-only
       service: spoolman-svc
       tls:
         certResolver: dns-cloudflare
