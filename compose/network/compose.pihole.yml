@@ -20,11 +20,13 @@ services:
       # Only the internal zone is answered here; public names resolve upstream (Cloudflare).
       # Answer with infra's LAN (vmbr0) address, not $LXC_INFRA_IP (service net, 10.10.0.x,
       # not routable from the LAN).
-      # The second line ("::") is required: with only the A line, Pi-hole v6 FTL forwards AAAA
-      # queries upstream, where a public wildcard AAAA exists (Cloudflare), and dual-stack
-      # clients then connect to Cloudflare instead of Traefik. "::" makes AAAA answer empty
-      # (NODATA) so clients use the A record. Lines are semicolon separated.
-      FTLCONF_misc_dnsmasq_lines: "address=/int.${DOMAINNAME_2:?DOMAINNAME_2 must be set}/${LXC_INFRA_LAN_IP:?LXC_INFRA_LAN_IP must be set};address=/int.${DOMAINNAME_2}/::"
+      # The second line (local=) is required: since dnsmasq 2.86, address=/zone/<ipv4> forwards
+      # non-A queries upstream, where a public wildcard AAAA exists (Cloudflare), and dual-stack
+      # clients then connect to Cloudflare instead of Traefik. local= restores the pre-2.86
+      # behaviour: AAAA gets NOERROR/NODATA, so clients use the A record. Do not use
+      # address=/zone/:: instead: that answers AAAA with the unspecified address and breaks
+      # IPv6-first clients. Lines are semicolon separated.
+      FTLCONF_misc_dnsmasq_lines: "address=/int.${DOMAINNAME_2:?DOMAINNAME_2 must be set}/${LXC_INFRA_LAN_IP:?LXC_INFRA_LAN_IP must be set};local=/int.${DOMAINNAME_2}/"
     volumes:
       - $CONF_DIR/pihole/data:/etc/pihole
     dns:
