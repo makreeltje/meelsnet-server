@@ -178,4 +178,4 @@ Metrics, dashboards, logs en alerts. Entrypoint: `lxc/monitoring/compose.yml`.
 ## Documentatie actueel houden
 
 - Bij elke PR die een service toevoegt, verwijdert of een route/chain wijzigt: pas deze pagina aan. De PR-template heeft hier een checkbox voor.
-- `scripts/check-docs.py` (draait in CI, workflow *Docs*, bij wijzigingen in `compose/`, `lxc/` en `traefik/`) controleert dat elke `container_name` uit de geïncludeerde compose-bestanden in de juiste LXC-sectie hierboven staat, dat er geen container in staat die niet meer bestaat, en dat elke actieve Traefik-route in `traefik/services/` een hostnaam-vermelding in dit document heeft. Lokaal draaien: `python3 scripts/check-docs.py`.
+- `scripts/check-docs.py` (draait in CI, workflow *Docs*, bij wijzigingen in `compose/`, `lxc/` en `traefik/`) controleert dat elke `container_name` uit de geïncludete compose-bestanden in de juiste LXC-sectie hierboven staat, dat er geen container in staat die niet meer bestaat, en dat elke actieve Traefik-route in `traefik/services/` een hostnaam-vermelding in dit document heeft. Lokaal draaien: `python3 scripts/check-docs.py`.
