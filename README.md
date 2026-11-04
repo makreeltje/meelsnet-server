@@ -114,7 +114,7 @@ Traefik draait op LXC 101 en routeert **niet** via Docker-labels (behalve voor T
 
 De chain bepaalt de bescherming: `chain-authentik` (extern met Authentik-login), `chain-authentik-local` (alleen LAN + Authentik), `chain-local-only`, `chain-no-auth` (app heeft eigen login). Overzicht in [docs/SERVICES.md](docs/SERVICES.md#authentik-bescherming).
 
-Er zijn twee domeinen in gebruik (`DOMAINNAME_1` = `meelsnet.nl`, `DOMAINNAME_2` = `meels.net`); welke app waar hangt staat in SERVICES.md. TLS-certificaten komen via de Cloudflare DNS-challenge.
+Er zijn twee domeinen in gebruik (`DOMAINNAME_1` en `DOMAINNAME_2`, waarden in de `.env` op LXC 101); welke app waar hangt staat in SERVICES.md. TLS-certificaten komen via de Cloudflare DNS-challenge.
 
 ### Deployment (GitOps)
 

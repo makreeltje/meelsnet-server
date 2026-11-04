@@ -1,11 +1,11 @@
 http:
   routers:
     frigate-rtr:
-      rule: 'Host(`frigate.{{env "DOMAINNAME_2"}}`)'
+      rule: 'Host(`frigate.int.{{env "DOMAINNAME_2"}}`)'
       entryPoints:
         - websecure
       middlewares:
-        - chain-authentik-local
+        - chain-local-only
       service: frigate-svc
       tls:
         certResolver: dns-cloudflare

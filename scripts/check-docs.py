@@ -5,7 +5,7 @@ Checks:
   1. Per LXC: the container_names of all active includes in lxc/<name>/compose.yml
      equal the container names in the matching "## LXC <id> — <name>" section.
   2. Every active Traefik route in traefik/services/ has its hostname
-     (`sub.`D1 or `sub.`D2) mentioned in docs/SERVICES.md.
+     (`sub.`D1, `sub.`D2 or `sub.`INT) mentioned in docs/SERVICES.md.
 
 Standard library only. Exit code 1 on any mismatch.
 """
@@ -15,7 +15,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 DOC = ROOT / "docs" / "SERVICES.md"
-DOMAIN_ALIAS = {"DOMAINNAME_1": "D1", "DOMAINNAME_2": "D2"}
+DOMAIN_ALIAS = {"DOMAINNAME_1": "D1", "DOMAINNAME_2": "D2", "int.DOMAINNAME_2": "INT"}
 
 
 def active_includes(lxc_compose: Path):
@@ -44,13 +44,14 @@ def documented_containers(doc_text: str):
 
 def route_hosts():
     hosts = {}
-    pat = re.compile(r"Host\(`([a-z0-9-]+)\.\{\{env \"(DOMAINNAME_[12])\"\}\}`\)")
+    pat = re.compile(r"Host\(`([a-z0-9-]+)\.(int\.)?\{\{env \"(DOMAINNAME_[12])\"\}\}`\)")
     for f in sorted((ROOT / "traefik" / "services").rglob("*.y*ml")):
         for line in f.read_text().splitlines():
             if line.lstrip().startswith("#"):
                 continue
-            for sub, dom in pat.findall(line):
-                hosts.setdefault(f"`{sub}.`{DOMAIN_ALIAS[dom]}", f.relative_to(ROOT))
+            for sub, internal, dom in pat.findall(line):
+                alias = DOMAIN_ALIAS[internal + dom]
+                hosts.setdefault(f"`{sub}.`{alias}", f.relative_to(ROOT))
     return hosts
 
 

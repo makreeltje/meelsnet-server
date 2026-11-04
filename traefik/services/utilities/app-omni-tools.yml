@@ -1,11 +1,11 @@
 http:
   routers:
     omni-tools-rtr:
-      rule: 'Host(`tools.{{env "DOMAINNAME_1"}}`)'
+      rule: 'Host(`tools.int.{{env "DOMAINNAME_2"}}`)'
       entryPoints:
         - websecure
       middlewares:
-        - chain-authentik-local
+        - chain-local-only
       service: omni-tools-svc
       tls:
         certResolver: dns-cloudflare

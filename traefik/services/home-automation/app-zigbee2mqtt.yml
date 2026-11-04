@@ -1,11 +1,11 @@
 http:
   routers:
     zigbee2mqtt-rtr:
-      rule: 'Host(`z2m.{{env "DOMAINNAME_2"}}`)'
+      rule: 'Host(`z2m.int.{{env "DOMAINNAME_2"}}`)'
       entryPoints:
         - websecure
       middlewares:
-        - chain-authentik-local
+        - chain-local-only
       service: zigbee2mqtt-svc
       tls:
         certResolver: dns-cloudflare

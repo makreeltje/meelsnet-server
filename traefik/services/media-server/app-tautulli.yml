@@ -2,11 +2,11 @@ http:
   routers:
     # --- ROUTER 1: Secure the Web UI (Default) ---
     tautulli-rtr:
-      rule: 'Host(`tautulli.{{env "DOMAINNAME_1"}}`)'
+      rule: 'Host(`tautulli.int.{{env "DOMAINNAME_2"}}`)'
       entryPoints:
         - websecure
       middlewares:
-        - chain-authentik-local
+        - chain-local-only
       service: tautulli-svc
       tls:
         certResolver: dns-cloudflare
