@@ -2,11 +2,11 @@ http:
   routers:
     # --- ROUTER 1: Secure the Web UI (Default) ---
     radarr-rtr:
-      rule: 'Host(`movies.{{env "DOMAINNAME_2"}}`)'
+      rule: 'Host(`movies.int.meels.net`)'
       entryPoints:
         - websecure
       middlewares:
-        - chain-authentik-local
+        - chain-local-only
       service: radarr-svc
       tls:
         certResolver: dns-cloudflare

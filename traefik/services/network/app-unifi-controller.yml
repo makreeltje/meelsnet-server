@@ -1,11 +1,11 @@
 http:
   routers:
     unifi-rtr:
-      rule: 'Host(`unifi.{{env "DOMAINNAME_1"}}`)'
+      rule: 'Host(`unifi.int.meels.net`)'
       entryPoints:
         - websecure
       middlewares:
-        - chain-authentik-local
+        - chain-local-only
       service: unifi-svc
       tls:
         certResolver: dns-cloudflare

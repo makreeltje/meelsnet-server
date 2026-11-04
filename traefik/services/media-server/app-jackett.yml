@@ -1,11 +1,11 @@
 http:
   routers:
     jackett-rtr:
-      rule: 'Host(`jackett.{{env "DOMAINNAME_2"}}`)'
+      rule: 'Host(`jackett.int.meels.net`)'
       entryPoints:
         - websecure
       middlewares:
-        - chain-authentik-local
+        - chain-local-only
       service: jackett-svc
       tls:
         certResolver: dns-cloudflare

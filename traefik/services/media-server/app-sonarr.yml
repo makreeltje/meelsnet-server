@@ -2,11 +2,11 @@ http:
   routers:
     # --- ROUTER 1: Secure the Web UI (Default) ---
     sonarr-rtr:
-      rule: 'Host(`series.{{env "DOMAINNAME_2"}}`)'
+      rule: 'Host(`series.int.meels.net`)'
       entryPoints:
         - websecure
       middlewares:
-        - chain-authentik-local
+        - chain-local-only
       service: sonarr-svc
       tls:
         certResolver: dns-cloudflare

@@ -1,11 +1,11 @@
 http:
   routers:
     nodered-rtr:
-      rule: 'Host(`nodered.{{env "DOMAINNAME_2"}}`)'
+      rule: 'Host(`nodered.int.meels.net`)'
       entryPoints:
         - websecure
       middlewares:
-        - chain-authentik-local
+        - chain-local-only
       service: nodered-svc
       tls:
         certResolver: dns-cloudflare

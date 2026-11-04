@@ -1,11 +1,11 @@
 http:
   routers:
     prometheus-rtr:
-      rule: 'Host(`prometheus.{{env "DOMAINNAME_1"}}`)'
+      rule: 'Host(`prometheus.int.meels.net`)'
       entryPoints:
         - websecure
       middlewares:
-        - chain-authentik-local
+        - chain-local-only
       service: prometheus-svc
       tls:
         certResolver: dns-cloudflare

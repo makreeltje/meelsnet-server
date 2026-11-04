@@ -2,11 +2,11 @@ http:
   routers:
     # --- ROUTER 1: Secure the Web UI (Default) ---
     sonarr-anime-rtr:
-      rule: 'Host(`anime.{{env "DOMAINNAME_2"}}`)'
+      rule: 'Host(`anime.int.meels.net`)'
       entryPoints:
         - websecure
       middlewares:
-        - chain-authentik-local
+        - chain-local-only
       service: sonarr-anime-svc
       tls:
         certResolver: dns-cloudflare

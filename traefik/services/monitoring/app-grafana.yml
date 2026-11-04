@@ -1,11 +1,11 @@
 http:
   routers:
     grafana-rtr:
-      rule: 'Host(`grafana.{{env "DOMAINNAME_2"}}`)'
+      rule: 'Host(`grafana.int.meels.net`)'
       entryPoints:
         - websecure
       middlewares:
-        - chain-authentik-local
+        - chain-local-only
       service: grafana-svc
       tls:
         certResolver: dns-cloudflare

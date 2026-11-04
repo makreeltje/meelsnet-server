@@ -1,11 +1,11 @@
 http:
   routers:
     agregarr-rtr:
-      rule: 'Host(`agregarr.{{env "DOMAINNAME_2"}}`)'
+      rule: 'Host(`agregarr.int.meels.net`)'
       entryPoints:
         - websecure
       middlewares:
-        - chain-authentik-local
+        - chain-local-only
       service: agregarr-svc
       tls:
         certResolver: dns-cloudflare

@@ -1,11 +1,11 @@
 http:
   routers:
     hyperion-rtr:
-      rule: 'Host(`hyperion.{{env "DOMAINNAME_2"}}`)'
+      rule: 'Host(`hyperion.int.meels.net`)'
       entryPoints:
         - websecure
       middlewares:
-        - chain-authentik-local
+        - chain-local-only
       service: hyperion-svc
       tls:
         certResolver: dns-cloudflare

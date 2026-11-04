@@ -2,11 +2,11 @@ http:
   routers:
     # --- ROUTER 1: Secure the Web UI (Default) ---
     qbittorrent-rtr:
-      rule: 'Host(`qbittorrent.{{env "DOMAINNAME_1"}}`)'
+      rule: 'Host(`qbittorrent.int.meels.net`)'
       entryPoints:
         - websecure
       middlewares:
-        - chain-authentik-local
+        - chain-local-only
       service: qbittorrent-svc
       tls:
         certResolver: dns-cloudflare

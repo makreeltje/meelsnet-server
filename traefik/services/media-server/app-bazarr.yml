@@ -2,11 +2,11 @@ http:
   routers:
     # --- ROUTER 1: Secure the Web UI (Default) ---
     bazarr-rtr:
-      rule: 'Host(`subtitles.{{env "DOMAINNAME_2"}}`)'
+      rule: 'Host(`subtitles.int.meels.net`)'
       entryPoints:
         - websecure
       middlewares:
-        - chain-authentik-local
+        - chain-local-only
       service: bazarr-svc
       tls:
         certResolver: dns-cloudflare

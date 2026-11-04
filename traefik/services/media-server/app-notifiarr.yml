@@ -1,11 +1,11 @@
 http:
   routers:
     notifiarr-rtr:
-      rule: 'Host(`notifiarr.{{env "DOMAINNAME_2"}}`)'
+      rule: 'Host(`notifiarr.int.meels.net`)'
       entryPoints:
         - websecure
       middlewares:
-        - chain-authentik-local
+        - chain-local-only
       service: notifiarr-svc
       tls:
         certResolver: dns-cloudflare
