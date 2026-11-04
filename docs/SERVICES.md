@@ -6,7 +6,8 @@ Wat hier **niet** staat, omdat het te snel verloopt: image-versies (Renovate beh
 
 ## Conventies
 
-- **Domeinen.** Er zijn twee domeinen in gebruik, ingesteld in de `.env` van de infra-LXC: `DOMAINNAME_1` = `meelsnet.nl` en `DOMAINNAME_2` = `meels.net`. De migratie naar `meels.net` is gaande, dus een app staat onder het domein dat in `traefik/services/<groep>/app-<naam>.yml` staat. In de tabellen hieronder: **D1** = `meelsnet.nl`, **D2** = `meels.net`.
+- **Domeinen.** Er zijn twee domeinen in gebruik, ingesteld in de `.env` van de infra-LXC: `DOMAINNAME_1` en `DOMAINNAME_2`; de waarden staan in de `.env` van de infra-LXC, niet in de repo. De migratie naar het tweede domein is gaande, dus een app staat onder het domein dat in `traefik/services/<groep>/app-<naam>.yml` staat. In de tabellen hieronder: **D1** = `DOMAINNAME_1`, **D2** = `DOMAINNAME_2`, **INT** = `int.`D2.
+- **Interne zone.** Alles wat alleen via LAN of Tailscale bereikbaar hoort te zijn staat onder `*.int.`D2 (afgeleid van `DOMAINNAME_2`, geen eigen `.env`-variabele). Er bestaat geen publiek DNS-record voor deze zone: alleen Pi-hole (split DNS) beantwoordt hem, met het LAN-adres van infra. Het wildcard-certificaat voor `*.int.`D2 komt via dezelfde Cloudflare DNS-challenge. Oude interne hostnamen onder D1 en D2 zijn vervallen, zonder redirect.
 - **Routing.** Traefik (infra) routeert via de *file provider*, niet via Docker-labels. De regels staan in `traefik/services/`, de backend is steeds `http://<LXC-IP>:<host-poort>`. Alleen Traefik zelf en Authentik gebruiken labels.
 - **Authenticatie.** De kolom *Chain* is de Traefik middleware-chain uit `traefik/chains/`, zie [Authentik-bescherming](#authentik-bescherming).
 - **Netwerk.** Elke LXC heeft één bridge `t3_proxy`; alleen infra legt het subnet vast (`10.2.0.0/16`).
@@ -18,8 +19,8 @@ Wat hier **niet** staat, omdat het te snel verloopt: image-versies (Renovate beh
 | Chain | Wat het doet | Gebruik |
 |---|---|---|
 | `chain-authentik` | rate-limit, secure headers, Authentik forward-auth | Extern bereikbaar met Authentik-login |
-| `chain-authentik-local` | als hierboven, maar eerst `local-only` (alleen LAN-, thuis- en Docker-subnetten) | Beheer-UI's, alleen lokaal |
-| `chain-local-only` | secure headers + local-only, geen login | Apps met eigen toegangsbeperking |
+| `chain-authentik-local` | als hierboven, maar eerst `local-only` | Nu door geen enkele actieve route gebruikt |
+| `chain-local-only` | secure headers + IP-allowlist (loopback, LAN, thuis-subnet, Docker, Tailscale `100.64.0.0/10`), geen login | Alle interne `*.int.`D2-routes; de IP-allowlist is de enige bescherming |
 | `chain-no-auth` | rate-limit + secure headers | Apps met eigen login (Plex, Immich, HA, ...) of publieke endpoints |
 | `chain-nextcloud` | rate-limit + Nextcloud-headers/redirects | Nextcloud |
 | `chain-basic-auth`, `chain-oauth`, `chain-unifi`, `chain-vgz-whitelist` | zie `traefik/chains/` | Nu door geen enkele actieve route gebruikt |
@@ -32,14 +33,14 @@ Ingress, authenticatie en gedeelde datastores. Entrypoint: `lxc/infra/compose.ym
 
 | Container | Rol | Poorten (host) | Hostname | Chain |
 |---|---|---|---|---|
-| `traefik` | Reverse proxy, TLS via Cloudflare DNS-challenge | 80, 443 | `traefik.`D1 (label) | authentik-local |
+| `traefik` | Reverse proxy, TLS via Cloudflare DNS-challenge | 80, 443 | `traefik.`INT (label) | local-only |
 | `authentik` | SSO / identity provider | intern 9000 | `authentik.`D1 (label) | no-auth |
 | `authentik-worker` | Authentik achtergrondtaken (zelfde versie als `authentik`) | — | — | — |
 | `postgres` | Gedeelde PostgreSQL (Immich-variant met vectorchord/pgvectors) | 5432 (LXC-IP) | — | — |
 | `redis` | Gedeelde Redis | 6379 (LXC-IP) | — | — |
 | `mariadb` | MariaDB | 3306 (LXC-IP) | — | — |
 | `adminer` | DB-beheer-UI | 8083 (LXC-IP) | geen route | — |
-| `portainer` | Portainer-server | 9000, 8000, 9443 | `portainer.`D1 | authentik-local |
+| `portainer` | Portainer-server | 9000, 8000, 9443 | `portainer.`INT | local-only |
 | `cadvisor`, `alloy`, `portainer-agent` | standaardcontainers | | | |
 
 **Afhankelijkheden**
@@ -57,25 +58,25 @@ Streaming, downloads en Arr-ecosysteem. Entrypoint: `lxc/media/compose.yml`.
 |---|---|---|---|---|
 | `plex` | Mediaserver | 32400 e.a. | `plex.`D1 | no-auth |
 | `jellyfin` | Mediaserver | 8096 | `jellyfin.`D1 | no-auth |
-| `sonarr` | Series | 8989 | `series.`D2 | authentik |
-| `sonarr-anime` | Series (anime) | 8999 | `anime.`D2 | authentik-local |
-| `radarr` | Films | 7878 | `movies.`D2 | authentik |
-| `radarr-4k` | Films 4K | 7879 | `movies-4k.`D2 | authentik-local |
-| `prowlarr` | Indexer-beheer | 9696 | `prowlarr.`D1 | authentik-local |
-| `jackett` | Indexer-proxy | 9117 (LXC-IP) | `jackett.`D2 | authentik-local |
-| `sabnzbd` | Usenet-client | 8082 | `sab.`D1 | authentik-local |
+| `sonarr` | Series | 8989 | `series.`INT | local-only |
+| `sonarr-anime` | Series (anime) | 8999 | `anime.`INT | local-only |
+| `radarr` | Films | 7878 | `movies.`INT | local-only |
+| `radarr-4k` | Films 4K | 7879 | `movies-4k.`INT | local-only |
+| `prowlarr` | Indexer-beheer | 9696 | `prowlarr.`INT | local-only |
+| `jackett` | Indexer-proxy | 9117 (LXC-IP) | `jackett.`INT | local-only |
+| `sabnzbd` | Usenet-client | 8082 | `sab.`INT | local-only |
 | `gluetun` | VPN-tunnel en killswitch voor qbittorrent (PIA, OpenVPN) | 8083 (qbittorrent-UI) | n.v.t. | n.v.t. |
-| `qbittorrent` | Torrent-client (via gluetun) | 8083 (UI) | `qbittorrent.`D1 | authentik-local |
-| `bazarr` | Ondertitels | 6767 | `subtitles.`D2 | authentik-local |
+| `qbittorrent` | Torrent-client (via gluetun) | 8083 (UI) | `qbittorrent.`INT | local-only |
+| `bazarr` | Ondertitels | 6767 | `subtitles.`INT | local-only |
 | `seerr` | Aanvragen | 5055 | `request.`D1 | no-auth (eigen login) |
 | `wizarr` | Uitnodigingen | 5690 | `invite.`D1 | no-auth |
-| `tautulli` | Plex-statistieken | 8181 | `tautulli.`D1 | authentik-local |
-| `tracearr` | Streaming-monitoring | 3000 | `tracearr.`D1 | authentik-local |
+| `tautulli` | Plex-statistieken | 8181 | `tautulli.`INT | local-only |
+| `tracearr` | Streaming-monitoring | 3000 | `tracearr.`INT | local-only |
 | `tracearr-db` | TimescaleDB voor tracearr | intern 5432 | — | — |
-| `watchstate` | Watch-state sync | 8081 (LXC-IP) | `watchstate.`D1 | authentik-local |
-| `profilarr` | Arr-profielbeheer | 6868 (LXC-IP) | `profilarr.`D1 | authentik-local |
-| `agregarr` | Lijstbeheer | 7171 (LXC-IP) | `agregarr.`D2 | authentik-local |
-| `notifiarr` | Notificaties | 5454 (LXC-IP) | `notifiarr.`D2 | authentik-local |
+| `watchstate` | Watch-state sync | 8081 (LXC-IP) | `watchstate.`INT | local-only |
+| `profilarr` | Arr-profielbeheer | 6868 (LXC-IP) | `profilarr.`INT | local-only |
+| `agregarr` | Lijstbeheer | 7171 (LXC-IP) | `agregarr.`INT | local-only |
+| `notifiarr` | Notificaties | 5454 (LXC-IP) | `notifiarr.`INT | local-only |
 | `cadvisor`, `alloy`, `portainer-agent` | standaardcontainers | | | |
 
 **Afhankelijkheden en paden**
@@ -91,12 +92,12 @@ Domotica en MQTT. Entrypoint: `lxc/home/compose.yml`.
 | Container | Rol | Poorten (host) | Hostname | Chain |
 |---|---|---|---|---|
 | `homeassistant` | Home Assistant (host-netwerk) | 8123 | `home.`D2 | no-auth (eigen login) |
-| `zigbee2mqtt` | Zigbee-bridge | 8080 (LXC-IP) | `z2m.`D2 | authentik-local |
+| `zigbee2mqtt` | Zigbee-bridge | 8080 (LXC-IP) | `z2m.`INT | local-only |
 | `mosquitto` | MQTT-broker | 1883 (LXC-IP) | geen route | — |
-| `frigate` | NVR / object detection | 5001→5000, 8554, 8555 | `frigate.`D2 | authentik |
-| `nodered` | Node-RED | 1880 (LXC-IP) | `nodered.`D2 | authentik-local |
+| `frigate` | NVR / object detection | 5001→5000, 8554, 8555 | `frigate.`INT | local-only |
+| `nodered` | Node-RED | 1880 (LXC-IP) | `nodered.`INT | local-only |
 | `musicassistant` | Music Assistant | 8095 | `music.`D2 | no-auth |
-| `hyperion` | Ambilight (host-netwerk) | 8090 | `hyperion.`D2 | authentik-local |
+| `hyperion` | Ambilight (host-netwerk) | 8090 | `hyperion.`INT | local-only |
 | `cadvisor`, `alloy`, `portainer-agent` | standaardcontainers | | | |
 
 **Afhankelijkheden en paden**
@@ -114,14 +115,14 @@ Foto's, documenten, automatisering, back-up en losse tools. Entrypoint: `lxc/pro
 | `paperless` | Documentbeheer | 8000 (LXC-IP) | `paperless.`D1 | no-auth (eigen OIDC-login) |
 | `nextcloud` | Bestanden en samenwerking | 8081 (LXC-IP) | `cloud.`D1, `cloud.`D2 | nextcloud |
 | `n8n` | Workflows | 5678 (LXC-IP) | `n8n.`D2 | authentik |
-| `backrest` | Back-ups (restic) | 9898 (LXC-IP) | `backup.`D2 | authentik-local |
+| `backrest` | Back-ups (restic) | 9898 (LXC-IP) | `backup.`INT | local-only |
 | `budget-tracker` | Budget-app (eigen image) | 8090 | `budget.`D2 | local-only |
 | `budget-tracker-demo` | Demo-instantie | 8091 | `budget-demo.`D2 | local-only |
-| `spoolman` | Filament-beheer | 8001 | `spoolman.`D1 | authentik-local |
+| `spoolman` | Filament-beheer | 8001 | `spoolman.`INT | local-only |
 | `prints-portal-2` | Printportaal (eigen image) | 8004 (LXC-IP) | `printer.`D2, `printer-2.`D2 | no-auth |
-| `convertx` | Bestandsconversie | 3000 (LXC-IP) | `convert.`D2 | authentik-local |
-| `it-tools` | IT-Tools | 8082 | `it-tools.`D2 | authentik-local |
-| `omni-tools` | Omni-Tools | 8083 | `tools.`D1 | authentik-local |
+| `convertx` | Bestandsconversie | 3000 (LXC-IP) | `convert.`INT | local-only |
+| `it-tools` | IT-Tools | 8082 | `it-tools.`INT | local-only |
+| `omni-tools` | Omni-Tools | 8083 | `tools.`INT | local-only |
 | `chromium` | Headless Chromium (browserless) | 3001 | geen route | — |
 | `cadvisor`, `alloy`, `portainer-agent` | standaardcontainers | | | |
 
@@ -138,8 +139,8 @@ Netwerkbeheer. Entrypoint: `lxc/network/compose.yml`.
 
 | Container | Rol | Poorten (host) | Hostname | Chain |
 |---|---|---|---|---|
-| `unifi-os` | UniFi OS Server (bevat MongoDB) | o.a. 8080 (device inform), 8443, 11443→443, 3478/udp, 10001, 10003 | `unifi.`D1 (→ `https://<LXC>:11443`) | authentik-local |
-| `pihole` | DNS voor Tailscale split DNS (wildcard D1 en D2 → Traefik op infra) | 53 tcp/udp en 80 (LXC-IP en LAN-adres) | geen route | — |
+| `unifi-os` | UniFi OS Server (bevat MongoDB) | o.a. 8080 (device inform), 8443, 11443→443, 3478/udp, 10001, 10003 | `unifi.`INT (→ `https://<LXC>:11443`) | local-only |
+| `pihole` | DNS voor Tailscale split DNS (wildcard `int.`D2 → Traefik op infra) | 53 tcp/udp en 80 (LXC-IP en LAN-adres) | geen route | — |
 | `cadvisor`, `alloy`, `portainer-agent` | standaardcontainers | | | |
 
 - **Pi-hole** is alleen DNS voor Tailscale-apparaten (split DNS); de Experia Box blijft DNS voor de rest van het huis. Het LAN-adres van de LXC en het LAN-adres van infra (`LXC_LAN_IP`, `LXC_INFRA_LAN_IP`) staan alleen in de `.env`, niet in de repo. De web-UI (poort 80) luistert op het service-net en op het LAN-adres van de LXC; de route `traefik/services/network/app-pihole.yml` is bewust volledig uitgecommentarieerd (niet verwijderen: de controller haalt verwijderde bestanden niet van de LXC, zie [GITOPS.md](../GITOPS.md#traefik-regels)).
@@ -151,8 +152,8 @@ Metrics, dashboards, logs en alerts. Entrypoint: `lxc/monitoring/compose.yml`.
 
 | Container | Rol | Poorten (host) | Hostname | Chain |
 |---|---|---|---|---|
-| `prometheus` | Metrics (retentie op grootte, 25 GB) | 9090 (LXC-IP) | `prometheus.`D1 | authentik-local |
-| `grafana` | Dashboards | 3000 | `grafana.`D2 | authentik-local |
+| `prometheus` | Metrics (retentie op grootte, 25 GB) | 9090 (LXC-IP) | `prometheus.`INT | local-only |
+| `grafana` | Dashboards | 3000 | `grafana.`INT | local-only |
 | `loki` | Logs | 3100 (LXC-IP) | geen route | — |
 | `alertmanager` | Alerts | 9093 (LXC-IP) | geen route | — |
 | `node-exporter` | Host-metrics van deze LXC | 9100 (LXC-IP) | — | — |
@@ -177,4 +178,4 @@ Metrics, dashboards, logs en alerts. Entrypoint: `lxc/monitoring/compose.yml`.
 ## Documentatie actueel houden
 
 - Bij elke PR die een service toevoegt, verwijdert of een route/chain wijzigt: pas deze pagina aan. De PR-template heeft hier een checkbox voor.
-- `scripts/check-docs.py` (draait in CI, workflow *Docs*, bij wijzigingen in `compose/`, `lxc/` en `traefik/`) controleert dat elke `container_name` uit de geïncludete compose-bestanden in de juiste LXC-sectie hierboven staat, dat er geen container in staat die niet meer bestaat, en dat elke actieve Traefik-route in `traefik/services/` een hostnaam-vermelding in dit document heeft. Lokaal draaien: `python3 scripts/check-docs.py`.
+- `scripts/check-docs.py` (draait in CI, workflow *Docs*, bij wijzigingen in `compose/`, `lxc/` en `traefik/`) controleert dat elke `container_name` uit de geïncludeerde compose-bestanden in de juiste LXC-sectie hierboven staat, dat er geen container in staat die niet meer bestaat, en dat elke actieve Traefik-route in `traefik/services/` een hostnaam-vermelding in dit document heeft. Lokaal draaien: `python3 scripts/check-docs.py`.
