@@ -111,6 +111,16 @@
       ],
     },
     {
+      description: 'Group Nextcloud and its cron sidecar (same image) so the two never drift',
+      matchDatasources: [
+        'docker',
+      ],
+      matchPackageNames: [
+        'nextcloud',
+      ],
+      groupName: 'Nextcloud Stack',
+    },
+    {
       description: 'Group Arr stack minor and patch updates into one PR (majors stay separate for review)',
       matchDatasources: [
         'docker',
