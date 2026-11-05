@@ -1,0 +1,23 @@
+groups:
+  - name: host-io
+    interval: 1m
+    rules:
+      # node-exporter leest /proc/vmstat van de Proxmox-host (niet gevirtualiseerd in LXC).
+      # pswpout telt pagina's (4 KiB op x86_64).
+      - alert: HostSwapOutHigh
+        expr: rate(node_vmstat_pswpout[5m]) * 4096 > 5e6
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Host swapt veel uit: {{ $labels.instance }}"
+          description: "De Proxmox-host schrijft al 15 minuten meer dan 5 MB/s naar swap ({{ $value | humanize1024 }}B/s). Risico op swapthrash en 100% schijfbelasting."
+
+      - alert: MediaRaidBusy
+        expr: rate(node_disk_io_time_seconds_total{device="md5"}[5m]) > 0.9
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Media-RAID zwaar belast: {{ $labels.device }}"
+          description: "Schijfbelasting van {{ $labels.device }} is al 10 minuten boven 90% (nu {{ $value | humanizePercentage }})."
