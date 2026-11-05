@@ -11,6 +11,10 @@ services:
       - /dev/dri:/dev/dri
     environment:
       FRIGATE_RTSP_PASSWORD: $FRIGATE_RTSP_PASSWORD
+      FRIGATE_MQTT_USER: $MOSQUITTO_USER
+      FRIGATE_MQTT_PASSWORD: $MOSQUITTO_PASS
+      FRIGATE_REOLINK_USER: $FRIGATE_REOLINK_USER
+      FRIGATE_REOLINK_PASSWORD: $FRIGATE_REOLINK_PASS
       LIBVA_DRIVER_NAME: i965
     volumes:
       - /etc/localtime:/etc/localtime:ro
