@@ -1,0 +1,16 @@
+http:
+  routers:
+    proxmenux-rtr:
+      rule: 'Host(`proxmenux.int.{{env "DOMAINNAME_2"}}`)'
+      entryPoints:
+        - websecure
+      middlewares:
+        - chain-local-only
+      service: proxmenux-svc
+      tls:
+        certResolver: dns-cloudflare
+  services:
+    proxmenux-svc:
+      loadBalancer:
+        servers:
+          - url: 'http://192.168.2.200:8008'
