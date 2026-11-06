@@ -36,7 +36,7 @@ De GitOps controller draait **op Proxmox zelf** en ontvangt alleen een webhook n
 
 ### Path → LXC mapping
 
-De mapping wordt **dynamisch afgeleid** uit de `include:` regels in elke `lxc/<name>/compose.yml` — er is geen hardcoded tabel in de controller. Wijzig je een compose file onder `compose/<stack>/`, dan raakt dat elke LXC die een bestand uit die directory include't. De actuele indeling:
+De mapping wordt **dynamisch afgeleid** uit de `include:` regels in elke `lxc/<name>/compose.yml` — er is geen hardcoded tabel in de controller. Wijzig je een `compose.*.yml` onder `compose/<stack>/`, dan raakt dat alleen de LXC's die **precies dat bestand** include'en (bv. `compose.prometheus.yml` → alleen monitoring; `compose.cadvisor.yml`/`compose.alloy.yml`/`compose.portainer-agent.yml` zitten in elke LXC en raken dus alle zes). Andere bestanden in een `compose/<stack>/` directory (geen `compose.*.yml`) raken nog steeds elke LXC die uit die directory include't. Een compose-file die geen enkele LXC include't (bv. `compose.promtail.yml`) triggert geen deploy. De actuele indeling:
 
 | Gewijzigd pad | LXC | Container |
 |---|---|---|
@@ -45,8 +45,8 @@ De mapping wordt **dynamisch afgeleid** uit de `include:` regels in elke `lxc/<n
 | `compose/home-automation/*` | 103 | home |
 | `compose/productivity/*` | 104 | productivity |
 | `compose/network/*` | 105 | network |
-| `compose/monitoring/*` | 106 | monitoring |
-| `compose/utilities/*` | meerdere — welke LXC's precies hangt af van welke `lxc/*/compose.yml` een file uit deze directory include't (op dit moment: infra, media, home, productivity, network en monitoring, elk voor een andere subset van tools) | — |
+| `compose/monitoring/*` | 106 (maar `compose.cadvisor.yml` en `compose.alloy.yml`: alle LXC's) | monitoring |
+| `compose/utilities/compose.*.yml` | meerdere — per bestand de LXC's waarvan `lxc/*/compose.yml` dat bestand include't (op dit moment: infra, media, home, productivity, network en monitoring, elk voor een andere subset van tools) | — |
 | `lxc/<name>/*` | bijbehorende LXC | |
 | `traefik/**` | geen LXC-deploy; synct naar infra (101), zie "Traefik-regels" | |
 | `compose/fragments/*` | **ALLE** | shared dependency |
