@@ -8,10 +8,12 @@ services:
     profiles: [ "productivity", "all" ]
     environment:
       PAPERLESS_REDIS: redis://$LXC_INFRA_IP:6379
+      PAPERLESS_DBENGINE: postgresql
       PAPERLESS_DBHOST: $LXC_INFRA_IP
       PAPERLESS_DBNAME: $PAPERLESS_DBNAME
       PAPERLESS_DBUSER: $PAPERLESS_DBUSER
       PAPERLESS_DBPASS: $PAPERLESS_DBPASS
+      PAPERLESS_SECRET_KEY: $PAPERLESS_SECRET_KEY
       PAPERLESS_URL: https://paperless.$DOMAINNAME_1
       PAPERLESS_APPS: allauth.socialaccount.providers.openid_connect
       PAPERLESS_SOCIALACCOUNT_PROVIDERS: >
