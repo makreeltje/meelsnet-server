@@ -9,29 +9,29 @@ De oorspronkelijke opzet (een GitHub Actions deploy-workflow) was **push-based**
 De GitOps controller draait **op Proxmox zelf** en ontvangt alleen een webhook notificatie. GitHub heeft geen SSH, geen Tailscale, en geen credentials. Het enige dat GitHub kent is een webhook URL met een gedeeld HMAC secret.
 
 ```
-┌─────────────────────────────────────────────────────────────┐
+┌───────────────────────────────────────────────────────────────────┐
 │                         VOORHEEN                            │
 │                                                             │
 │  GitHub Actions ──tailscale──> SSH ──> Proxmox ──> LXCs    │
 │  (push-based, GitHub heeft server-toegang)                  │
-└─────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 
-┌─────────────────────────────────────────────────────────────┐
+┌───────────────────────────────────────────────────────────────────┐
 │                          NU                                 │
 │                                                             │
 │  GitHub ──webhook (HMAC signed)──> Proxmox webhook listener │
 │  Listener triggert controller → git pull → deploy naar LXCs │
 │  (GitHub kent alleen de webhook URL, geen server-toegang)   │
-└─────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ## Hoe werkt het?
 
 1. PR wordt gemerged naar `main` (handmatig of via Renovate auto-merge)
-2. GitHub stuurt een push webhook naar de Proxmox webhook listener. Als vangnet voor gemiste webhooks draait `gitops-sync.timer` elke 5 minuten `gitops-controller.sh sync`
+2. GitHub stuurt een push webhook naar de Proxmox webhook listener. Er is bewust geen periodieke timer: alleen webhooks deployen (een gemiste webhook los je op met `gitops-controller.sh sync` of *Redeliver* in GitHub)
 3. Listener verifieert de HMAC-SHA256 signature en accepteert het event
 3b. Elke ontvangen request wordt gelogd (`Request:`/`Payload:`/`Rejected`/`Ignoring` met `delivery=<X-GitHub-Delivery>`), ook als hij genegeerd of geweigerd wordt; vergelijk met *Recent Deliveries* in GitHub om een gemiste push te vinden
-4. Controller neemt eerst een `flock` (`$STATE_DIR/gitops.lock`) zodat webhook-, timer- en handmatige runs serieel lopen, en doet dan `git fetch` + `git diff` om gewijzigde files te bepalen
+4. Controller neemt eerst een `flock` (`$STATE_DIR/gitops.lock`) zodat webhook- en handmatige runs serieel lopen, en doet dan `git fetch` + `git diff` om gewijzigde files te bepalen
 5. Mapt gewijzigde files naar de juiste LXC container(s), de Traefik-regels of een host-managed pad
 6. Deployt alleen wat geraakt is: LXC's via `pct push` + `docker compose up -d`, Traefik-regels via een sync naar LXC 101, host-managed scripts via een lokale bestandskopie (zie hieronder)
 
@@ -89,7 +89,9 @@ De deploys pakken tarballs *over* de live mappen uit en verwijderen dus niets. D
 | `scripts/gitops/gitops-webhook.py` | Gekopieerd naar `/opt/gitops/gitops-webhook.py`, gevolgd door `systemctl restart gitops-webhook.service` — dit is een langlevende systemd service, dus een bestandskopie alleen verandert het gedrag niet totdat 'ie herstart. |
 | `scripts/gitops/gitops-webhook.service` | Gekopieerd naar `/etc/systemd/system/gitops-webhook.service`, gevolgd door `systemctl daemon-reload` + restart. |
 
-Elke stap logt naar `gitops.log` met een `Host sync:` prefix, en de status is zichtbaar via `gitops-controller.sh status` (aparte "Host-managed paths" sectie, analoog aan de LXC-status).
+Elke stap logt naar `gitops.log` met een `Host sync:` prefix, en de status is zichtbaar via `gitops-controller.sh status` (aparte "Host-managed paden" sectie, analoog aan de LXC-status).
+
+De oude `gitops-sync.timer`/`gitops-sync.service` bestaan niet meer. Bij elke `sync` verwijdert de controller ze idempotent van de host als ze er nog staan (`remove_legacy_sync_units`, logregel `Host sync: removed legacy ...`).
 
 Handmatig forceren kan met dedicated targets:
 
@@ -261,8 +263,6 @@ scripts/gitops/
 ├── gitops-controller.sh      # Deploy logica (draait op Proxmox)
 ├── gitops-webhook.py          # Webhook listener (Python, geen dependencies)
 ├── gitops-webhook.service     # systemd service voor webhook listener
-├── gitops-sync.service        # oneshot: gitops-controller.sh sync
-├── gitops-sync.timer          # elke 5 min, vangnet voor gemiste webhooks
 ├── config.env.example         # Configuratie template
 └── setup.sh                   # Installatie script voor Proxmox
 ```
