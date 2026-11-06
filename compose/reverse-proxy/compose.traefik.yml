@@ -31,7 +31,7 @@ services:
       - --accessLog.bufferingSize=100
       - --accessLog.format=json
       - --accessLog.filters.statusCodes=200-599
-      # RequestPath contains the full request URI including the querystring (apikey=***REDACTED*** X-Plex-Token=***REDACTED*** ...); Traefik cannot redact only the query
+      # RequestPath contains the full request URI including the querystring (apikey=, X-Plex-Token=, ...); Traefik cannot redact only the query
       - --accessLog.fields.names.RequestPath=drop
       # Headers: drop by default, keep only this allowlist (never Authorization, Cookie, Set-Cookie, X-Hub-Signature*, Authentik headers)
       - --accessLog.fields.headers.defaultMode=drop
