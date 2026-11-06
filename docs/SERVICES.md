@@ -39,7 +39,7 @@ Ingress, authenticatie en gedeelde datastores. Entrypoint: `lxc/infra/compose.ym
 | `postgres` | Gedeelde PostgreSQL (Immich-variant met vectorchord/pgvectors) | 5432 (LXC-IP) | — | — |
 | `redis` | Gedeelde Redis | 6379 (LXC-IP) | — | — |
 | `mariadb` | MariaDB | 3306 (LXC-IP) | — | — |
-| `adminer` | DB-beheer-UI | 8083 (LXC-IP) | geen route | — |
+| `adminer` | DB-beheer-UI | 8083 (LXC-IP) | `adminer.`INT | local-only |
 | `portainer` | Portainer-server | 9000, 8000, 9443 | `portainer.`INT | local-only |
 | `cadvisor`, `alloy`, `portainer-agent` | standaardcontainers | | | |
 
@@ -155,7 +155,7 @@ Metrics, dashboards, logs en alerts. Entrypoint: `lxc/monitoring/compose.yml`.
 | `prometheus` | Metrics (retentie op grootte, 25 GB) | 9090 (LXC-IP) | `prometheus.`INT | local-only |
 | `grafana` | Dashboards | 3000 | `grafana.`INT | local-only |
 | `loki` | Logs | 3100 (LXC-IP) | geen route | — |
-| `alertmanager` | Alerts | 9093 (LXC-IP) | geen route | — |
+| `alertmanager` | Alerts | 9093 (LXC-IP) | `alertmanager.`INT | local-only |
 | `node-exporter` | Host-metrics van deze LXC | 9100 (LXC-IP) | — | — |
 | `sonarr-exporter`, `radarr-exporter`, `prowlarr-exporter`, `sabnzbd-exporter` | Exportarr (poorten 9707, 9708, 9710, 9711) | LXC-IP | — | — |
 | `mosquitto-exporter` | Scrapet Mosquitto op LXC 103 | 9234 (LXC-IP) | — | — |
