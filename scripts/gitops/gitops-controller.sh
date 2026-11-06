@@ -386,6 +386,29 @@ sync_backup_scripts() {
   record_host_sync "backup-scripts" "OK" "$sha"
 }
 
+# The periodic gitops-sync.timer/.service were removed from the repo (webhooks
+# are the only deploy trigger). Removing files from the repo does not touch the
+# host, so disable and delete any leftover units. Idempotent: no-op once gone.
+remove_legacy_sync_units() {
+  local unit removed=0
+  for unit in gitops-sync.timer gitops-sync.service; do
+    if [[ -e "$SYSTEMD_DIR/$unit" ]]; then
+      # Only the timer is stopped: a sync started by the old timer runs inside
+      # gitops-sync.service, and stopping that would kill this very run.
+      if [[ "$unit" == *.timer ]]; then
+        systemctl disable --now "$unit" >/dev/null 2>&1 || true
+      fi
+      rm -f "$SYSTEMD_DIR/$unit"
+      log_info "Host sync: removed legacy $SYSTEMD_DIR/$unit"
+      removed=1
+    fi
+  done
+  if [[ $removed -eq 1 ]]; then
+    systemctl daemon-reload
+    systemctl reset-failed gitops-sync.service gitops-sync.timer >/dev/null 2>&1 || true
+  fi
+}
+
 # Updates the controller/webhook install itself. Restarts gitops-webhook.service
 # when webhook.py or the unit file changed — it's a long-running systemd
 # service, so a file copy alone doesn't change its running behavior. The
@@ -967,7 +990,7 @@ main() {
   shift || true
 
   case "$cmd" in
-    sync|deploy) acquire_deploy_lock ;;
+    sync|deploy) acquire_deploy_lock; remove_legacy_sync_units ;;
   esac
 
   case "$cmd" in
