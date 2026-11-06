@@ -114,7 +114,7 @@ Foto's, documenten, automatisering, back-up en losse tools. Entrypoint: `lxc/pro
 | `immich-machine-learning` | Immich ML | — | — | — |
 | `paperless` | Documentbeheer | 8000 (LXC-IP) | `paperless.`D1 | no-auth (eigen OIDC-login) |
 | `nextcloud` | Bestanden en samenwerking | 8081 (LXC-IP) | `cloud.`D1, `cloud.`D2 | nextcloud |
-| `n8n` | Workflows | 5678 (LXC-IP) | `n8n.`D2 | authentik |
+| `n8n` | Workflows | 5678 (LXC-IP) | `n8n.`INT | local-only (eigen login) |
 | `backrest` | Back-ups (restic) | 9898 (LXC-IP) | `backup.`INT | local-only |
 | `budget-tracker` | Budget-app (eigen image) | 8090 | `budget.`D2 | local-only |
 | `budget-tracker-demo` | Demo-instantie | 8091 | `budget-demo.`D2 | local-only |
