@@ -49,17 +49,18 @@ fi
 # Install systemd units
 echo "[5/8] Installing systemd units..."
 cp "$SCRIPT_DIR/gitops-webhook.service" /etc/systemd/system/
-cp "$SCRIPT_DIR/gitops-sync.service"   /etc/systemd/system/
-cp "$SCRIPT_DIR/gitops-sync.timer"     /etc/systemd/system/
 systemctl daemon-reload
 
 # Enable webhook service
 echo "[6/8] Enabling webhook service..."
 systemctl enable gitops-webhook.service
 
-# Enable and start the periodic sync timer
-echo "[7/8] Enabling periodic sync timer..."
-systemctl enable --now gitops-sync.timer
+# The periodic sync timer no longer exists (webhooks are the only trigger);
+# remove it if an older install left it behind.
+echo "[7/8] Removing legacy sync timer if present..."
+systemctl disable --now gitops-sync.timer 2>/dev/null || true
+rm -f /etc/systemd/system/gitops-sync.timer /etc/systemd/system/gitops-sync.service
+systemctl daemon-reload
 
 echo ""
 echo "=== Setup Complete ==="
@@ -92,13 +93,11 @@ echo "     -> Events: Just the push event"
 echo ""
 echo "  6. Start the services:"
 echo "     systemctl start gitops-webhook.service"
-echo "     systemctl start gitops-sync.timer   # periodic sync already enabled"
 echo ""
 echo "  7. Test with a manual sync:"
 echo "     /opt/gitops/gitops-controller.sh sync"
 echo ""
 echo "  8. Check status:"
 echo "     /opt/gitops/gitops-controller.sh status"
-echo "     systemctl list-timers gitops-sync.timer"
-echo "     journalctl -u gitops-sync.service -f"
+echo "     tail -f /var/log/gitops/gitops.log"
 echo "     journalctl -u gitops-webhook.service -f"
