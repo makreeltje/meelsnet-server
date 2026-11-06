@@ -1,0 +1,21 @@
+http:
+  routers:
+    proxmox-rtr:
+      rule: 'Host(`proxmox.int.{{env "DOMAINNAME_2"}}`)'
+      entryPoints:
+        - websecure
+      middlewares:
+        - chain-local-only
+      service: proxmox-svc
+      tls:
+        certResolver: dns-cloudflare
+  services:
+    proxmox-svc:
+      loadBalancer:
+        passHostHeader: true
+        serversTransport: "proxmox-insecure"
+        servers:
+          - url: 'https://192.168.2.200:8006'
+  serversTransports:
+    proxmox-insecure:
+      insecureSkipVerify: true # self-signed Proxmox cert; only used by proxmox-svc

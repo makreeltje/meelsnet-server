@@ -19,6 +19,15 @@ http:
       service: paperclip-svc
       tls:
         certResolver: dns-cloudflare
+    paperclip-int-rtr:
+      rule: 'Host(`paperclip.int.{{env "DOMAINNAME_2"}}`)'
+      entryPoints:
+        - websecure
+      middlewares:
+        - chain-local-only
+      service: paperclip-svc
+      tls:
+        certResolver: dns-cloudflare
   services:
     paperclip-svc:
       loadBalancer:
