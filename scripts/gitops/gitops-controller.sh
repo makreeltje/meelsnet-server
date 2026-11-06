@@ -568,13 +568,30 @@ get_lxc_compose_dirs() {
   }
 }
 
+# Explicit include paths from lxc/<name>/compose.yml (e.g.
+# "compose/monitoring/compose.prometheus.yml"), one per line.
+get_lxc_compose_files() {
+  local lxc_name="$1"
+  grep -oP '(?<=- )compose/[^[:space:]#]+' "$REPO_DIR/lxc/$lxc_name/compose.yml" | sort -u
+}
+
+# An LXC is affected when a changed file is:
+#   * under compose/fragments (shared by all LXCs),
+#   * under lxc/<name>/,
+#   * a compose.*.yml that this LXC includes explicitly, or
+#   * any other (non compose.*.yml) file in a compose/<dir> that this LXC
+#     includes from — e.g. a config file shipped next to the compose files.
+# A compose.*.yml that this LXC does NOT include does not affect it, so
+# compose.prometheus.yml only triggers monitoring, while the files that every
+# LXC includes (cadvisor, alloy, portainer-agent) still trigger all of them.
 lxc_is_affected() {
   local lxc_name="$1"
   shift
   local changed_files=("$@")
 
-  local -a dirs
+  local -a dirs files
   mapfile -t dirs < <(get_lxc_compose_dirs "$lxc_name")
+  mapfile -t files < <(get_lxc_compose_files "$lxc_name")
 
   for file in "${changed_files[@]}"; do
     # Check shared paths first
@@ -583,7 +600,14 @@ lxc_is_affected() {
         return 0
       fi
     done
-    # Check LXC-specific paths (derived from compose.yml)
+    # Compose files: only the ones this LXC includes
+    if [[ "$file" == compose/*/compose.*.yml ]]; then
+      for inc in "${files[@]}"; do
+        [[ "$file" == "$inc" ]] && return 0
+      done
+      continue
+    fi
+    # Everything else: directory level (derived from compose.yml)
     for dir in "${dirs[@]}"; do
       if [[ "$file" == "$dir"/* ]]; then
         return 0
