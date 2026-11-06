@@ -17,7 +17,7 @@ import os
 import subprocess
 import sys
 import threading
-from http.server import HTTPServer, BaseHTTPRequestHandler
+from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 
 # ---------------------------------------------------------------------------
 # Configuration (override via /etc/gitops/config.env or environment)
@@ -29,6 +29,9 @@ CONTROLLER_PATH = os.environ.get(
     "CONTROLLER_PATH", "/opt/gitops/gitops-controller.sh"
 )
 LOG_DIR = os.environ.get("LOG_DIR", "/var/log/gitops")
+# Per-connection socket timeout (seconds): a client that connects and then
+# stalls mid-request is dropped instead of occupying a handler thread forever.
+REQUEST_TIMEOUT = int(os.environ.get("WEBHOOK_REQUEST_TIMEOUT", "15"))
 
 # ---------------------------------------------------------------------------
 # Logging
@@ -133,6 +136,10 @@ def trigger_deploy():
 
 
 class WebhookHandler(BaseHTTPRequestHandler):
+    # StreamRequestHandler applies this to the connection socket, so slow
+    # reads (headers or body) raise instead of blocking indefinitely.
+    timeout = REQUEST_TIMEOUT
+
     def do_POST(self):
         if self.path != "/webhook":
             self.send_error(404)
@@ -232,7 +239,11 @@ def main():
         )
         sys.exit(1)
 
-    server = HTTPServer(("0.0.0.0", WEBHOOK_PORT), WebhookHandler)
+    # One thread per connection, so a slow or hung client cannot block other
+    # deliveries. Deploys stay serialised (deploy_lock here, flock in the
+    # controller).
+    server = ThreadingHTTPServer(("0.0.0.0", WEBHOOK_PORT), WebhookHandler)
+    server.daemon_threads = True
     log.info("GitOps webhook listener started on port %d", WEBHOOK_PORT)
     log.info("Endpoints: POST /webhook, GET /health")
 
