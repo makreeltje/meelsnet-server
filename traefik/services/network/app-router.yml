@@ -12,5 +12,6 @@ http:
   services:
     router-svc:
       loadBalancer:
+        passHostHeader: false
         servers:
           - url: 'http://192.168.2.254'
