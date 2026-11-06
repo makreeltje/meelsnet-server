@@ -1,0 +1,16 @@
+http:
+  routers:
+    3dprinter-rtr:
+      rule: 'Host(`3dprinter.int.{{env "DOMAINNAME_2"}}`)'
+      entryPoints:
+        - websecure
+      middlewares:
+        - chain-local-only
+      service: 3dprinter-svc
+      tls:
+        certResolver: dns-cloudflare
+  services:
+    3dprinter-svc:
+      loadBalancer:
+        servers:
+          - url: 'http://192.168.2.8'
