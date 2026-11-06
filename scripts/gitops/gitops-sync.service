@@ -8,5 +8,6 @@ Type=oneshot
 ExecStart=/opt/gitops/gitops-controller.sh sync
 WorkingDirectory=/opt/gitops
 EnvironmentFile=/etc/gitops/config.env
+Environment=GITOPS_TRIGGER=timer
 StandardOutput=append:/var/log/gitops/gitops.log
 StandardError=append:/var/log/gitops/gitops.log

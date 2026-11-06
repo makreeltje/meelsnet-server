@@ -17,7 +17,7 @@ import os
 import subprocess
 import sys
 import threading
-from http.server import HTTPServer, BaseHTTPRequestHandler
+from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 
 # ---------------------------------------------------------------------------
 # Configuration (override via /etc/gitops/config.env or environment)
@@ -29,6 +29,11 @@ CONTROLLER_PATH = os.environ.get(
     "CONTROLLER_PATH", "/opt/gitops/gitops-controller.sh"
 )
 LOG_DIR = os.environ.get("LOG_DIR", "/var/log/gitops")
+# The controller serialises runs itself (flock); this must exceed its lock wait
+# (LOCK_WAIT, default 900s) plus a normal run.
+CONTROLLER_TIMEOUT = int(os.environ.get("CONTROLLER_TIMEOUT", "1800"))
+# Per-connection socket timeout, so one stalled client can't hold up the handler.
+REQUEST_TIMEOUT = int(os.environ.get("REQUEST_TIMEOUT", "15"))
 
 # ---------------------------------------------------------------------------
 # Logging
@@ -105,7 +110,8 @@ def trigger_deploy():
                     [CONTROLLER_PATH, "sync"],
                     capture_output=True,
                     text=True,
-                    timeout=600,
+                    timeout=CONTROLLER_TIMEOUT,
+                    env={**os.environ, "GITOPS_TRIGGER": "webhook"},
                 )
                 if result.returncode == 0:
                     log.info("Deployment completed successfully")
@@ -121,7 +127,7 @@ def trigger_deploy():
                 else:
                     break
         except subprocess.TimeoutExpired:
-            log.error("Deployment timed out after 600s")
+            log.error("Deployment timed out after %ds", CONTROLLER_TIMEOUT)
         except Exception as e:
             log.error("Deployment error: %s", e)
         finally:
@@ -133,7 +139,20 @@ def trigger_deploy():
 
 
 class WebhookHandler(BaseHTTPRequestHandler):
+    timeout = REQUEST_TIMEOUT
+
     def do_POST(self):
+        delivery = self.headers.get("X-GitHub-Delivery", "-")
+        event = self.headers.get("X-GitHub-Event", "")
+        client = self.client_address[0]
+        # One line per received request, logged before any validation, so a
+        # delivery that GitHub shows as sent can be matched to what we did.
+        log.info(
+            "Request: POST %s event=%s delivery=%s from=%s length=%s",
+            self.path, event or "-", delivery, client,
+            self.headers.get("Content-Length", "-"),
+        )
+
         if self.path != "/webhook":
             self.send_error(404)
             return
@@ -141,6 +160,7 @@ class WebhookHandler(BaseHTTPRequestHandler):
         # Read payload
         content_length = int(self.headers.get("Content-Length", 0))
         if content_length == 0 or content_length > 10 * 1024 * 1024:
+            log.warning("Rejected delivery=%s: invalid content length", delivery)
             self.send_error(400, "Invalid content length")
             return
 
@@ -149,7 +169,7 @@ class WebhookHandler(BaseHTTPRequestHandler):
         # Verify HMAC signature
         signature = self.headers.get("X-Hub-Signature-256", "")
         if not verify_signature(payload, signature):
-            log.warning("Invalid webhook signature from %s", self.client_address[0])
+            log.warning("Rejected delivery=%s: invalid webhook signature from %s", delivery, client)
             self.send_error(403, "Invalid signature")
             return
 
@@ -157,11 +177,18 @@ class WebhookHandler(BaseHTTPRequestHandler):
         try:
             data = json.loads(payload)
         except json.JSONDecodeError:
+            log.warning("Rejected delivery=%s: invalid JSON", delivery)
             self.send_error(400, "Invalid JSON")
             return
 
+        ref = data.get("ref", "")
+        log.info(
+            "Payload: delivery=%s event=%s ref=%s before=%s after=%s",
+            delivery, event or "-", ref or "-",
+            str(data.get("before", "-"))[:8], str(data.get("after", "-"))[:8],
+        )
+
         # Check event type
-        event = self.headers.get("X-GitHub-Event", "")
         if event == "ping":
             log.info("Received ping event — webhook configured correctly")
             self.send_response(200)
@@ -171,7 +198,7 @@ class WebhookHandler(BaseHTTPRequestHandler):
             return
 
         if event != "push":
-            log.info("Ignoring event type: %s", event)
+            log.info("Ignoring delivery=%s: event type %s", delivery, event)
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
             self.end_headers()
@@ -179,10 +206,9 @@ class WebhookHandler(BaseHTTPRequestHandler):
             return
 
         # Check branch
-        ref = data.get("ref", "")
         expected_ref = f"refs/heads/{BRANCH}"
         if ref != expected_ref:
-            log.info("Ignoring push to %s (watching %s)", ref, expected_ref)
+            log.info("Ignoring delivery=%s: push to %s (watching %s)", delivery, ref, expected_ref)
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
             self.end_headers()
@@ -193,8 +219,8 @@ class WebhookHandler(BaseHTTPRequestHandler):
         changed_files = get_changed_files(data)
         commit_sha = data.get("after", "unknown")
         log.info(
-            "Push to %s — commit %s — %d file(s) changed: %s",
-            BRANCH, commit_sha[:8], len(changed_files), ", ".join(changed_files[:10]),
+            "Push to %s — delivery=%s commit %s — %d file(s) changed: %s",
+            BRANCH, delivery, commit_sha[:8], len(changed_files), ", ".join(changed_files[:10]),
         )
 
         # Trigger deployment (async — return 202 immediately)
@@ -232,7 +258,7 @@ def main():
         )
         sys.exit(1)
 
-    server = HTTPServer(("0.0.0.0", WEBHOOK_PORT), WebhookHandler)
+    server = ThreadingHTTPServer(("0.0.0.0", WEBHOOK_PORT), WebhookHandler)
     log.info("GitOps webhook listener started on port %d", WEBHOOK_PORT)
     log.info("Endpoints: POST /webhook, GET /health")
 
