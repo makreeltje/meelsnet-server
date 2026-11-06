@@ -1,11 +1,11 @@
 http:
   routers:
     n8n-rtr:
-      rule: 'Host(`n8n.{{env "DOMAINNAME_2"}}`)'
+      rule: 'Host(`n8n.int.{{env "DOMAINNAME_2"}}`)'
       entryPoints:
         - websecure
       middlewares:
-        - chain-authentik
+        - chain-local-only
       service: n8n-svc
       tls:
         certResolver: dns-cloudflare

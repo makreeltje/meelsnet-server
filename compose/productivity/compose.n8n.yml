@@ -8,8 +8,10 @@ services:
     profiles: [ "productivity", "all" ]
     environment:
       GENERIC_TIMEZONE: $TZ
-      N8N_HOST: n8n.${DOMAINNAME_1}
-      N8N_WEBHOOK_URL: https://n8n.${DOMAINNAME_1}/
+      N8N_HOST: n8n.int.${DOMAINNAME_2}
+      N8N_PROTOCOL: https
+      N8N_EDITOR_BASE_URL: https://n8n.int.${DOMAINNAME_2}/
+      WEBHOOK_URL: https://n8n.int.${DOMAINNAME_2}/
       N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: true
       N8N_RESTRICT_FILE_ACCESS_TO: /appdata/queue;/archive
       DB_TYPE: postgresdb
