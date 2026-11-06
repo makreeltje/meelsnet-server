@@ -9,20 +9,20 @@ De oorspronkelijke opzet (een GitHub Actions deploy-workflow) was **push-based**
 De GitOps controller draait **op Proxmox zelf** en ontvangt alleen een webhook notificatie. GitHub heeft geen SSH, geen Tailscale, en geen credentials. Het enige dat GitHub kent is een webhook URL met een gedeeld HMAC secret.
 
 ```
-┌───────────────────────────────────────────────────────────────────┐
+┌─────────────────────────────────────────────────────────────┐
 │                         VOORHEEN                            │
 │                                                             │
 │  GitHub Actions ──tailscale──> SSH ──> Proxmox ──> LXCs    │
 │  (push-based, GitHub heeft server-toegang)                  │
-└──────────────────────────────────────────────────────────────────┘
+└─────────────────────────────────────────────────────────────┘
 
-┌───────────────────────────────────────────────────────────────────┐
+┌─────────────────────────────────────────────────────────────┐
 │                          NU                                 │
 │                                                             │
 │  GitHub ──webhook (HMAC signed)──> Proxmox webhook listener │
 │  Listener triggert controller → git pull → deploy naar LXCs │
 │  (GitHub kent alleen de webhook URL, geen server-toegang)   │
-└──────────────────────────────────────────────────────────────────┘
+└─────────────────────────────────────────────────────────────┘
 ```
 
 ## Hoe werkt het?
