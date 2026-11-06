@@ -28,9 +28,10 @@ De GitOps controller draait **op Proxmox zelf** en ontvangt alleen een webhook n
 ## Hoe werkt het?
 
 1. PR wordt gemerged naar `main` (handmatig of via Renovate auto-merge)
-2. GitHub stuurt een push webhook naar de Proxmox webhook listener. Als vangnet voor gemiste webhooks draait `gitops-sync.timer` elke 15 minuten `gitops-controller.sh sync`
+2. GitHub stuurt een push webhook naar de Proxmox webhook listener. Als vangnet voor gemiste webhooks draait `gitops-sync.timer` elke 5 minuten `gitops-controller.sh sync`
 3. Listener verifieert de HMAC-SHA256 signature en accepteert het event
-4. Controller doet `git fetch` + `git diff` om gewijzigde files te bepalen
+3b. Elke ontvangen request wordt gelogd (`Request:`/`Payload:`/`Rejected`/`Ignoring` met `delivery=<X-GitHub-Delivery>`), ook als hij genegeerd of geweigerd wordt; vergelijk met *Recent Deliveries* in GitHub om een gemiste push te vinden
+4. Controller neemt eerst een `flock` (`$STATE_DIR/gitops.lock`) zodat webhook-, timer- en handmatige runs serieel lopen, en doet dan `git fetch` + `git diff` om gewijzigde files te bepalen
 5. Mapt gewijzigde files naar de juiste LXC container(s), de Traefik-regels of een host-managed pad
 6. Deployt alleen wat geraakt is: LXC's via `pct push` + `docker compose up -d`, Traefik-regels via een sync naar LXC 101, host-managed scripts via een lokale bestandskopie (zie hieronder)
 
@@ -261,7 +262,7 @@ scripts/gitops/
 ├── gitops-webhook.py          # Webhook listener (Python, geen dependencies)
 ├── gitops-webhook.service     # systemd service voor webhook listener
 ├── gitops-sync.service        # oneshot: gitops-controller.sh sync
-├── gitops-sync.timer          # elke 15 min, vangnet voor gemiste webhooks
+├── gitops-sync.timer          # elke 5 min, vangnet voor gemiste webhooks
 ├── config.env.example         # Configuratie template
 └── setup.sh                   # Installatie script voor Proxmox
 ```

@@ -39,6 +39,15 @@ TRAEFIK_RULES_DEST="${TRAEFIK_RULES_DEST:-/root/docker/appdata/traefik3/rules/me
 #   off      never remove anything (the old behaviour)
 PRUNE_MODE="${PRUNE_MODE:-on}"
 
+# Single lock shared by every entry point (webhook, timer, manual): only one
+# sync/deploy runs at a time. Later runs wait up to LOCK_WAIT seconds.
+LOCK_FILE="${LOCK_FILE:-$STATE_DIR/gitops.lock}"
+LOCK_WAIT="${LOCK_WAIT:-900}"
+
+# Who started this run (webhook | timer | manual); set by the callers and
+# only used for logging.
+GITOPS_TRIGGER="${GITOPS_TRIGGER:-manual}"
+
 # Load config override if present
 CONFIG_FILE="/etc/gitops/config.env"
 # shellcheck source=/dev/null
@@ -824,6 +833,24 @@ sync() {
 }
 
 # -----------------------------------------------------------------------------
+# Locking
+# -----------------------------------------------------------------------------
+# Serialises sync/deploy across the webhook handler, the systemd timer and
+# manual runs. The lock lives on fd 9 and is released when the process exits.
+acquire_lock() {
+  mkdir -p "$(dirname "$LOCK_FILE")"
+  exec 9>"$LOCK_FILE"
+  if ! flock -n 9; then
+    log_info "Run ($1, trigger=$GITOPS_TRIGGER, pid $$): another run holds $LOCK_FILE — waiting up to ${LOCK_WAIT}s"
+    if ! flock -w "$LOCK_WAIT" 9; then
+      log_error "Run ($1, trigger=$GITOPS_TRIGGER, pid $$): gave up waiting for $LOCK_FILE after ${LOCK_WAIT}s"
+      exit 1
+    fi
+    log_info "Run ($1, trigger=$GITOPS_TRIGGER, pid $$): lock acquired"
+  fi
+}
+
+# -----------------------------------------------------------------------------
 # Manual commands
 # -----------------------------------------------------------------------------
 cmd_status() {
@@ -961,6 +988,10 @@ EOF
 main() {
   local cmd="${1:-sync}"
   shift || true
+
+  case "$cmd" in
+    sync|deploy)   acquire_lock "$cmd" ;;
+  esac
 
   case "$cmd" in
     sync)          sync ;;
