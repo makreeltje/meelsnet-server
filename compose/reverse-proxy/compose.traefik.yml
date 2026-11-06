@@ -29,7 +29,15 @@ services:
       - --log.level=INFO # DEBUG, INFO, WARN, ERROR, FATAL, PANIC
       - --accessLog=true
       - --accessLog.bufferingSize=100
+      - --accessLog.format=json
       - --accessLog.filters.statusCodes=204-299,300-399,400-499,500-599
+      # RequestPath contains the full request URI including the querystring (apikey=, X-Plex-Token=, ...); Traefik cannot redact only the query
+      - --accessLog.fields.names.RequestPath=drop
+      # Headers: drop by default, keep only this allowlist (never Authorization, Cookie, Set-Cookie, X-Hub-Signature*, Authentik headers)
+      - --accessLog.fields.headers.defaultMode=drop
+      - --accessLog.fields.headers.names.User-Agent=keep
+      - --accessLog.fields.headers.names.X-GitHub-Delivery=keep
+      - --accessLog.fields.headers.names.X-GitHub-Event=keep
       - --metrics.prometheus=true
       - --metrics.prometheus.buckets=0.1,0.3,1.2,5.0
       - --providers.docker=true
