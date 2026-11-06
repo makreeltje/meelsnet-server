@@ -21,6 +21,13 @@ STATE_DIR="${STATE_DIR:-/opt/gitops/state}"
 LOG_DIR="${LOG_DIR:-/var/log/gitops}"
 DOCKER_BASE="${DOCKER_BASE:-/root/docker}"
 
+# Deploy lock: timer, webhook and manual CLI runs all go through this one lock
+# so two deploys never run at once. A second caller waits (up to this many
+# seconds) and then runs its own sync, so a push that lands during a running
+# deploy is picked up right after it instead of being lost.
+LOCK_FILE="${LOCK_FILE:-$STATE_DIR/deploy.lock}"
+LOCK_WAIT="${LOCK_WAIT:-500}"
+
 # Host-managed paths: repo content deployed directly onto the Proxmox host
 # itself (not into any LXC) — the controller/webhook install and the backup
 # scripts. See sync_host_managed_paths() below.
@@ -958,9 +965,28 @@ Examples:
 EOF
 }
 
+# Serialise everything that deploys. Read-only commands skip the lock.
+acquire_deploy_lock() {
+  mkdir -p "$(dirname "$LOCK_FILE")"
+  exec 200>"$LOCK_FILE"
+  if flock -n 200; then
+    return 0
+  fi
+  log_info "Another deploy holds $LOCK_FILE — waiting up to ${LOCK_WAIT}s, then running this one"
+  if ! flock -w "$LOCK_WAIT" 200; then
+    log_error "Gave up waiting ${LOCK_WAIT}s for $LOCK_FILE — NOT deploying; the next timer run or webhook will retry"
+    exit 1
+  fi
+  log_info "Deploy lock acquired after waiting"
+}
+
 main() {
   local cmd="${1:-sync}"
   shift || true
+
+  case "$cmd" in
+    sync|deploy) acquire_deploy_lock ;;
+  esac
 
   case "$cmd" in
     sync)          sync ;;
