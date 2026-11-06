@@ -39,12 +39,12 @@ TRAEFIK_RULES_DEST="${TRAEFIK_RULES_DEST:-/root/docker/appdata/traefik3/rules/me
 #   off      never remove anything (the old behaviour)
 PRUNE_MODE="${PRUNE_MODE:-on}"
 
-# Single lock shared by every entry point (webhook, timer, manual): only one
+# Single lock shared by every entry point (webhook, manual): only one
 # sync/deploy runs at a time. Later runs wait up to LOCK_WAIT seconds.
 LOCK_FILE="${LOCK_FILE:-$STATE_DIR/gitops.lock}"
 LOCK_WAIT="${LOCK_WAIT:-900}"
 
-# Who started this run (webhook | timer | manual); set by the callers and
+# Who started this run (webhook | manual); set by the callers and
 # only used for logging.
 GITOPS_TRIGGER="${GITOPS_TRIGGER:-manual}"
 
@@ -360,6 +360,29 @@ install_file() {
   mv "$tmp" "$dest"
 }
 
+# The periodic gitops-sync.timer/.service were removed (webhooks are the only
+# deploy trigger). Idempotent: disables and deletes the units if a previous
+# install left them on the host, and is a no-op otherwise. Runs at the start
+# of every sync so it also heals a host where the merge run itself was done
+# by the old controller.
+remove_legacy_sync_units() {
+  local unit changed=0
+  for unit in gitops-sync.timer gitops-sync.service; do
+    if systemctl list-unit-files "$unit" --no-legend 2>/dev/null | grep -q "^$unit" \
+       || [[ -e "$SYSTEMD_DIR/$unit" ]]; then
+      systemctl disable --now "$unit" >/dev/null 2>&1 || true
+      rm -f "$SYSTEMD_DIR/$unit"
+      log_info "Host sync: removed legacy $unit"
+      changed=1
+    fi
+  done
+  if [[ $changed -eq 1 ]]; then
+    systemctl daemon-reload || true
+    systemctl reset-failed gitops-sync.timer gitops-sync.service >/dev/null 2>&1 || true
+  fi
+  return 0
+}
+
 sync_backup_scripts() {
   local sha="$1"
   log_info "Host sync: scripts/backup/** changed — syncing to $BACKUP_SCRIPTS_DIR"
@@ -414,27 +437,9 @@ sync_gitops_install() {
     restart_webhook=1
   fi
 
-  local reload_systemd=0
-  if file_in_list "scripts/gitops/gitops-sync.service" "${changed_files[@]}"; then
-    install_file "scripts/gitops/gitops-sync.service" "$SYSTEMD_DIR/gitops-sync.service" 644
-    log_info "Host sync: updated $SYSTEMD_DIR/gitops-sync.service"
-    reload_systemd=1
-  fi
-
-  if file_in_list "scripts/gitops/gitops-sync.timer" "${changed_files[@]}"; then
-    install_file "scripts/gitops/gitops-sync.timer" "$SYSTEMD_DIR/gitops-sync.timer" 644
-    log_info "Host sync: updated $SYSTEMD_DIR/gitops-sync.timer"
-    reload_systemd=1
-  fi
-
-  if [[ $reload_systemd -eq 1 || $restart_webhook -eq 1 ]]; then
+  if [[ $restart_webhook -eq 1 ]]; then
     systemctl daemon-reload
     log_info "Host sync: ran systemctl daemon-reload"
-  fi
-
-  if [[ $reload_systemd -eq 1 ]]; then
-    systemctl restart gitops-sync.timer 2>/dev/null || systemctl start gitops-sync.timer
-    log_info "Host sync: restarted gitops-sync.timer to apply changes"
   fi
 
   if [[ $restart_webhook -eq 1 ]]; then
@@ -827,7 +832,7 @@ sync() {
   else
     log_error "Some deployments failed — state NOT updated (will retry next cycle)"
     notify failure "GitOps: deploy FAILED" \
-      "One or more deployments failed for commit \`${remote_sha:0:7}\`. Check \`journalctl -u gitops-sync.service\` on Proxmox."
+      "One or more deployments failed for commit \`${remote_sha:0:7}\`. Check \`/var/log/gitops/gitops.log\` or \`journalctl -u gitops-webhook.service\` on Proxmox."
     return 1
   fi
 }
@@ -835,7 +840,7 @@ sync() {
 # -----------------------------------------------------------------------------
 # Locking
 # -----------------------------------------------------------------------------
-# Serialises sync/deploy across the webhook handler, the systemd timer and
+# Serialises sync/deploy across the webhook handler and
 # manual runs. The lock lives on fd 9 and is released when the process exits.
 acquire_lock() {
   mkdir -p "$(dirname "$LOCK_FILE")"
@@ -958,7 +963,7 @@ Usage: $(basename "$0") <command> [args]
 
 Commands:
   sync           Check for changes and deploy affected LXCs + host-managed
-                 paths (used by timer)
+                 paths
   status         Show current deployment status
   deploy [target] Force deploy to target (lxc name, id, 'scripts', 'gitops',
                  or 'all')
@@ -992,6 +997,11 @@ main() {
   case "$cmd" in
     sync|deploy)   acquire_lock "$cmd" ;;
   esac
+
+  # Retire the old periodic timer on every sync (idempotent, see function).
+  if [[ "$cmd" == "sync" ]]; then
+    remove_legacy_sync_units
+  fi
 
   case "$cmd" in
     sync)          sync ;;
