@@ -21,7 +21,7 @@ STATE_DIR="${STATE_DIR:-/opt/gitops/state}"
 LOG_DIR="${LOG_DIR:-/var/log/gitops}"
 DOCKER_BASE="${DOCKER_BASE:-/root/docker}"
 
-# Deploy lock: timer, webhook and manual CLI runs all go through this one lock
+# Deploy lock: webhook and manual CLI runs both go through this one lock
 # so two deploys never run at once. A second caller waits (up to this many
 # seconds) and then runs its own sync, so a push that lands during a running
 # deploy is picked up right after it instead of being lost.
@@ -412,27 +412,9 @@ sync_gitops_install() {
     restart_webhook=1
   fi
 
-  local reload_systemd=0
-  if file_in_list "scripts/gitops/gitops-sync.service" "${changed_files[@]}"; then
-    install_file "scripts/gitops/gitops-sync.service" "$SYSTEMD_DIR/gitops-sync.service" 644
-    log_info "Host sync: updated $SYSTEMD_DIR/gitops-sync.service"
-    reload_systemd=1
-  fi
-
-  if file_in_list "scripts/gitops/gitops-sync.timer" "${changed_files[@]}"; then
-    install_file "scripts/gitops/gitops-sync.timer" "$SYSTEMD_DIR/gitops-sync.timer" 644
-    log_info "Host sync: updated $SYSTEMD_DIR/gitops-sync.timer"
-    reload_systemd=1
-  fi
-
-  if [[ $reload_systemd -eq 1 || $restart_webhook -eq 1 ]]; then
+  if [[ $restart_webhook -eq 1 ]]; then
     systemctl daemon-reload
     log_info "Host sync: ran systemctl daemon-reload"
-  fi
-
-  if [[ $reload_systemd -eq 1 ]]; then
-    systemctl restart gitops-sync.timer 2>/dev/null || systemctl start gitops-sync.timer
-    log_info "Host sync: restarted gitops-sync.timer to apply changes"
   fi
 
   if [[ $restart_webhook -eq 1 ]]; then
@@ -823,9 +805,9 @@ sync() {
     notify success "GitOps: deploy succeeded" \
       "Commit \`$short_sha\` deployed to $deployed_count LXC(s) — ${changed_files[*]}"
   else
-    log_error "Some deployments failed — state NOT updated (will retry next cycle)"
+    log_error "Some deployments failed — state NOT updated (next webhook or manual sync retries)"
     notify failure "GitOps: deploy FAILED" \
-      "One or more deployments failed for commit \`${remote_sha:0:7}\`. Check \`journalctl -u gitops-sync.service\` on Proxmox."
+      "One or more deployments failed for commit \`${remote_sha:0:7}\`. Check \`journalctl -u gitops-webhook.service\` or \`/var/log/gitops/gitops.log\` on Proxmox."
     return 1
   fi
 }
@@ -938,7 +920,7 @@ Usage: $(basename "$0") <command> [args]
 
 Commands:
   sync           Check for changes and deploy affected LXCs + host-managed
-                 paths (used by timer)
+                 paths (used by the webhook)
   status         Show current deployment status
   deploy [target] Force deploy to target (lxc name, id, 'scripts', 'gitops',
                  or 'all')
@@ -974,7 +956,7 @@ acquire_deploy_lock() {
   fi
   log_info "Another deploy holds $LOCK_FILE — waiting up to ${LOCK_WAIT}s, then running this one"
   if ! flock -w "$LOCK_WAIT" 200; then
-    log_error "Gave up waiting ${LOCK_WAIT}s for $LOCK_FILE — NOT deploying; the next timer run or webhook will retry"
+    log_error "Gave up waiting ${LOCK_WAIT}s for $LOCK_FILE — NOT deploying; the next webhook or manual sync will retry"
     exit 1
   fi
   log_info "Deploy lock acquired after waiting"
