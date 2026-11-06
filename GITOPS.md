@@ -89,7 +89,7 @@ De deploys pakken tarballs *over* de live mappen uit en verwijderen dus niets. D
 | `scripts/gitops/gitops-webhook.py` | Gekopieerd naar `/opt/gitops/gitops-webhook.py`, gevolgd door `systemctl restart gitops-webhook.service` — dit is een langlevende systemd service, dus een bestandskopie alleen verandert het gedrag niet totdat 'ie herstart. |
 | `scripts/gitops/gitops-webhook.service` | Gekopieerd naar `/etc/systemd/system/gitops-webhook.service`, gevolgd door `systemctl daemon-reload` + restart. |
 
-Elke stap logt naar `gitops.log` met een `Host sync:` prefix, en de status is zichtbaar via `gitops-controller.sh status` (aparte "Host-managed paden" sectie, analoog aan de LXC-status).
+Elke stap logt naar `gitops.log` met een `Host sync:` prefix, en de status is zichtbaar via `gitops-controller.sh status` (aparte "Host-managed paths" sectie, analoog aan de LXC-status).
 
 De oude `gitops-sync.timer`/`gitops-sync.service` bestaan niet meer. Bij elke `sync` verwijdert de controller ze idempotent van de host als ze er nog staan (`remove_legacy_sync_units`, logregel `Host sync: removed legacy ...`).
 
