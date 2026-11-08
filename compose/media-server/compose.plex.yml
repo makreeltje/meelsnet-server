@@ -8,7 +8,7 @@ services:
     profiles: [ "media", "all" ]
     environment:
       PLEX_CLAIM: $PLEX_CLAIM_TOKEN
-      ADVERTISE_IP: https://plex.$DOMAINNAME_1/
+      ADVERTISE_IP: "https://plex.${DOMAINNAME_1}/,https://plex.${DOMAINNAME_2},http://plex:32400"
     volumes:
       - $CONF_DIR/plex/config:/config
       - $CONF_DIR/plex/deb:/debi
