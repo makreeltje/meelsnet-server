@@ -1,0 +1,49 @@
+// Referentiekopie van $CONF_DIR/alloy/config/config.alloy (wordt op elke LXC handmatig uitgerold).
+// Wijziging t.o.v. de eerdere versie: loki.process "redact" maskeert API-keys in de query string
+// (apikey=...) voordat logs naar Loki gaan. Aanleiding: exportarr logt bij een verbindingsfout de volledige URL.
+discovery.docker "containers" {
+  host = "unix:///var/run/docker.sock"
+}
+
+discovery.relabel "containers" {
+  targets = discovery.docker.containers.targets
+
+  rule {
+    source_labels = ["__meta_docker_container_name"]
+    regex         = "^/(.*)$"
+    target_label  = "container"
+  }
+
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_compose_service"]
+    target_label  = "compose_service"
+  }
+
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_compose_project"]
+    target_label  = "compose_project"
+  }
+}
+
+loki.source.docker "containers" {
+  host       = "unix:///var/run/docker.sock"
+  targets    = discovery.relabel.containers.output
+  labels     = { host = sys.env("ALLOY_HOST_LABEL") }
+  forward_to = [loki.process.redact.receiver]
+}
+
+loki.process "redact" {
+  forward_to = [loki.write.default.receiver]
+
+  // Alleen de capture group (de waarde) wordt vervangen; `apikey=` blijft zichtbaar.
+  stage.replace {
+    expression = `(?i)apikey=([^&\s"]+)`
+    replace    = "<redacted>"
+  }
+}
+
+loki.write "default" {
+  endpoint {
+    url = "http://10.10.0.60:3100/loki/api/v1/push"
+  }
+}
