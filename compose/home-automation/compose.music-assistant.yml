@@ -8,8 +8,6 @@ services:
     cap_add:
       - SYS_ADMIN
       - DAC_READ_SEARCH
-    security_opt:
-      - apparmor:unconfined
     profiles: [ "home", "all" ]
     environment:
       LOG_LEVEL: info
