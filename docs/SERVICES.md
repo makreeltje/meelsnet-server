@@ -57,7 +57,7 @@ Streaming, downloads en Arr-ecosysteem. Entrypoint: `lxc/media/compose.yml`.
 | Container | Rol | Poorten (host) | Hostname(s) | Chain |
 |---|---|---|---|---|
 | `plex` | Mediaserver | 32400 e.a. | `plex.`D1 | no-auth |
-| `jellyfin` | Mediaserver | 8096 | `jellyfin.`D1 | no-auth |
+| `jellyfin` | Mediaserver | 8096 | `jellyfin.`D2 | no-auth |
 | `sonarr` | Series | 8989 | `series.`INT | local-only |
 | `sonarr-anime` | Series (anime) | 8999 | `anime.`INT | local-only |
 | `radarr` | Films | 7878 | `movies.`INT | local-only |
