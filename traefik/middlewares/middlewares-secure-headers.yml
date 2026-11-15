@@ -23,6 +23,3 @@ http:
         customResponseHeaders:
           X-Robots-Tag: "none,noarchive,nosnippet,notranslate,noimageindex,"
           server: ""
-          X-Forwarded-For: "{clientIP}"
-          X-Real-IP: "{clientIP}"
-          Host: "{host}"

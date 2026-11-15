@@ -25,10 +25,20 @@ fail() {
 hc_ping "/start"
 
 logger -t backup-frigate "Tar Frigate config+DB: $SRC"
+# Archive goes to a .tmp file first and is only moved into place after it
+# verified OK, so a failed run never leaves a truncated *_frigate.tar.gz.
+# --warning=no-file-changed: frigate.db is written to while we read it; tar
+# would otherwise exit 1 for that. Any other tar error still fails.
 pct exec "$CT_ID" -- bash -c "
     set -e
+    OUT='${DST}/${DATE}_frigate.tar.gz'
+    TMP=\"\$OUT.tmp\"
+    trap 'rm -f \"\$TMP\"' EXIT
     mkdir -p '${DST}'
-    tar czf '${DST}/${DATE}_frigate.tar.gz' -C '$(dirname "$SRC")' '$(basename "$SRC")'
+    tar --warning=no-file-changed -czf \"\$TMP\" -C '$(dirname "$SRC")' '$(basename "$SRC")'
+    gzip -t \"\$TMP\"
+    tar -tzf \"\$TMP\" > /dev/null
+    mv -f \"\$TMP\" \"\$OUT\"
     find '${DST}' -name '*_frigate.tar.gz' -mtime +${RETENTION_DAYS} -delete
 " || fail "Frigate tar failed"
 

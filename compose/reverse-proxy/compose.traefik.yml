@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: traefik
-    image: traefik:v3.7.16
+    image: traefik:v3.7.17
     security_opt:
       - no-new-privileges:true
     profiles: [ "reverse-proxy", "infra", "all" ]
@@ -29,7 +29,15 @@ services:
       - --log.level=INFO # DEBUG, INFO, WARN, ERROR, FATAL, PANIC
       - --accessLog=true
       - --accessLog.bufferingSize=100
-      - --accessLog.filters.statusCodes=204-299,300-399,400-499,500-599
+      - --accessLog.format=json
+      - --accessLog.filters.statusCodes=200-599
+      # RequestPath contains the full request URI including the querystring (apikey=, X-Plex-Token=, ...); Traefik cannot redact only the query
+      - --accessLog.fields.names.RequestPath=drop
+      # Headers: drop by default, keep only this allowlist (never Authorization, Cookie, Set-Cookie, X-Hub-Signature*, Authentik headers)
+      - --accessLog.fields.headers.defaultMode=drop
+      - --accessLog.fields.headers.names.User-Agent=keep
+      - --accessLog.fields.headers.names.X-GitHub-Delivery=keep
+      - --accessLog.fields.headers.names.X-GitHub-Event=keep
       - --metrics.prometheus=true
       - --metrics.prometheus.buckets=0.1,0.3,1.2,5.0
       - --providers.docker=true
@@ -44,6 +52,8 @@ services:
       - --entrypoints.websecure.http.tls.domains[0].sans=*.$DOMAINNAME_1
       - --entrypoints.websecure.http.tls.domains[1].main=$DOMAINNAME_2
       - --entrypoints.websecure.http.tls.domains[1].sans=*.$DOMAINNAME_2
+      - --entrypoints.websecure.http.tls.domains[2].main=int.$DOMAINNAME_2
+      - --entrypoints.websecure.http.tls.domains[2].sans=*.int.$DOMAINNAME_2
       - --providers.file.directory=/rules
       - --providers.file.watch=true
       # - --certificatesResolvers.dns-cloudflare.acme.caServer=https://acme-staging-v02.api.letsencrypt.org/directory # LetsEncrypt Staging Server
@@ -92,6 +102,6 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.traefik-rtr.entrypoints=websecure"
-      - "traefik.http.routers.traefik-rtr.rule=Host(`traefik.$DOMAINNAME_1`)"
+      - "traefik.http.routers.traefik-rtr.rule=Host(`traefik.int.$DOMAINNAME_2`)"
       - "traefik.http.routers.traefik-rtr.service=api@internal"
-      - "traefik.http.routers.traefik-rtr.middlewares=chain-authentik-local@file"
+      - "traefik.http.routers.traefik-rtr.middlewares=chain-local-only@file"

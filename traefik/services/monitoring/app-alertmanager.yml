@@ -1,0 +1,16 @@
+http:
+  routers:
+    alertmanager-rtr:
+      rule: 'Host(`alertmanager.int.{{env "DOMAINNAME_2"}}`)'
+      entryPoints:
+        - websecure
+      middlewares:
+        - chain-local-only
+      service: alertmanager-svc
+      tls:
+        certResolver: dns-cloudflare
+  services:
+    alertmanager-svc:
+      loadBalancer:
+        servers:
+          - url: 'http://{{env "LXC_MONITORING_IP"}}:9093'

@@ -2,11 +2,11 @@ http:
   routers:
     # --- ROUTER 1: Secure the Web UI (Default) ---
     sabnzbd-rtr:
-      rule: 'Host(`sab.{{env "DOMAINNAME_1"}}`)'
+      rule: 'Host(`sab.int.{{env "DOMAINNAME_2"}}`)'
       entryPoints:
         - websecure
       middlewares:
-        - chain-authentik-local
+        - chain-local-only
       service: sabnzbd-svc
       tls:
         certResolver: dns-cloudflare

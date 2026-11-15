@@ -17,7 +17,7 @@ import os
 import subprocess
 import sys
 import threading
-from http.server import HTTPServer, BaseHTTPRequestHandler
+from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 
 # ---------------------------------------------------------------------------
 # Configuration (override via /etc/gitops/config.env or environment)
@@ -29,6 +29,9 @@ CONTROLLER_PATH = os.environ.get(
     "CONTROLLER_PATH", "/opt/gitops/gitops-controller.sh"
 )
 LOG_DIR = os.environ.get("LOG_DIR", "/var/log/gitops")
+# Per-connection socket timeout (seconds): a client that connects and then
+# stalls mid-request is dropped instead of occupying a handler thread forever.
+REQUEST_TIMEOUT = int(os.environ.get("WEBHOOK_REQUEST_TIMEOUT", "15"))
 
 # ---------------------------------------------------------------------------
 # Logging
@@ -72,6 +75,18 @@ def verify_signature(payload: bytes, signature_header: str) -> bool:
     expected = signature_header[7:]
     mac = hmac.new(WEBHOOK_SECRET.encode(), payload, hashlib.sha256)
     return hmac.compare_digest(mac.hexdigest(), expected)
+
+
+def respond_ok(handler):
+    """Answer a handled delivery with 204 No Content.
+
+    Traefik only access-logs 204-299 and 3xx-5xx (see compose.traefik.yml),
+    so 200/202 answers never showed up in its log. 204 makes every handled
+    webhook delivery visible on router gitops-rtr without widening the
+    global status filter. GitHub accepts any 2xx.
+    """
+    handler.send_response(204)
+    handler.end_headers()
 
 
 def get_changed_files(payload: dict) -> list[str]:
@@ -133,6 +148,10 @@ def trigger_deploy():
 
 
 class WebhookHandler(BaseHTTPRequestHandler):
+    # StreamRequestHandler applies this to the connection socket, so slow
+    # reads (headers or body) raise instead of blocking indefinitely.
+    timeout = REQUEST_TIMEOUT
+
     def do_POST(self):
         if self.path != "/webhook":
             self.send_error(404)
@@ -145,6 +164,11 @@ class WebhookHandler(BaseHTTPRequestHandler):
             return
 
         payload = self.rfile.read(content_length)
+
+        # Delivery identifiers for correlating with GitHub's "Recent deliveries"
+        # (not secrets; the signature header is deliberately never logged).
+        delivery = self.headers.get("X-GitHub-Delivery", "-")
+        user_agent = self.headers.get("User-Agent", "-")
 
         # Verify HMAC signature
         signature = self.headers.get("X-Hub-Signature-256", "")
@@ -162,20 +186,18 @@ class WebhookHandler(BaseHTTPRequestHandler):
 
         # Check event type
         event = self.headers.get("X-GitHub-Event", "")
+        log.info(
+            "Delivery %s event=%s ua=%s from %s",
+            delivery, event or "-", user_agent, self.client_address[0],
+        )
         if event == "ping":
             log.info("Received ping event — webhook configured correctly")
-            self.send_response(200)
-            self.send_header("Content-Type", "application/json")
-            self.end_headers()
-            self.wfile.write(json.dumps({"status": "pong"}).encode())
+            respond_ok(self)
             return
 
         if event != "push":
             log.info("Ignoring event type: %s", event)
-            self.send_response(200)
-            self.send_header("Content-Type", "application/json")
-            self.end_headers()
-            self.wfile.write(json.dumps({"status": "ignored"}).encode())
+            respond_ok(self)
             return
 
         # Check branch
@@ -183,10 +205,7 @@ class WebhookHandler(BaseHTTPRequestHandler):
         expected_ref = f"refs/heads/{BRANCH}"
         if ref != expected_ref:
             log.info("Ignoring push to %s (watching %s)", ref, expected_ref)
-            self.send_response(200)
-            self.send_header("Content-Type", "application/json")
-            self.end_headers()
-            self.wfile.write(json.dumps({"status": "ignored", "reason": "wrong branch"}).encode())
+            respond_ok(self)
             return
 
         # Log what changed
@@ -197,17 +216,10 @@ class WebhookHandler(BaseHTTPRequestHandler):
             BRANCH, commit_sha[:8], len(changed_files), ", ".join(changed_files[:10]),
         )
 
-        # Trigger deployment (async — return 202 immediately)
+        # Trigger deployment (async — answer immediately)
         trigger_deploy()
 
-        self.send_response(202)
-        self.send_header("Content-Type", "application/json")
-        self.end_headers()
-        self.wfile.write(json.dumps({
-            "status": "accepted",
-            "commit": commit_sha,
-            "changed_files": len(changed_files),
-        }).encode())
+        respond_ok(self)
 
     def do_GET(self):
         if self.path == "/health":
@@ -232,7 +244,11 @@ def main():
         )
         sys.exit(1)
 
-    server = HTTPServer(("0.0.0.0", WEBHOOK_PORT), WebhookHandler)
+    # One thread per connection, so a slow or hung client cannot block other
+    # deliveries. Deploys stay serialised (deploy_lock here, flock in the
+    # controller).
+    server = ThreadingHTTPServer(("0.0.0.0", WEBHOOK_PORT), WebhookHandler)
+    server.daemon_threads = True
     log.info("GitOps webhook listener started on port %d", WEBHOOK_PORT)
     log.info("Endpoints: POST /webhook, GET /health")
 

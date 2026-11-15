@@ -2,11 +2,11 @@ http:
   routers:
     # --- ROUTER 1: Secure the Web UI (Default) ---
     portainer-rtr:
-      rule: 'Host(`portainer.{{env "DOMAINNAME_1"}}`)'
+      rule: 'Host(`portainer.int.{{env "DOMAINNAME_2"}}`)'
       entryPoints:
         - websecure
       middlewares:
-        - chain-authentik-local
+        - chain-local-only
       service: portainer-svc
       tls:
         certResolver: dns-cloudflare

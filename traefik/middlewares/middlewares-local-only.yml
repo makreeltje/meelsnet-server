@@ -7,3 +7,4 @@ http:
           - '{{env "LAN_SUBNET"}}'
           - '{{env "HOME_SUBNET"}}'
           - "172.16.0.0/12"
+          - "100.64.0.0/10" # Tailscale (CGNAT range)

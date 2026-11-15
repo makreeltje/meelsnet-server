@@ -16,17 +16,17 @@ services:
       # (Tailscale subnet routing), not from a "local" subnet. Port 53 is only
       # published on the two LXC addresses below, so "all" does not widen exposure.
       FTLCONF_dns_listeningMode: all
-      # Wildcard for Tailscale split DNS: every host under both domains -> Traefik on LXC infra.
-      # Clients are on the LAN/Tailscale, so answer with infra's LAN (vmbr0) address, not
-      # $LXC_INFRA_IP (service net, 10.10.0.x, not routable from the LAN).
-      # The "::" entries answer AAAA locally; without them AAAA is forwarded upstream and
-      # returns the Cloudflare IPv6 address, which clients prefer over the A record.
-      # Must stay double-quoted: an unquoted value ending in "::" is not valid YAML.
-      FTLCONF_misc_dnsmasq_lines: "\
-        address=/meels.net/${LXC_INFRA_LAN_IP:?LXC_INFRA_LAN_IP must be set};\
-        address=/meels.net/::;\
-        address=/meelsnet.nl/${LXC_INFRA_LAN_IP:?LXC_INFRA_LAN_IP must be set};\
-        address=/meelsnet.nl/::"
+      # Wildcard for Tailscale split DNS: every host under int.$DOMAINNAME_2 -> Traefik on LXC infra.
+      # Only the internal zone is answered here; public names resolve upstream (Cloudflare).
+      # Answer with infra's LAN (vmbr0) address, not $LXC_INFRA_IP (service net, 10.10.0.x,
+      # not routable from the LAN).
+      # The second line (local=) is required: since dnsmasq 2.86, address=/zone/<ipv4> forwards
+      # non-A queries upstream, where a public wildcard AAAA exists (Cloudflare), and dual-stack
+      # clients then connect to Cloudflare instead of Traefik. local= restores the pre-2.86
+      # behaviour: AAAA gets NOERROR/NODATA, so clients use the A record. Do not use
+      # address=/zone/:: instead: that answers AAAA with the unspecified address and breaks
+      # IPv6-first clients. Lines are semicolon separated.
+      FTLCONF_misc_dnsmasq_lines: "address=/int.${DOMAINNAME_2:?DOMAINNAME_2 must be set}/${LXC_INFRA_LAN_IP:?LXC_INFRA_LAN_IP must be set};local=/int.${DOMAINNAME_2}/"
     volumes:
       - $CONF_DIR/pihole/data:/etc/pihole
     dns:

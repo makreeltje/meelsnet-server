@@ -9,7 +9,7 @@ services:
     command:
       - --docker_only=true
       - --housekeeping_interval=15s
-      - --disable_metrics=advtcp,app,cpuLoad,cpu_topology,cpuset,disk,diskIO,hugetlb,memory_numa,oom_event,percpu,perf_event,process,referenced_memory,resctrl,sched,tcp,udp
+      - --disable_metrics=advtcp,app,cpuLoad,cpu_topology,cpuset,disk,hugetlb,memory_numa,oom_event,percpu,perf_event,process,referenced_memory,resctrl,sched,tcp,udp
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:rw
@@ -20,5 +20,5 @@ services:
     deploy:
       resources:
         limits:
-          memory: 256M
+          memory: 512M
           cpus: "0.5"

@@ -21,6 +21,13 @@ STATE_DIR="${STATE_DIR:-/opt/gitops/state}"
 LOG_DIR="${LOG_DIR:-/var/log/gitops}"
 DOCKER_BASE="${DOCKER_BASE:-/root/docker}"
 
+# Deploy lock: webhook and manual CLI runs both go through this one lock
+# so two deploys never run at once. A second caller waits (up to this many
+# seconds) and then runs its own sync, so a push that lands during a running
+# deploy is picked up right after it instead of being lost.
+LOCK_FILE="${LOCK_FILE:-$STATE_DIR/deploy.lock}"
+LOCK_WAIT="${LOCK_WAIT:-500}"
+
 # Host-managed paths: repo content deployed directly onto the Proxmox host
 # itself (not into any LXC) — the controller/webhook install and the backup
 # scripts. See sync_host_managed_paths() below.
@@ -405,27 +412,9 @@ sync_gitops_install() {
     restart_webhook=1
   fi
 
-  local reload_systemd=0
-  if file_in_list "scripts/gitops/gitops-sync.service" "${changed_files[@]}"; then
-    install_file "scripts/gitops/gitops-sync.service" "$SYSTEMD_DIR/gitops-sync.service" 644
-    log_info "Host sync: updated $SYSTEMD_DIR/gitops-sync.service"
-    reload_systemd=1
-  fi
-
-  if file_in_list "scripts/gitops/gitops-sync.timer" "${changed_files[@]}"; then
-    install_file "scripts/gitops/gitops-sync.timer" "$SYSTEMD_DIR/gitops-sync.timer" 644
-    log_info "Host sync: updated $SYSTEMD_DIR/gitops-sync.timer"
-    reload_systemd=1
-  fi
-
-  if [[ $reload_systemd -eq 1 || $restart_webhook -eq 1 ]]; then
+  if [[ $restart_webhook -eq 1 ]]; then
     systemctl daemon-reload
     log_info "Host sync: ran systemctl daemon-reload"
-  fi
-
-  if [[ $reload_systemd -eq 1 ]]; then
-    systemctl restart gitops-sync.timer 2>/dev/null || systemctl start gitops-sync.timer
-    log_info "Host sync: restarted gitops-sync.timer to apply changes"
   fi
 
   if [[ $restart_webhook -eq 1 ]]; then
@@ -568,13 +557,30 @@ get_lxc_compose_dirs() {
   }
 }
 
+# Explicit include paths from lxc/<name>/compose.yml (e.g.
+# "compose/monitoring/compose.prometheus.yml"), one per line.
+get_lxc_compose_files() {
+  local lxc_name="$1"
+  grep -oP '(?<=- )compose/[^[:space:]#]+' "$REPO_DIR/lxc/$lxc_name/compose.yml" | sort -u
+}
+
+# An LXC is affected when a changed file is:
+#   * under compose/fragments (shared by all LXCs),
+#   * under lxc/<name>/,
+#   * a compose.*.yml that this LXC includes explicitly, or
+#   * any other (non compose.*.yml) file in a compose/<dir> that this LXC
+#     includes from — e.g. a config file shipped next to the compose files.
+# A compose.*.yml that this LXC does NOT include does not affect it, so
+# compose.prometheus.yml only triggers monitoring, while the files that every
+# LXC includes (cadvisor, alloy, portainer-agent) still trigger all of them.
 lxc_is_affected() {
   local lxc_name="$1"
   shift
   local changed_files=("$@")
 
-  local -a dirs
+  local -a dirs files
   mapfile -t dirs < <(get_lxc_compose_dirs "$lxc_name")
+  mapfile -t files < <(get_lxc_compose_files "$lxc_name")
 
   for file in "${changed_files[@]}"; do
     # Check shared paths first
@@ -583,7 +589,14 @@ lxc_is_affected() {
         return 0
       fi
     done
-    # Check LXC-specific paths (derived from compose.yml)
+    # Compose files: only the ones this LXC includes
+    if [[ "$file" == compose/*/compose.*.yml ]]; then
+      for inc in "${files[@]}"; do
+        [[ "$file" == "$inc" ]] && return 0
+      done
+      continue
+    fi
+    # Everything else: directory level (derived from compose.yml)
     for dir in "${dirs[@]}"; do
       if [[ "$file" == "$dir"/* ]]; then
         return 0
@@ -816,9 +829,9 @@ sync() {
     notify success "GitOps: deploy succeeded" \
       "Commit \`$short_sha\` deployed to $deployed_count LXC(s) — ${changed_files[*]}"
   else
-    log_error "Some deployments failed — state NOT updated (will retry next cycle)"
+    log_error "Some deployments failed — state NOT updated (next webhook or manual sync retries)"
     notify failure "GitOps: deploy FAILED" \
-      "One or more deployments failed for commit \`${remote_sha:0:7}\`. Check \`journalctl -u gitops-sync.service\` on Proxmox."
+      "One or more deployments failed for commit \`${remote_sha:0:7}\`. Check \`journalctl -u gitops-webhook.service\` or \`/var/log/gitops/gitops.log\` on Proxmox."
     return 1
   fi
 }
@@ -931,7 +944,7 @@ Usage: $(basename "$0") <command> [args]
 
 Commands:
   sync           Check for changes and deploy affected LXCs + host-managed
-                 paths (used by timer)
+                 paths (used by the webhook)
   status         Show current deployment status
   deploy [target] Force deploy to target (lxc name, id, 'scripts', 'gitops',
                  or 'all')
@@ -958,9 +971,28 @@ Examples:
 EOF
 }
 
+# Serialise everything that deploys. Read-only commands skip the lock.
+acquire_deploy_lock() {
+  mkdir -p "$(dirname "$LOCK_FILE")"
+  exec 200>"$LOCK_FILE"
+  if flock -n 200; then
+    return 0
+  fi
+  log_info "Another deploy holds $LOCK_FILE — waiting up to ${LOCK_WAIT}s, then running this one"
+  if ! flock -w "$LOCK_WAIT" 200; then
+    log_error "Gave up waiting ${LOCK_WAIT}s for $LOCK_FILE — NOT deploying; the next webhook or manual sync will retry"
+    exit 1
+  fi
+  log_info "Deploy lock acquired after waiting"
+}
+
 main() {
   local cmd="${1:-sync}"
   shift || true
+
+  case "$cmd" in
+    sync|deploy) acquire_deploy_lock ;;
+  esac
 
   case "$cmd" in
     sync)          sync ;;

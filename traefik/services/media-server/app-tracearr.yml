@@ -1,11 +1,11 @@
 http:
   routers:
     tracearr-rtr:
-      rule: 'Host(`tracearr.{{env "DOMAINNAME_1"}}`)'
+      rule: 'Host(`tracearr.int.{{env "DOMAINNAME_2"}}`)'
       entryPoints:
         - websecure
       middlewares:
-        - chain-authentik-local
+        - chain-local-only
       service: tracearr-svc
       tls:
         certResolver: dns-cloudflare

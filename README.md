@@ -114,7 +114,7 @@ Traefik draait op LXC 101 en routeert **niet** via Docker-labels (behalve voor T
 
 De chain bepaalt de bescherming: `chain-authentik` (extern met Authentik-login), `chain-authentik-local` (alleen LAN + Authentik), `chain-local-only`, `chain-no-auth` (app heeft eigen login). Overzicht in [docs/SERVICES.md](docs/SERVICES.md#authentik-bescherming).
 
-Er zijn twee domeinen in gebruik (`DOMAINNAME_1` = `meelsnet.nl`, `DOMAINNAME_2` = `meels.net`); welke app waar hangt staat in SERVICES.md. TLS-certificaten komen via de Cloudflare DNS-challenge.
+Er zijn twee domeinen in gebruik (`DOMAINNAME_1` en `DOMAINNAME_2`, waarden in de `.env` op LXC 101); welke app waar hangt staat in SERVICES.md. TLS-certificaten komen via de Cloudflare DNS-challenge.
 
 ### Deployment (GitOps)
 
@@ -123,7 +123,7 @@ Een webhook-based controller op de Proxmox-host deployt bij merge naar `main`. Z
 1. Wijzig een bestand → open PR (Renovate doet dit automatisch voor image-updates)
 2. CI valideert (yamllint, shellcheck, `docker compose config` per LXC, secret-scans, docs-check)
 3. Review en merge naar `main`
-4. GitHub stuurt een webhook naar Proxmox; een timer (elke 15 min) vangt gemiste webhooks op
+4. GitHub stuurt een webhook naar Proxmox
 5. De controller deployt alleen de getroffen LXC('s) en synct `traefik/` en de host-managed scripts
 
 Wijzig nooit configuratie rechtstreeks op een server: de controller overschrijft die bij de volgende deploy.

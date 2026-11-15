@@ -1,0 +1,16 @@
+http:
+  routers:
+    adminer-rtr:
+      rule: 'Host(`adminer.int.{{env "DOMAINNAME_2"}}`)'
+      entryPoints:
+        - websecure
+      middlewares:
+        - chain-local-only
+      service: adminer-svc
+      tls:
+        certResolver: dns-cloudflare
+  services:
+    adminer-svc:
+      loadBalancer:
+        servers:
+          - url: 'http://{{env "LXC_INFRA_IP"}}:8083'
