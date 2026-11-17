@@ -115,6 +115,7 @@ Foto's, documenten, automatisering, back-up en losse tools. Entrypoint: `lxc/pro
 | `paperless` | Documentbeheer | 8000 (LXC-IP) | `paperless.`D1 | no-auth (eigen OIDC-login) |
 | `nextcloud` | Bestanden en samenwerking | 8081 (LXC-IP) | `cloud.`D1, `cloud.`D2 | nextcloud |
 | `n8n` | Workflows | 5678 (LXC-IP) | `n8n.`INT | local-only (eigen login) |
+| `docuseal` | Documenten laten ondertekenen (SQLite) | 8092 (LXC-IP) | `docuseal.`D2 | no-auth (eigen login; ondertekenlinks publiek) |
 | `backrest` | Back-ups (restic) | 9898 (LXC-IP) | `backup.`INT | local-only |
 | `budget-tracker` | Budget-app (eigen image) | 8090 | `budget.`D2 | local-only |
 | `budget-tracker-demo` | Demo-instantie | 8091 | `budget-demo.`D2 | local-only |
@@ -129,6 +130,7 @@ Foto's, documenten, automatisering, back-up en losse tools. Entrypoint: `lxc/pro
 **Afhankelijkheden en paden**
 - `paperless`, `n8n`, `budget-tracker` en `budget-tracker-demo` gebruiken PostgreSQL op infra (`LXC_INFRA_IP:5432`); `budget-tracker` en de demo hebben elk een eigen database en rol. `paperless` gebruikt ook Redis op infra. `immich` gebruikt via een env-file eveneens de gedeelde PostgreSQL (Immich-variant op infra).
 - Opslag: Immich-bibliotheek op `/mnt/photos/library`; Paperless `consume` en `media` op `/mnt/paperless`, export naar `/mnt/backups/app-data/paperless/export`; `n8n` mount `/mnt/archive/ChronicleCore`; `prints-portal-2` leest uit `/mnt/cloud`.
+- `docuseal` bewaart SQLite en uploads in `/root/docker/appdata/docuseal/data` (dekt Backrest mee; geen aparte dump, geen gedeelde PostgreSQL).
 - `backrest` mount `/root/docker` (alle compose en appdata) en `/mnt/backups`; zie [Back-up en restore](OPERATIONS.md#back-up-en-restore).
 - **Nextcloud: weer ingeschakeld op gepatchte PHP (php2shell).** `nextcloud:35.0.2` draait PHP 8.5.12, de gepatchte versie; controleer na een deploy met `docker exec nextcloud php -v`. Gebruikt PostgreSQL en Redis op infra. De Traefik-route (`traefik/services/productivity/app-nextcloud.yml`, poort 8081) was al actief.
 - Uitgeschakeld (include uitgecommentarieerd): **Firefly III**.
