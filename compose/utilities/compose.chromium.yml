@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: chromium
-    image: ghcr.io/browserless/chromium:v2.60.0
+    image: ghcr.io/browserless/chromium:v2.63.1
     profiles: [ "productivity", "all" ]
     environment:
       CONCURRENT: 5
