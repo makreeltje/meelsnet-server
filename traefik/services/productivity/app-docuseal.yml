@@ -1,11 +1,11 @@
 http:
   routers:
     docuseal-rtr:
-      rule: 'Host(`docuseal.{{env "DOMAINNAME_2"}}`)'
+      rule: 'Host(`docuseal.int.{{env "DOMAINNAME_2"}}`)'
       entryPoints:
         - websecure
       middlewares:
-        - chain-no-auth
+        - chain-local-only
       service: docuseal-svc
       tls:
         certResolver: dns-cloudflare

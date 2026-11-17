@@ -7,8 +7,8 @@ services:
     image: docuseal/docuseal:3.3.7
     profiles: [ "productivity", "all" ]
     environment:
-      # Public URL used in signing links and e-mails. SQLite in /data (no DATABASE_URL set).
-      HOST: docuseal.$DOMAINNAME_2
+      # Internal URL (LAN/Tailscale only) used in signing links and e-mails. SQLite in /data (no DATABASE_URL set).
+      HOST: docuseal.int.$DOMAINNAME_2
       SECRET_KEY_BASE: $DOCUSEAL_SECRET_KEY_BASE
     volumes:
       - $CONF_DIR/docuseal/data:/data
