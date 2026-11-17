@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common-lsio
     container_name: radarr
-    image: linuxserver/radarr:6.4.4
+    image: linuxserver/radarr:7.0.3
     profiles: [ "media", "all" ]
     environment:
       PUID: 1000
@@ -28,7 +28,7 @@ services:
       file: ../fragments/common-service.yml
       service: common-lsio
     container_name: radarr-4k
-    image: linuxserver/radarr:6.4.4
+    image: linuxserver/radarr:7.0.3
     profiles: [ "media", "all" ]
     environment:
       PUID: 1000
