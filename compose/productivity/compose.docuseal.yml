@@ -1,0 +1,22 @@
+services:
+  docuseal:
+    extends:
+      file: ../fragments/common-service.yml
+      service: common
+    container_name: docuseal
+    image: docuseal/docuseal:3.3.7
+    profiles: [ "productivity", "all" ]
+    environment:
+      # Public URL used in signing links and e-mails. SQLite in /data (no DATABASE_URL set).
+      HOST: docuseal.$DOMAINNAME_2
+      SECRET_KEY_BASE: $DOCUSEAL_SECRET_KEY_BASE
+    volumes:
+      - $CONF_DIR/docuseal/data:/data
+    ports:
+      - $LXC_IP:8092:3000
+    healthcheck:
+      test: [ "CMD", "wget", "-qO", "/dev/null", "http://localhost:3000/" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
