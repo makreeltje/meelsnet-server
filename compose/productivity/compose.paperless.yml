@@ -15,6 +15,7 @@ services:
       PAPERLESS_DBPASS: $PAPERLESS_DBPASS
       PAPERLESS_SECRET_KEY: $PAPERLESS_SECRET_KEY
       PAPERLESS_URL: https://paperless.$DOMAINNAME_1
+      PAPERLESS_ALLOWED_HOSTS: localhost,paperless.$DOMAINNAME_1,$LXC_IP
       PAPERLESS_APPS: allauth.socialaccount.providers.openid_connect
       PAPERLESS_SOCIALACCOUNT_PROVIDERS: >
         {
