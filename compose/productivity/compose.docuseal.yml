@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common
     container_name: docuseal
-    image: docuseal/docuseal:3.3.8
+    image: docuseal/docuseal:3.4.0
     profiles: [ "productivity", "all" ]
     environment:
       # Internal URL (LAN/Tailscale only) used in signing links and e-mails. SQLite in /data (no DATABASE_URL set).
