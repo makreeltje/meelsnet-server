@@ -12,6 +12,8 @@ services:
     volumes:
       - $CONF_DIR/loki/config:/mnt/config
       - $CONF_DIR/loki/data:/loki
+      # Repo-beheerde regels naast de handmatige files in /loki/rules/fake/
+      - ./rules/loki/zigbee2mqtt.yml:/loki/rules/fake/zigbee2mqtt.yml:ro
     ports:
       - $LXC_IP:3100:3100
     healthcheck:

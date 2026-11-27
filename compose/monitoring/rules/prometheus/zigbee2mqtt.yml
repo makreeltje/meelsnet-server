@@ -1,0 +1,48 @@
+# Alert-regels voor Zigbee2MQTT en de SLZB Ultima 3 (LXC 103, 192.168.2.10).
+# Wordt als losse file in /prometheus/rules/ gemount (zie compose.prometheus.yml);
+# de bestaande `rule_files: /prometheus/rules/*.yml` pikt hem op.
+groups:
+  - name: zigbee2mqtt
+    interval: 1m
+    rules:
+      # absent() vuurt ook als de cAdvisor-target van LXC 103 wegvalt; de summary noemt beide oorzaken.
+      - alert: Zigbee2MQTTContainerDown
+        expr: absent(container_last_seen{job="cadvisor", name="zigbee2mqtt"})
+        for: 3m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Zigbee2MQTT-container draait niet (of cAdvisor op LXC 103 is weg)"
+          description: "Al 3 minuten geen metrics van de container zigbee2mqtt op LXC 103. Zigbee-apparaten (sensoren, lampen) reageren niet. Controleer de container en de cadvisor-target."
+
+      - alert: Zigbee2MQTTRestartLoop
+        expr: changes(container_start_time_seconds{job="cadvisor", name="zigbee2mqtt"}[15m]) >= 2
+        labels:
+          severity: warning
+        annotations:
+          summary: "Zigbee2MQTT herstart herhaaldelijk"
+          description: "De container zigbee2mqtt is de afgelopen 15 minuten {{ $value }} keer herstart (bv. door een niet-reagerende coördinator). Zie ook de Loki-alert Zigbee2MQTTAdapterTimeout."
+
+  - name: slzb-ultima
+    interval: 1m
+    rules:
+      # Vereist de scrape-job `smlight` in prometheus.yml (staat niet in de repo, zie PR-beschrijving).
+      # Zonder die job bestaat `up{job="smlight"}` niet en blijft deze regel stil.
+      - alert: SlzbUltimaMetricsDown
+        expr: up{job="smlight"} == 0
+        for: 3m
+        labels:
+          severity: warning
+        annotations:
+          summary: "SLZB Ultima 3 niet bereikbaar voor Prometheus"
+          description: "{{ $labels.instance }}/metrics is al 3 minuten niet scrapebaar: de Ultima is offline of de webserver reageert niet."
+
+      # smlight_socket_clients telt de TCP-clients op de seriële socket (poort 7638); Zigbee2MQTT is normaal de enige (waarde 1).
+      - alert: SlzbUltimaNoSocketClient
+        expr: smlight_socket_clients{job="smlight"} == 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Geen Zigbee2MQTT-verbinding met de SLZB Ultima 3"
+          description: "De Ultima meldt al 5 minuten 0 socket-clients; Zigbee2MQTT is niet verbonden met tcp://192.168.2.10:7638."
