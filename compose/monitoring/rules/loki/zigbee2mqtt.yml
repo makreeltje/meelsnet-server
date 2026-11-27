@@ -1,0 +1,17 @@
+# Loki-ruler regels voor Zigbee2MQTT (tenant `fake`).
+# Wordt als losse file in /loki/rules/fake/ gemount (zie compose.loki.yml); de ruler leest die map elke minuut.
+# Labels uit Alloy: compose_service="zigbee2mqtt", host="home".
+# Na een wijziging aan deze bestanden: `docker compose restart prometheus loki` op LXC 106
+# (een single-file bind mount volgt een door de GitOps-sync vervangen bestand niet).
+groups:
+  - name: zigbee2mqtt
+    rules:
+      # Een hangende SLZB Ultima 3 geeft "SRSP - AF - dataRequest after 6000ms"; bij herstart "SRSP - SYS - ping after 6000ms".
+      - alert: Zigbee2MQTTAdapterTimeout
+        expr: sum by (host) (count_over_time({compose_service="zigbee2mqtt"} |~ "SRSP - .* after 6000ms" [5m])) > 0
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Zigbee-coördinator reageert niet (SRSP-timeouts) op {{ $labels.host }}"
+          description: "Zigbee2MQTT logde de afgelopen 5 minuten {{ $value }}x een SRSP-timeout (after 6000ms). De SLZB Ultima 3 is waarschijnlijk vastgelopen; een power reset helpt."
