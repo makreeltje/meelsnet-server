@@ -28,10 +28,14 @@ services:
       service: common
     container_name: immich-machine-learning
     user: "$PUID:$PGID"
-    image: ghcr.io/immich-app/immich-machine-learning:v3.4.2
+    image: ghcr.io/immich-app/immich-machine-learning:v3.4.1-openvino
     profiles: [ "productivity", "all" ]
     env_file:
       - $CONF_DIR/immich/.env
+    devices:
+      - /dev/dri/renderD128:/dev/dri/renderD128
+    group_add:
+      - "993"
     volumes:
       - $CONF_DIR/immich/cache:/cache
     healthcheck:
