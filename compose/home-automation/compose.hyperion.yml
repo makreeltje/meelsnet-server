@@ -4,7 +4,7 @@ services:
       file: ../fragments/common-service.yml
       service: common-host
     container_name: hyperion
-    image: foorschtbar/hyperion:latest@sha256:c387658fcf02f23937b9b534ed54ecb74811ecba44f19b709d7136355546a798
+    image: foorschtbar/hyperion:latest@sha256:eea137d7061731be4f309975aeb9d79c605df3196f62be1d5b0601b8f86f82b1
     profiles: [ "home", "all" ]
     volumes:
       - $CONF_DIR/hyperion/config:/root/.hyperion
