@@ -17,14 +17,17 @@ services:
       OPENVPN_PASSWORD: $VPN_PASSWORD
       # Must be a PIA region that supports port forwarding
       SERVER_REGIONS: $VPN_REGION
-      # Refresh the built-in servers.json periodically so stale PIA servers don't break the tunnel
-      UPDATER_PERIOD: 5m
+      # Refresh servers.json periodically (persisted in /gluetun) so stale PIA servers don't break the tunnel
+      UPDATER_PERIOD: 24h
       VPN_PORT_FORWARDING: "on"
       # Push the forwarded port into qBittorrent (needs localhost auth bypass in the WebUI)
       VPN_PORT_FORWARDING_UP_COMMAND: /bin/sh -c 'wget -O- --retry-connrefused --post-data "json={\"listen_port\":{{PORTS}}}" http://127.0.0.1:8080/api/v2/app/setPreferences 2>&1'
       FIREWALL_OUTBOUND_SUBNETS: "$LAN_SUBNET,$HOME_SUBNET,172.16.0.0/12"
       DOT: "off"
       DNS_ADDRESS: 1.1.1.1
+    volumes:
+      # Persist servers.json so a refreshed server list survives recreates (dir must be owned by 1000:1000)
+      - $CONF_DIR/gluetun:/gluetun
     networks:
       t3_proxy:
         # Keeps http://qbittorrent:8080 working for the *arr apps
